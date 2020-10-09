@@ -1,8 +1,9 @@
+import models.dataset.DataSet
 import parser.parser
 import java.util.*
 
 val scanner = Scanner(System.`in`)
-val variables = mutableMapOf<String, Any>()
+val variables = mutableMapOf<String, DataSet>()
 
 fun main() {
     var input = ""

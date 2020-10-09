@@ -1,3 +1,5 @@
 package models.dataset
 
-open class SetNumber(val input: Number): DataSet
+data class SetNumber(val input: Number): DataSet {
+	override fun toString(): String = input.toString()
+}
