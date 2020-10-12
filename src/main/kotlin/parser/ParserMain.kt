@@ -11,7 +11,7 @@ fun parser(input: String) {
 
 	if (indexOfEqual != mod.lastIndexOf("="))
 		throw EqualAmountException()
-	if (indexOfEqual == 0 || indexOfEqual == mod.lastIndex)
+	else if (indexOfEqual == 0 || indexOfEqual == mod.lastIndex)
 		throw EqualPositionException()
 
 	if (indexOfEqual == -1 || indexOfEqual == mod.lastIndex - 1 && mod.last() == "?") {

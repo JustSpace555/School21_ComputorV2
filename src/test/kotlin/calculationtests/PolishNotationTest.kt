@@ -17,20 +17,17 @@ class PolishNotationTest {
 	))
 
 	@Test(expected = DivideByZeroException::class)
-	@Throws(Exception::class)
 	fun testShouldThrowExceptionOnDivByZero() {
 		calc("  1    /     0")
 	}
 
 	@Test(expected = IllegalTokenException::class)
-	@Throws(Exception::class)
 	fun testShouldThrowExceptionIllegalTokenException() {
 		calc("  +   1    /2")
 		calc("1    a")
 	}
 
 	@Test(expected = TooFewOperatorsException::class)
-	@Throws(Exception::class)
 	fun testShouldThrowExceptionTooFewOperators() {
 		calc("1      2")
 	}

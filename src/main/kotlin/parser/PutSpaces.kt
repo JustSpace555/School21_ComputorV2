@@ -2,8 +2,8 @@ package parser
 
 fun putSpaces(input: String): String {
 	val output = StringBuilder()
-	val listOfOperations = listOf('+', '-', '*', '/', '%', '^', '(', ')', '=', '?')
-	val getWhiteSpace: (Boolean) -> String = { if (it) "" else " " }
+	val listOfOperations = listOf('+', '-', '*', '/', '%', '^', '(', ')', '=', '?', ';')
+	val getWhiteSpace: Boolean.() -> String = { if (this) "" else " " }
 
 	var beforeWhiteSpace: String
 	var afterWhiteSpace: String
@@ -14,13 +14,13 @@ fun putSpaces(input: String): String {
 			' ' -> return@forEachIndexed
 
 			in listOfOperations -> {
-				beforeWhiteSpace = getWhiteSpace(output.isNotEmpty() && output.last() == ' ')
-				afterWhiteSpace = getWhiteSpace(c == '-' && (i == 0 || lastToken in listOfOperations))
+				beforeWhiteSpace = (output.isNotEmpty() && output.last() == ' ').getWhiteSpace()
+				afterWhiteSpace = (c == '-' && (i == 0 || lastToken in listOfOperations)).getWhiteSpace()
 			}
 
 			else -> {
 				beforeWhiteSpace = ""
-				afterWhiteSpace = getWhiteSpace(!(i + 1 in input.indices && input[i + 1] == ' '))
+				afterWhiteSpace = (!(i + 1 in input.indices && input[i + 1] == ' ')).getWhiteSpace()
 			}
 		}
 		lastToken = c
