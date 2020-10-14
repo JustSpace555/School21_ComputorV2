@@ -1,8 +1,8 @@
-package parser
+package parser.extensions
 
 fun putSpaces(input: String): String {
 	val output = StringBuilder()
-	val listOfOperations = listOf('+', '-', '*', '/', '%', '^', '(', ')', '=', '?', ';')
+	val listOfOperations = listOf('+', '-', '*', '/', '%', '^', '(', ')', '=', '?', ';', '[', ']', ',')
 	val getWhiteSpace: Boolean.() -> String = { if (this) "" else " " }
 
 	var beforeWhiteSpace: String
@@ -26,5 +26,5 @@ fun putSpaces(input: String): String {
 		lastToken = c
 		output.append(beforeWhiteSpace + c + afterWhiteSpace)
 	}
-	return output.toString()
+	return output.trim().toString()
 }

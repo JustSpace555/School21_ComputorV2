@@ -1,11 +1,11 @@
-import models.dataset.DataSet
+import models.math.dataset.DataSet
 import parser.parser
 import java.util.*
 
-val scanner = Scanner(System.`in`)
 val variables = mutableMapOf<String, DataSet>()
 
 fun main() {
+    val scanner = Scanner(System.`in`)
     var input = ""
 
     while (scanner.hasNext()) {

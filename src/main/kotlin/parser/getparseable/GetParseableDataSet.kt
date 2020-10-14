@@ -1,9 +1,9 @@
 package parser.getparseable
 
-import models.dataset.Complex
-import models.dataset.Function
-import models.dataset.Matrix
-import models.dataset.SetNumber
+import models.math.dataset.Complex
+import models.math.dataset.Function
+import models.math.dataset.Matrix
+import models.math.dataset.SetNumber
 import kotlin.reflect.KClass
 
 fun getParseableDataSet(input: List<String>): KClass<*> {
@@ -11,16 +11,14 @@ fun getParseableDataSet(input: List<String>): KClass<*> {
 	val beforeEqual = input.subList(0, equalPosition)
 	val afterEqual = input.subList(equalPosition + 1, input.lastIndex + 1)
 
-	if (checkIfFunction(beforeEqual))
-		return Function::class
+	return when {
+		checkIfFunction(beforeEqual) -> Function::class
+		checkIfMatrix(afterEqual) -> Matrix::class
 
-	if (afterEqual.any { it.contains(Regex("\\d*[iI]")) })
-		return Complex::class
+		afterEqual.any {
+			it.contains(Regex("\\d*i"))
+		} -> Complex::class
 
-	if (afterEqual.contains(";") && afterEqual.any { it.contains("[[") } &&
-		afterEqual.any { it.contains("]]") }) {
-		return Matrix::class
+		else -> SetNumber::class
 	}
-
-	return SetNumber::class
 }

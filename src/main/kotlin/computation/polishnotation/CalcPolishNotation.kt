@@ -4,10 +4,11 @@ import models.exception.calcexception.BracketsAmountException
 import models.exception.calcexception.DivideByZeroException
 import models.exception.calcexception.IllegalTokenException
 import models.exception.calcexception.TooFewOperatorsException
+import models.math.dataset.SetNumber
 import java.util.*
 import kotlin.math.pow
 
-fun calcPolishNotation(input: List<String>): Number {
+fun calcPolishNotation(input: List<String>): SetNumber {
 	val stack = Stack<Double>()
 
 	for (element in input) {
@@ -45,5 +46,7 @@ fun calcPolishNotation(input: List<String>): Number {
 	if (stack.size != 1)
 		throw TooFewOperatorsException()
 	val number = stack.pop()
-	return if (number.toDouble() - number.toInt() == 0.0) number.toInt() else number.toDouble()
+	return SetNumber(
+		if (number.toDouble() - number.toInt() == 0.0) number.toInt() else number.toDouble()
+	)
 }

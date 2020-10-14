@@ -4,19 +4,9 @@ import models.exception.ComputorException
 
 abstract class CalculationException: ComputorException()
 
-class NumberFormatException: CalculationException() {
-	override val message: String = "Wrong number format"
-}
-
 class IllegalTokenException(token: String = "") : CalculationException() {
-	override val message = "Illegal token" +
-			if (token.isNotEmpty()) ": $token"
-			else ""
+	override val message = "Illegal token" + if (token.isEmpty()) "" else ": $token"
 }
-
-//class TooFewOperandsException: CalculationException() {
-//	override val message: String = "Too few operands"
-//}
 
 class TooFewOperatorsException: CalculationException() {
 	override val message: String = "Too few operators"

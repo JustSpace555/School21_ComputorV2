@@ -1,4 +1,4 @@
-package models.dataset
+package models.math.dataset
 
 class Matrix(val input: Array<Array<Number>>) : DataSet {
 	val n: Int = input.size

@@ -5,9 +5,10 @@ import computation.polishnotation.convertToPolishNotation
 import models.exception.calcexception.DivideByZeroException
 import models.exception.calcexception.IllegalTokenException
 import models.exception.calcexception.TooFewOperatorsException
+import models.math.dataset.SetNumber
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import parser.putSpaces
+import parser.extensions.putSpaces
 
 
 class PolishNotationTest {
@@ -34,9 +35,9 @@ class PolishNotationTest {
 
 	@Test
 	fun validTests() {
-		assertEquals(5, calc("2   +        3"))
-		assertEquals(-10, calc("2*5-10*2"))
-		assertEquals(0, calc("(2 + 3) + (5 - 10)"))
-		assertEquals(11, calc("(2+2)*3-1*1"))
+		assertEquals(SetNumber(5), calc("2   +        3"))
+		assertEquals(SetNumber(-10), calc("2*5-10*2"))
+		assertEquals(SetNumber(0), calc("(2 + 3) + (5 - 10)"))
+		assertEquals(SetNumber(11), calc("(2+2)*3-1*1"))
 	}
 }

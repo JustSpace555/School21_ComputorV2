@@ -1,7 +1,7 @@
 package parser.getparseable
 
-import models.exception.parserexception.variable.function.MultipleArgumentException
-import models.exception.parserexception.variable.function.WrongFunctionBracketsFormatException
+import models.exception.parserexception.variable.MultipleArgumentException
+import models.exception.parserexception.variable.WrongFunctionBracketsFormatException
 
 private fun List<String>.countInARow(input: String): Pair<Boolean, Int> {
 	val firstIndex = this.indexOf(input)
@@ -32,13 +32,13 @@ fun checkIfFunction(beforeEqual: List<String>): Boolean {
 
 	val countItARowOpenBracket = beforeEqual.countInARow("(")
 	val countInARowCloseBracket = beforeEqual.countInARow(")")
-	if (!countItARowOpenBracket.first || !countInARowCloseBracket.first ||
+	if (!(countItARowOpenBracket.first && countInARowCloseBracket.first) ||
 		countItARowOpenBracket.second != countInARowCloseBracket.second) {
 		throw WrongFunctionBracketsFormatException()
 	}
 
 	if (indexOfOpenBracket + 2 != indexOfCloseBracket)
-		return false
+		throw WrongFunctionBracketsFormatException()
 
 	return true
 }

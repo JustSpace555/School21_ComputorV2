@@ -1,6 +1,4 @@
-package models.exception.parserexception.variable.function
-
-import models.exception.parserexception.variable.VariableException
+package models.exception.parserexception.variable
 
 abstract class FunctionException: VariableException()
 

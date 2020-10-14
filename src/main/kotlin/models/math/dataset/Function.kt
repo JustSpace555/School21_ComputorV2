@@ -1,4 +1,4 @@
-package models.dataset
+package models.math.dataset
 
 class Function(): DataSet {
 
