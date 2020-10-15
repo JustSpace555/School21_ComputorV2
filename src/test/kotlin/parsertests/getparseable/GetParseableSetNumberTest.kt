@@ -1,6 +1,6 @@
 package parsertests.getparseable
 
-import models.math.dataset.SetNumber
+import models.math.dataset.numeric.SetNumber
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import parser.getparseable.getParseableDataSet

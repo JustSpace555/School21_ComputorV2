@@ -1,11 +1,11 @@
 package parsertests.configurateparseable
 
-import models.math.dataset.SetNumber
+import models.math.dataset.numeric.SetNumber
+import models.math.variables
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import parser.configurateparseable.putSetNumber
 import parsertests.ParserTest
-import variables
 
 class PutSetNumberTest : ParserTest() {
 

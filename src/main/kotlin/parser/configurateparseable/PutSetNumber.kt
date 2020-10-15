@@ -2,7 +2,7 @@ package parser.configurateparseable
 
 import computation.polishnotation.calcPolishNotation
 import computation.polishnotation.convertToPolishNotation
-import variables
+import models.math.variables
 
 fun putSetNumber(name: String, afterEqual: List<String>) {
 

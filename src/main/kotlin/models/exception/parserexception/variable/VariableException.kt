@@ -4,8 +4,9 @@ import models.exception.parserexception.ParserException
 
 abstract class VariableException: ParserException()
 
-class NoSuchVariableException: VariableException() {
-	override val message: String = "There is no such variable in memory"
+class NoSuchVariableException(invalidVariableName: String = ""): VariableException() {
+	override val message: String = "There is no such variable in memory" +
+			if (invalidVariableName.isEmpty()) "" else ": $invalidVariableName"
 }
 
 class InvalidVariableFormatException: VariableException() {

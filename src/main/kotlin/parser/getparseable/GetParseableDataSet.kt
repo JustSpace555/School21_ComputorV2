@@ -1,9 +1,9 @@
 package parser.getparseable
 
-import models.math.dataset.Complex
 import models.math.dataset.Function
 import models.math.dataset.Matrix
-import models.math.dataset.SetNumber
+import models.math.dataset.numeric.Complex
+import models.math.dataset.numeric.SetNumber
 import kotlin.reflect.KClass
 
 fun getParseableDataSet(input: List<String>): KClass<*> {

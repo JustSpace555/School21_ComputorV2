@@ -5,7 +5,7 @@ import computation.polishnotation.convertToPolishNotation
 import models.exception.calcexception.DivideByZeroException
 import models.exception.calcexception.IllegalTokenException
 import models.exception.calcexception.TooFewOperatorsException
-import models.math.dataset.SetNumber
+import models.math.dataset.numeric.SetNumber
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import parser.extensions.putSpaces
