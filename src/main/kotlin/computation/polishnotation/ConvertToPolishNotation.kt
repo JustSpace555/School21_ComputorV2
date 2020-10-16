@@ -1,5 +1,8 @@
 package computation.polishnotation
 
+import computation.polishnotation.extensions.getOperandLastIndex
+import computation.polishnotation.extensions.isComplexOrMatrixOrFunction
+import computation.polishnotation.extensions.isOperand
 import models.exception.calcexception.BracketsAmountException
 import models.exception.calcexception.IllegalTokenException
 import models.math.tempVariables
@@ -15,16 +18,6 @@ private fun choosePriority(input: String): Int =
 		else -> throw IllegalTokenException(input)
 	}
 
-private fun String.isOperand(): Boolean {
-	val containsKey = variables.containsKey(this)
-
-	return this.toDoubleOrNull() != null || containsKey || (this.contains('i') && !containsKey)
-}
-
-private fun putTempVariableAndGetName(input: String): String {
-	tempVariables["var_${tempVariables.size + 1}"] = input
-}
-
 fun convertToPolishNotation(input: List<String>): List<String> {
 	val output = mutableListOf<String>()
 	val stack = Stack<String>()
@@ -33,6 +26,18 @@ fun convertToPolishNotation(input: List<String>): List<String> {
 	while (i in input.indices) {
 		if (input[i].isOperand()) {
 			output.add(input[i++])
+			continue
+		}
+
+		val checkingOperand = input[i].isComplexOrMatrixOrFunction()
+		if (checkingOperand.first) {
+			val lastIndexToSlice = input.getOperandLastIndex(checkingOperand.second) + 1
+
+			"var_${tempVariables.size + 1}".also {
+				tempVariables[it] = input.subList(i, lastIndexToSlice)
+				output.add(it)
+			}
+			i += lastIndexToSlice
 			continue
 		}
 
