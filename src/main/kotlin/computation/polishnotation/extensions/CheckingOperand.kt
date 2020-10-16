@@ -5,10 +5,13 @@ import models.math.dataset.Function
 import models.math.dataset.Matrix
 import models.math.dataset.numeric.Complex
 import models.math.dataset.numeric.SetNumber
+import models.math.tempVariables
 import models.math.variables
 import kotlin.reflect.KClass
 
 fun String.isOperand(): Boolean = this.toDoubleOrNull() != null || variables.containsKey(this)
+
+fun String.isOperandOrTempVariable(): Boolean = this.isOperand() || tempVariables.containsKey(this)
 
 fun String.isComplexOrMatrixOrFunction(): Pair<Boolean, KClass<*>> =
 	when {

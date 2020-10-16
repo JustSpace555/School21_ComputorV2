@@ -9,4 +9,5 @@ data class Calculation(val input: List<String>): MathExpression {
 
 	operator fun invoke(): SetNumber =
 		calcPolishNotation(convertToPolishNotation(input))
+
 }

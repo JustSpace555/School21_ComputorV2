@@ -6,7 +6,6 @@ import computation.polishnotation.extensions.isOperand
 import models.exception.calcexception.BracketsAmountException
 import models.exception.calcexception.IllegalTokenException
 import models.math.tempVariables
-import models.math.variables
 import java.util.*
 
 private fun choosePriority(input: String): Int =
