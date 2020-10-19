@@ -1,6 +1,8 @@
 package models.math.dataset
 
-class Matrix(val input: Array<Array<Number>>) : DataSet {
+import models.math.dataset.numeric.Numeric
+
+data class Matrix(val input: List<List<Numeric>>) : DataSet {
 	val n: Int = input.size
-	val m: Int = input[0].size
+	val m: Int = input.first().size
 }

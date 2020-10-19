@@ -15,9 +15,7 @@ fun getParseableDataSet(input: List<String>): KClass<*> {
 		checkIfFunction(beforeEqual) -> Function::class
 		checkIfMatrix(afterEqual) -> Matrix::class
 
-		afterEqual.any {
-			it.contains(Regex("\\d*i"))
-		} -> Complex::class
+		afterEqual.any { it.contains(Regex("\\d*i")) } -> Complex::class
 
 		else -> SetNumber::class
 	}

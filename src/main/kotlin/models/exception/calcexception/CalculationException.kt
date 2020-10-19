@@ -1,6 +1,7 @@
 package models.exception.calcexception
 
 import models.exception.ComputorException
+import kotlin.reflect.KClass
 
 abstract class CalculationException: ComputorException()
 
@@ -18,4 +19,9 @@ class BracketsAmountException : CalculationException() {
 
 class DivideByZeroException : CalculationException() {
 	override val message: String = "Division by zero"
+}
+
+class IllegalOperationException(arg1: KClass<*>, arg2: KClass<*>, `fun`: Char) : CalculationException() {
+	override val message: String = "Illegal operation " +
+			"\"$`fun`\" between ${arg1.simpleName} and ${arg2.simpleName}"
 }
