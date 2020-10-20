@@ -15,22 +15,25 @@ data class Matrix(val input: List<List<Numeric>>) : DataSet {
 	operator fun get(i: Int, j: Int): Numeric = input[i][j]
 
 	override fun plus(input: DataSet): DataSet {
-		inputKClassCheck(input, '+')
-		return invokeMatrixOperation(input as Matrix) { a: Numeric, b: Numeric -> a + b }
+		checkKClassAndRowsWithColumns(input, '+')
+		return invokeMatrixOperation(input, Numeric::plus)
 	}
 
 	override fun minus(input: DataSet): DataSet {
-		inputKClassCheck(input, '-')
-		if (rows != input)
-			throw WrongMatrixSizeOperationException(this, input, operationChar)
-		return invokeMatrixOperation(input as Matrix) { a: Numeric, b: Numeric -> a - b }
+		checkKClassAndRowsWithColumns(input, '-')
+		return invokeMatrixOperation(input, Numeric::minus)
 	}
 
 	override fun times(input: DataSet): DataSet {
+		if (input is Numeric) return invokeMatrixOperation(input, Numeric::times)
 
+		input as Matrix
+		if (columns != input.rows) throw WrongMatrixSizeOperationException(this, input, '*')
+		
 	}
 
 	override fun div(input: DataSet): DataSet {
+		if (input is Numeric) return invokeMatrixOperation(input, Numeric::div)
 		TODO("Not yet implemented")
 	}
 
@@ -38,15 +41,25 @@ data class Matrix(val input: List<List<Numeric>>) : DataSet {
 
 
 
-	private fun inputKClassCheck(input: DataSet, operationChar: Char) {
+	private fun checkKClassAndRowsWithColumns(input: DataSet, operationChar: Char) {
 		if (input !is Matrix) throw IllegalOperationException(this::class, input::class, operationChar)
+
+		if (rows != input.rows || columns != input.columns)
+			throw WrongMatrixSizeOperationException(this, input, operationChar)
 	}
 
-	private fun invokeMatrixOperation(inputMatrix: Matrix, operation: (Numeric, Numeric) -> DataSet) =
-		copy(input = input.mapIndexed { i: Int, numericList: List<Numeric> ->
-			numericList.mapIndexed { j: Int, element ->
-				operation(element, inputMatrix[i, j]) as Numeric
-			}
-		})
-
+	private fun invokeMatrixOperation(input: DataSet, operation: (Numeric, DataSet) -> DataSet) =
+		if (input is Matrix) {
+			copy(input = this.input.mapIndexed { i, numericList ->
+				numericList.mapIndexed { j, element ->
+					operation(element, input[i, j]) as Numeric
+				}
+			})
+		} else {
+			copy(input = this.input.map { numericList ->
+				numericList.map { element ->
+					operation(element, input as Numeric) as Numeric
+				}
+			})
+		}
 }
