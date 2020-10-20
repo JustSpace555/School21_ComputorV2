@@ -8,7 +8,7 @@ import models.math.dataset.Matrix
 
 data class SetNumber(var number: Number) : Numeric {
 
-	operator fun plus(input: Number) = this.copy(number = number + input)
+	operator fun plus(input: Number) = copy(number = number + input)
 	operator fun plus(input: SetNumber) = plus(input.number)
 	override fun plus(input: DataSet): DataSet =
 		when (input) {
@@ -18,7 +18,7 @@ data class SetNumber(var number: Number) : Numeric {
 			else -> plus(input as SetNumber)
 		}
 
-	operator fun minus(input: Number) = this.copy(number = number - input)
+	operator fun minus(input: Number) = copy(number = number - input)
 	operator fun minus(input: SetNumber) = minus(input.number)
 	override fun minus(input: DataSet): DataSet =
 		when (input) {
@@ -28,7 +28,7 @@ data class SetNumber(var number: Number) : Numeric {
 			else -> minus(input as SetNumber)
 		}
 
-	operator fun times(input: Number) = this.copy(number = number * input)
+	operator fun times(input: Number) = copy(number = number * input)
 	operator fun times(input: SetNumber) = times(input.number)
 	override fun times(input: DataSet): DataSet =
 		when (input) {
@@ -38,7 +38,7 @@ data class SetNumber(var number: Number) : Numeric {
 			else -> times(input as SetNumber)
 		}
 
-	operator fun div(input: Number) = this.copy(number = number / input)
+	operator fun div(input: Number) = copy(number = number / input)
 	operator fun div(input: SetNumber) = div(input.number)
 	override fun div(input: DataSet): DataSet =
 		when (input) {
@@ -48,7 +48,7 @@ data class SetNumber(var number: Number) : Numeric {
 			else -> div(input as SetNumber)
 		}
 
-	operator fun rem(input: Number) = this.copy(number = number % input)
+	operator fun rem(input: Number) = copy(number = number % input)
 	operator fun rem(input: SetNumber) = rem(input.number)
 	override fun rem(input: DataSet): DataSet =
 		when (input) {

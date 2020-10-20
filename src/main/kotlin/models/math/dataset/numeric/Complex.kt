@@ -1,6 +1,5 @@
 package models.math.dataset.numeric
 
-import globalextensions.times
 import models.exception.calcexception.IllegalOperationException
 import models.math.dataset.DataSet
 import models.math.dataset.Function
@@ -63,7 +62,7 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 
 		var tempIm = imaginary.number
 		val signString = if (imaginary < 0) {
-			tempIm *= -1
+//			tempIm *= -1
 			" - "
 		} else {
 			" + "

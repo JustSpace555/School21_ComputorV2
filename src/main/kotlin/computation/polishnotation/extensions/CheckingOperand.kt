@@ -1,6 +1,6 @@
 package computation.polishnotation.extensions
 
-import models.exception.parserexception.variable.NoSuchVariableException
+import models.exception.calcexception.variable.NoSuchVariableException
 import models.math.dataset.Function
 import models.math.dataset.Matrix
 import models.math.dataset.numeric.Complex
