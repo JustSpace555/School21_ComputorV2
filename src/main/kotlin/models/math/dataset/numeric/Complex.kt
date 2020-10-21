@@ -1,6 +1,6 @@
 package models.math.dataset.numeric
 
-import models.exception.calcexception.IllegalOperationException
+import models.exception.calcexception.variable.IllegalOperationException
 import models.math.dataset.DataSet
 import models.math.dataset.Function
 import models.math.dataset.Matrix
@@ -69,5 +69,4 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 		}
 		return "$real$signString${tempIm}i"
 	}
-
 }

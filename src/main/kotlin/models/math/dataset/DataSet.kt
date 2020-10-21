@@ -8,4 +8,6 @@ interface DataSet: MathExpression {
 	operator fun times(other: DataSet): DataSet
 	operator fun div(other: DataSet): DataSet
 	operator fun rem(other: DataSet): DataSet
+
+	override fun toString(): String
 }

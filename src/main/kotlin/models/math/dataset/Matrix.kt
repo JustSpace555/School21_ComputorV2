@@ -1,15 +1,14 @@
 package models.math.dataset
 
-import models.exception.calcexception.IllegalOperationException
-import models.exception.calcexception.variable.UnavailableOperation
+import models.exception.calcexception.variable.IllegalOperationException
 import models.exception.calcexception.variable.WrongMatrixSizeOperationException
 import models.math.dataset.numeric.Numeric
-import models.math.dataset.numeric.SetNumber
 import parser.variable.parseMatrixFromListString
 
 data class Matrix(val elementsCollection: List<List<Numeric>>) : DataSet {
-	val rows: Int = elementsCollection.size
-	val columns: Int = elementsCollection.first().size
+	val rows = elementsCollection.size
+	val columns = elementsCollection.first().size
+	val isSquare = rows == columns
 
 	constructor(input: ArrayList<String>) : this(parseMatrixFromListString(input))
 
@@ -44,10 +43,10 @@ data class Matrix(val elementsCollection: List<List<Numeric>>) : DataSet {
 
 	override fun div(other: DataSet): Matrix {
 		if (other !is Matrix) return invokeMatrixOperation(other, Numeric::div)
-		TODO()
+		throw IllegalOperationException(this::class, other::class, '/')
 	}
 
-	override fun rem(other: DataSet): DataSet = throw UnavailableOperation(this::class, other::class, '%')
+	override fun rem(other: DataSet): DataSet = throw IllegalOperationException(this::class, other::class, '%')
 
 	fun Matrix.transposed(): Matrix {
 		val newElementsList = mutableListOf<MutableList<Numeric>>()
@@ -57,6 +56,12 @@ data class Matrix(val elementsCollection: List<List<Numeric>>) : DataSet {
 				newElementsList[i][j] = elementsCollection[i][j]
 
 		return Matrix(newElementsList)
+	}
+
+	override fun toString(): String {
+		val builder = StringBuilder()
+		elementsCollection.forEach { builder.append("[ " + it.joinToString(postfix = " ") + "]\n") }
+		return builder.toString()
 	}
 
 	private fun checkKClassAndRowsWithColumns(input: DataSet, operationChar: Char) {

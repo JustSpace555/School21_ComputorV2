@@ -1,7 +1,7 @@
 package models.math.dataset.numeric
 
 import globalextensions.*
-import models.exception.calcexception.IllegalOperationException
+import models.exception.calcexception.variable.IllegalOperationException
 import models.math.dataset.DataSet
 import models.math.dataset.Function
 import models.math.dataset.Matrix
@@ -34,7 +34,7 @@ data class SetNumber(var number: Number) : Numeric {
 		when (other) {
 			is Matrix -> other * this
 			is Function -> TODO()
-			is Complex -> other.copy(real = SetNumber(other.real.number * number))
+			is Complex -> other.copy(real = other.real * number)
 			else -> this * other as SetNumber
 		}
 
@@ -44,7 +44,7 @@ data class SetNumber(var number: Number) : Numeric {
 		when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '/')
 			is Function -> TODO()
-			is Complex -> other.copy(real = SetNumber(number / other.real.number))
+			is Complex -> throw IllegalOperationException(this::class, Matrix::class, '/')
 			else -> this / other as SetNumber
 		}
 

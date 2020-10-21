@@ -1,19 +1,20 @@
 package models.math.dataset
 
-class Function: DataSet {
-	override fun plus(input: DataSet): DataSet {
+data class Function(val parameter: String) : DataSet {
+
+	override fun plus(other: DataSet): DataSet {
 		TODO("Not yet implemented")
 	}
 
-	override fun minus(input: DataSet): DataSet {
+	override fun minus(other: DataSet): DataSet {
 		TODO("Not yet implemented")
 	}
 
-	override fun times(input: DataSet): DataSet {
+	override fun times(other: DataSet): DataSet {
 		TODO("Not yet implemented")
 	}
 
-	override fun div(input: DataSet): DataSet {
+	override fun div(other: DataSet): DataSet {
 		TODO("Not yet implemented")
 	}
 
