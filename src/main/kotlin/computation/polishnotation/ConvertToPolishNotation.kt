@@ -20,8 +20,8 @@ private fun choosePriority(input: String): Int =
 fun convertToPolishNotation(input: List<String>): List<String> {
 	val output = mutableListOf<String>()
 	val stack = Stack<String>()
-	var i = 0
 
+	var i = 0
 	while (i in input.indices) {
 		if (input[i].isOperand()) {
 			output.add(input[i++])

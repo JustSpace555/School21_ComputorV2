@@ -2,8 +2,7 @@ package computation.polishnotation.extensions
 
 import models.math.dataset.Function
 import models.math.dataset.Matrix
-import models.math.dataset.numeric.Complex
-import java.util.Stack
+import java.util.*
 import kotlin.reflect.KClass
 
 private fun getMatrixLastIndex(input: List<String>): Int {
@@ -24,7 +23,6 @@ private fun getMatrixLastIndex(input: List<String>): Int {
 
 fun List<String>.getOperandLastIndex(inputClass: KClass<*>): Int =
 	when (inputClass) {
-		Complex::class -> 1
 		Matrix::class -> getMatrixLastIndex(this)
 		Function::class -> 4
 		else -> 1
