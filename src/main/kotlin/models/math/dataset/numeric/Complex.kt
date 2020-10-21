@@ -62,7 +62,7 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 
 		var tempIm = imaginary.number
 		val signString = if (imaginary < 0) {
-//			tempIm *= -1
+			tempIm *= -1
 			" - "
 		} else {
 			" + "
