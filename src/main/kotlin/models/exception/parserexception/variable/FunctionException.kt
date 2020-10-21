@@ -1,6 +1,6 @@
 package models.exception.parserexception.variable
 
-abstract class FunctionException: VariableException()
+abstract class FunctionException: VariableParserException()
 
 class WrongFunctionBracketsFormatException: FunctionException() {
 	override val message: String = "Wrong function brackets format"

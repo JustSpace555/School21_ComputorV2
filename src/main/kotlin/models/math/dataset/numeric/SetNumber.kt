@@ -8,51 +8,56 @@ import models.math.dataset.Matrix
 
 data class SetNumber(var number: Number) : Numeric {
 
-	operator fun plus(input: Number) = copy(number = number + input)
-	override fun plus(input: DataSet): DataSet =
-		when (input) {
+	operator fun plus(other: Number) = copy(number = number + other)
+	operator fun plus(other: SetNumber) = this + other.number
+	override fun plus(other: DataSet): DataSet =
+		when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '+')
 			is Function -> TODO()
-			is Complex -> input.copy(real = input.real + number)
-			else -> plus((input as SetNumber).number)
+			is Complex -> other.copy(real = other.real + number)
+			else -> this + other as SetNumber
 		}
 
-	operator fun minus(input: Number) = copy(number = number - input)
-	override fun minus(input: DataSet): DataSet =
-		when (input) {
+	operator fun minus(other: Number) = copy(number = number - other)
+	operator fun minus(other: SetNumber) = this - other.number
+	override fun minus(other: DataSet): DataSet =
+		when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '-')
 			is Function -> TODO()
-			is Complex -> input.copy(real = SetNumber(number - input.real.number))
-			else -> minus((input as SetNumber).number)
+			is Complex -> other.copy(real = SetNumber(number - other.real.number))
+			else -> this - other as SetNumber
 		}
 
-	operator fun times(input: Number) = copy(number = number * input)
-	override fun times(input: DataSet): DataSet =
-		when (input) {
-			is Matrix -> input * this
+	operator fun times(other: Number) = copy(number = number * other)
+	operator fun times(other: SetNumber) = this * other.number
+	override fun times(other: DataSet): DataSet =
+		when (other) {
+			is Matrix -> other * this
 			is Function -> TODO()
-			is Complex -> input.copy(real = SetNumber(input.real.number * number))
-			else -> times((input as SetNumber).number)
+			is Complex -> other.copy(real = SetNumber(other.real.number * number))
+			else -> this * other as SetNumber
 		}
 
-	operator fun div(input: Number) = copy(number = number / input)
-	override fun div(input: DataSet): DataSet =
-		when (input) {
+	operator fun div(other: Number) = copy(number = number / other)
+	operator fun div(other: SetNumber) = this / other.number
+	override fun div(other: DataSet): DataSet =
+		when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '/')
 			is Function -> TODO()
-			is Complex -> input.copy(real = SetNumber(number / input.real.number))
-			else -> div((input as SetNumber).number)
+			is Complex -> other.copy(real = SetNumber(number / other.real.number))
+			else -> this / other as SetNumber
 		}
 
-	operator fun rem(input: Number) = copy(number = number % input)
-	override fun rem(input: DataSet): DataSet =
-		when (input) {
+	operator fun rem(other: Number) = copy(number = number % other)
+	operator fun rem(other: SetNumber) = this % other.number
+	override fun rem(other: DataSet): DataSet =
+		when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '%')
 			is Function -> TODO()
 			is Complex -> throw IllegalOperationException(this::class, Complex::class, '%')
-			else -> rem((input as SetNumber).number)
+			else -> this % other as SetNumber
 		}
 
-	operator fun compareTo(input: Number): Int = (number.toDouble() - input.toDouble()).toInt()
-	operator fun compareTo(input: SetNumber): Int = compareTo(input.number)
+	operator fun compareTo(other: Number): Int = (number.toDouble() - other.toDouble()).toInt()
+	operator fun compareTo(other: SetNumber): Int = compareTo(other.number)
 }

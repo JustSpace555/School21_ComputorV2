@@ -1,6 +1,7 @@
 package models.exception.parserexception.variable
 
 import models.exception.parserexception.ParserException
+import kotlin.reflect.KClass
 
 abstract class VariableParserException: ParserException()
 

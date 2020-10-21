@@ -4,6 +4,7 @@ import models.exception.calcexception.IllegalOperationException
 import models.exception.calcexception.variable.UnavailableOperation
 import models.exception.calcexception.variable.WrongMatrixSizeOperationException
 import models.math.dataset.numeric.Numeric
+import models.math.dataset.numeric.SetNumber
 import parser.variable.parseMatrixFromListString
 
 data class Matrix(val elementsCollection: List<List<Numeric>>) : DataSet {
@@ -15,40 +16,48 @@ data class Matrix(val elementsCollection: List<List<Numeric>>) : DataSet {
 	operator fun get(i: Int): List<Numeric> = elementsCollection[i]
 	operator fun get(i: Int, j: Int): Numeric = elementsCollection[i][j]
 
-	override fun plus(input: DataSet): Matrix {
-		checkKClassAndRowsWithColumns(input, '+')
-		return invokeMatrixOperation(input, Numeric::plus)
+	override fun plus(other: DataSet): Matrix {
+		checkKClassAndRowsWithColumns(other, '+')
+		return invokeMatrixOperation(other, Numeric::plus)
 	}
 
-	override fun minus(input: DataSet): Matrix {
-		checkKClassAndRowsWithColumns(input, '-')
-		return invokeMatrixOperation(input, Numeric::minus)
+	override fun minus(other: DataSet): Matrix {
+		checkKClassAndRowsWithColumns(other, '-')
+		return invokeMatrixOperation(other, Numeric::minus)
 	}
 
-	override fun times(input: DataSet): Matrix {
-		if (input is Numeric) return invokeMatrixOperation(input, Numeric::times)
+	override fun times(other: DataSet): Matrix {
+		if (other !is Matrix) return invokeMatrixOperation(other, Numeric::times)
 
-		input as Matrix
-		if (columns != input.rows) throw WrongMatrixSizeOperationException(this, input, '*')
+		if (columns != other.rows) throw WrongMatrixSizeOperationException(this, other, '*')
 
 		val newElementsCollection = mutableListOf<MutableList<Numeric>>()
 
 		for (i in 0 until rows)
-			for (j in 0 until input.columns)
+			for (j in 0 until other.columns)
 				for (k in 0 until columns)
-					newElementsCollection[i][j] = (newElementsCollection[i][j] + elementsCollection[i][k] * input[k][j]) as Numeric
+					newElementsCollection[i][j] =
+						(newElementsCollection[i][j] + elementsCollection[i][k] * other[k][j]) as Numeric
 
 		return Matrix(newElementsCollection)
 	}
 
-	override fun div(input: DataSet): Matrix {
-		if (input is Numeric) return invokeMatrixOperation(input, Numeric::div)
-		TODO("Not yet implemented")
+	override fun div(other: DataSet): Matrix {
+		if (other !is Matrix) return invokeMatrixOperation(other, Numeric::div)
+		TODO()
 	}
 
-	override fun rem(input: DataSet): DataSet = throw UnavailableOperation(this::class, input::class, '%')
+	override fun rem(other: DataSet): DataSet = throw UnavailableOperation(this::class, other::class, '%')
 
+	fun Matrix.transposed(): Matrix {
+		val newElementsList = mutableListOf<MutableList<Numeric>>()
 
+		for (j in 0 until columns)
+			for (i in 0 until rows)
+				newElementsList[i][j] = elementsCollection[i][j]
+
+		return Matrix(newElementsList)
+	}
 
 	private fun checkKClassAndRowsWithColumns(input: DataSet, operationChar: Char) {
 		if (input !is Matrix) throw IllegalOperationException(this::class, input::class, operationChar)
@@ -65,6 +74,7 @@ data class Matrix(val elementsCollection: List<List<Numeric>>) : DataSet {
 				}
 			})
 		} else {
+			//TODO Если функция
 			input as Numeric
 			copy(elementsCollection = elementsCollection.map { numericList ->
 				numericList.map { element ->

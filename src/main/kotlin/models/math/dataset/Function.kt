@@ -17,7 +17,7 @@ class Function: DataSet {
 		TODO("Not yet implemented")
 	}
 
-	override fun rem(input: DataSet): DataSet {
+	override fun rem(other: DataSet): DataSet {
 		TODO("Not yet implemented")
 	}
 

@@ -7,60 +7,60 @@ import models.math.dataset.Matrix
 
 data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber): Numeric {
 
-	override fun plus(input: DataSet): Complex =
-		when (input) {
+	override fun plus(other: DataSet): Complex =
+		when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '+')
 			is Function -> TODO()
 			is Complex -> copy(
-				real = real + input.real,
-				imaginary = imaginary + input.imaginary
+				real = real + other.real,
+				imaginary = imaginary + other.imaginary
 			)
-			else -> copy(real = real + input as SetNumber)
+			else -> copy(real = real + other as SetNumber)
 		}
 
-	override fun minus(input: DataSet): Complex =
-		when (input) {
+	override fun minus(other: DataSet): Complex =
+		when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '-')
 			is Function -> TODO()
 			is Complex -> copy(
-				real = real - input.real,
-				imaginary = imaginary - input.imaginary
+				real = real - other.real,
+				imaginary = imaginary - other.imaginary
 			)
-			else -> copy(real = real - input as SetNumber)
+			else -> copy(real = real - other as SetNumber)
 		}
 
-	override fun times(input: DataSet): DataSet =
-		when (input) {
+	override fun times(other: DataSet): DataSet =
+		when (other) {
 			is Matrix -> TODO()
 			is Function -> TODO()
 			is Complex -> copy(
-				real = real * input.real - imaginary * input.imaginary,
-				imaginary = real * input.imaginary + input.real * imaginary
+				real = real * other.real - imaginary * other.imaginary,
+				imaginary = real * other.imaginary + other.real * imaginary
 			)
-			else -> copy(real = real * input as SetNumber)
+			else -> copy(real = real * other as SetNumber)
 		}
 
-	override fun div(input: DataSet): Complex =
-		when (input) {
+	override fun div(other: DataSet): Complex =
+		when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '/')
 			is Function -> TODO()
 			is Complex -> {
-				val square = input.real * input.real + input.imaginary * input.imaginary
+				val square = other.real * other.real + other.imaginary * other.imaginary
 				copy(
-					real = (real * input.real + imaginary * input.imaginary) / square,
-					imaginary = (imaginary * input.real - real * input.imaginary) / square
+					real = (real * other.real + imaginary * other.imaginary) / square,
+					imaginary = (imaginary * other.real - real * other.imaginary) / square
 				)
 			}
-			else -> copy(real = real / input as SetNumber)
+			else -> copy(real = real / other as SetNumber)
 		}
 
-	override fun rem(input: DataSet) = throw IllegalOperationException(this::class, input::class, '%')
+	override fun rem(other: DataSet) = throw IllegalOperationException(this::class, other::class, '%')
 
 	override fun toString(): String {
 		if (real.number == 0.0)
 			return "${imaginary}i"
 
-		var tempIm = imaginary.number
+		var tempIm = imaginary
 		val signString = if (imaginary < 0) {
 			tempIm *= -1
 			" - "
