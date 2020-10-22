@@ -33,7 +33,7 @@ fun convertToPolishNotation(input: List<String>): List<String> {
 			val lastIndexToSlice = input.getOperandLastIndex(checkingOperand.second) + 1
 
 			"var_${tempVariables.size + 1}".also {
-				tempVariables[it] = input.subList(i, lastIndexToSlice)
+				tempVariables[it] = Pair(input.subList(i, lastIndexToSlice), checkingOperand.second)
 				output.add(it)
 			}
 			i += lastIndexToSlice

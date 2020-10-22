@@ -1,39 +1,82 @@
 package computation.polishnotation
 
-import models.exception.calcexception.BracketsAmountException
+import computation.polishnotation.extensions.isOperandOrTempVariable
 import models.exception.calcexception.DivideByZeroException
 import models.exception.calcexception.IllegalTokenException
 import models.exception.calcexception.TooFewOperatorsException
+import models.exception.calcexception.variable.IllegalOperationException
+import models.math.dataset.DataSet
+import models.math.dataset.Function
+import models.math.dataset.Matrix
+import models.math.dataset.numeric.Complex
+import models.math.dataset.numeric.Numeric
 import models.math.dataset.numeric.SetNumber
+import models.math.tempVariables
+import models.math.variables
+import parser.variable.numeric.toComplex
+import parser.variable.numeric.toSetNumber
+import parser.variable.parseAndInvokeFunctionFromListString
 import java.util.*
 import kotlin.math.pow
 
-fun calcPolishNotation(input: List<String>): SetNumber {
-	val stack = Stack<Double>()
+fun calcPolishNotation(input: List<String>): DataSet {
+	val stack = Stack<DataSet>()
 
 	for (element in input) {
-		if (element.toDoubleOrNull() != null) {
-			stack.push(element.toDouble())
+		if (element.isOperandOrTempVariable()) {
+			val dataSetElement = when {
+
+				variables.containsKey(element) -> variables[element]
+
+				tempVariables.containsKey(element) -> {
+					val removedPair = tempVariables.remove(element) ?: throw RuntimeException()
+					when (removedPair.second) {
+						Complex::class -> removedPair.first.first().toComplex()
+						Function::class -> removedPair.first.parseAndInvokeFunctionFromListString()
+						else -> Matrix(removedPair.first.toTypedArray())
+					}
+				}
+
+				else -> element.toSetNumber()
+			}
+
+			stack.push(dataSetElement)
 			continue
 		}
 
-		if (stack.empty()) throw IllegalTokenException()
-		val secondNum = stack.pop()
-
-		if (stack.empty()) throw IllegalTokenException()
-		val firstNum = stack.pop()
+		lateinit var firstElement: DataSet
+		lateinit var secondElement: DataSet
+		try {
+			secondElement = stack.pop()
+			firstElement = stack.pop()
+		} catch (e: EmptyStackException) {
+			throw IllegalTokenException()
+		}
 
 		val newNum = when (element) {
-			"+" -> firstNum + secondNum
-			"-" -> firstNum - secondNum
+			"+" -> firstElement + secondElement
+			"-" -> firstElement - secondElement
 			"/" -> {
-				if (secondNum == 0.0) throw DivideByZeroException()
-				firstNum / secondNum
+				if (secondElement is SetNumber && secondElement.compareTo(0) == secondElement.number)
+					throw DivideByZeroException()
+				firstElement / secondElement
 			}
-			"*" -> firstNum * secondNum
-			"%" -> firstNum % secondNum
-			"^" -> firstNum.pow(secondNum)
-			"(" -> throw BracketsAmountException()
+			"*" -> firstElement * secondElement
+			"%" -> firstElement % secondElement
+			"^" -> {
+				if (firstElement !is Numeric || secondElement !is SetNumber)
+					throw IllegalOperationException(firstElement::class, secondElement::class, '^')
+
+				if (firstElement is SetNumber) {
+					SetNumber(firstElement.number.toDouble().pow(secondElement.number.toDouble()))
+				} else {
+					if (secondElement.number is Double)
+						throw IllegalOperationException(firstElement::class, secondElement::class, '^')
+					for (i in 1..secondElement.number as Int)
+						firstElement *= secondElement
+					firstElement
+				}
+			}
 			else -> throw IllegalTokenException(element)
 		}
 
@@ -42,8 +85,5 @@ fun calcPolishNotation(input: List<String>): SetNumber {
 
 	if (stack.size != 1) throw TooFewOperatorsException()
 
-	val number = stack.pop()
-	return SetNumber(
-		if (number.toDouble() - number.toInt() == 0.0) number.toInt() else number.toDouble()
-	)
+	return stack.pop()
 }

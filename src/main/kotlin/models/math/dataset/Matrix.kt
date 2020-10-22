@@ -10,7 +10,7 @@ data class Matrix(val elementsCollection: List<List<Numeric>>) : DataSet {
 	val columns = elementsCollection.first().size
 	val isSquare = rows == columns
 
-	constructor(input: ArrayList<String>) : this(parseMatrixFromListString(input))
+	constructor(input: Array<String>) : this(parseMatrixFromListString(input))
 
 	operator fun get(i: Int): List<Numeric> = elementsCollection[i]
 	operator fun get(i: Int, j: Int): Numeric = elementsCollection[i][j]

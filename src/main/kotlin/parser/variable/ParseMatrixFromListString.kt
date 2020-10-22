@@ -3,7 +3,7 @@ package parser.variable
 import models.math.dataset.numeric.Numeric
 import parser.variable.numeric.toNumeric
 
-fun parseMatrixFromListString(input: List<String>): List<List<Numeric>> {
+fun parseMatrixFromListString(input: Array<String>): List<List<Numeric>> {
 	val matrix = mutableListOf<List<Numeric>>()
 
 	val filteredInput = input.filter { it != "[" && it != "]" }.joinToString("").split(";")
