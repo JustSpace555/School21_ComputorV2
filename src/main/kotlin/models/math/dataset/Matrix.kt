@@ -79,7 +79,6 @@ data class Matrix(val elementsCollection: List<List<Numeric>>) : DataSet {
 				}
 			})
 		} else {
-			//TODO Если функция
 			input as Numeric
 			copy(elementsCollection = elementsCollection.map { numericList ->
 				numericList.map { element ->

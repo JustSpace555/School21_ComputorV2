@@ -2,15 +2,15 @@ package models.math.dataset.numeric
 
 import models.exception.calcexception.variable.IllegalOperationException
 import models.math.dataset.DataSet
-import models.math.dataset.Function
 import models.math.dataset.Matrix
 
 data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber): Numeric {
 
+	constructor(real: Number = 0, imaginary: Number) : this(SetNumber(real), SetNumber(imaginary))
+
 	override fun plus(other: DataSet): Complex =
 		when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '+')
-			is Function -> TODO()
 			is Complex -> copy(
 				real = real + other.real,
 				imaginary = imaginary + other.imaginary
@@ -21,7 +21,6 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 	override fun minus(other: DataSet): Complex =
 		when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '-')
-			is Function -> TODO()
 			is Complex -> copy(
 				real = real - other.real,
 				imaginary = imaginary - other.imaginary
@@ -31,8 +30,7 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 
 	override fun times(other: DataSet): DataSet =
 		when (other) {
-			is Matrix -> TODO()
-			is Function -> TODO()
+			is Matrix -> other * this
 			is Complex -> copy(
 				real = real * other.real - imaginary * other.imaginary,
 				imaginary = real * other.imaginary + other.real * imaginary
@@ -43,7 +41,6 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 	override fun div(other: DataSet): Complex =
 		when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '/')
-			is Function -> TODO()
 			is Complex -> {
 				val square = other.real * other.real + other.imaginary * other.imaginary
 				copy(

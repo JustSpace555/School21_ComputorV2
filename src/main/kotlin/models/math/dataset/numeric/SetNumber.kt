@@ -3,7 +3,6 @@ package models.math.dataset.numeric
 import globalextensions.*
 import models.exception.calcexception.variable.IllegalOperationException
 import models.math.dataset.DataSet
-import models.math.dataset.Function
 import models.math.dataset.Matrix
 
 data class SetNumber(var number: Number) : Numeric {
@@ -13,8 +12,7 @@ data class SetNumber(var number: Number) : Numeric {
 	override fun plus(other: DataSet): DataSet =
 		when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '+')
-			is Function -> TODO()
-			is Complex -> other.copy(real = other.real + number)
+			is Complex -> other.copy(real = this + other.real)
 			else -> this + other as SetNumber
 		}
 
@@ -23,8 +21,7 @@ data class SetNumber(var number: Number) : Numeric {
 	override fun minus(other: DataSet): DataSet =
 		when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '-')
-			is Function -> TODO()
-			is Complex -> other.copy(real = SetNumber(number - other.real.number))
+			is Complex -> other.copy(real = this - other.real, imaginary = -other.imaginary)
 			else -> this - other as SetNumber
 		}
 
@@ -33,7 +30,6 @@ data class SetNumber(var number: Number) : Numeric {
 	override fun times(other: DataSet): DataSet =
 		when (other) {
 			is Matrix -> other * this
-			is Function -> TODO()
 			is Complex -> other.copy(real = other.real * number)
 			else -> this * other as SetNumber
 		}
@@ -43,7 +39,6 @@ data class SetNumber(var number: Number) : Numeric {
 	override fun div(other: DataSet): DataSet =
 		when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '/')
-			is Function -> TODO()
 			is Complex -> throw IllegalOperationException(this::class, Matrix::class, '/')
 			else -> this / other as SetNumber
 		}
@@ -53,11 +48,12 @@ data class SetNumber(var number: Number) : Numeric {
 	override fun rem(other: DataSet): DataSet =
 		when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '%')
-			is Function -> TODO()
 			is Complex -> throw IllegalOperationException(this::class, Complex::class, '%')
 			else -> this % other as SetNumber
 		}
 
 	operator fun compareTo(other: Number): Int = (number.toDouble() - other.toDouble()).toInt()
 	operator fun compareTo(other: SetNumber): Int = compareTo(other.number)
+
+	operator fun unaryMinus() = this * -1
 }
