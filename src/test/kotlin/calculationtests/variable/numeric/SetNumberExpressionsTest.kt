@@ -1,4 +1,4 @@
-package calculationtests.variable
+package calculationtests.variable.numeric
 
 import models.exception.calcexception.DivideByZeroException
 import models.exception.calcexception.variable.IllegalOperationException
