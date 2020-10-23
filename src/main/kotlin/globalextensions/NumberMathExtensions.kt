@@ -1,21 +1,30 @@
 package globalextensions
 
-private fun Number.invokeOperation(operation: (Double, Double) -> Double, other: Number): Number =
-	operation(this.toDouble(), other.toDouble()).tryCastToInt()
+import models.exception.calcexception.DivideByZeroException
+import java.math.BigDecimal
 
-operator fun Number.plus(input: Number): Number = invokeOperation(Double::plus, input)
-operator fun Number.times(input: Number): Number = invokeOperation(Double::times, input)
-operator fun Number.minus(input: Number): Number = invokeOperation(Double::minus, input)
-operator fun Number.div(input: Number): Number = invokeOperation(Double::div, input)
-operator fun Number.rem(input: Number): Number = invokeOperation(Double::rem, input)
+private fun Number.invokeOperation(operation: (BigDecimal, BigDecimal) -> BigDecimal, other: Number) =
+	operation(this.toDouble().toBigDecimal(), other.toDouble().toBigDecimal()).tryCastToInt()
 
-operator fun Number.unaryMinus(): Number = this * -1
+operator fun Number.plus(input: Number) = invokeOperation(BigDecimal::add, input)
+operator fun Number.times(input: Number) = invokeOperation(BigDecimal::multiply, input)
+operator fun Number.minus(input: Number) = invokeOperation(BigDecimal::subtract, input)
 
-//TODO Проверить
-operator fun Number.compareTo(input: Number): Int = (this.toDouble() - input.toDouble()).toInt()
+operator fun Number.div(input: Number): Number {
+	if (input.isZero()) throw DivideByZeroException()
+	return invokeOperation(BigDecimal::divide, input)
+}
+
+operator fun Number.rem(input: Number): Number {
+	if (input.isZero()) throw DivideByZeroException()
+	return invokeOperation(BigDecimal::remainder, input)
+}
+
+operator fun Number.unaryMinus() = this * -1
+operator fun Number.compareTo(input: Number) = this.toDouble().toBigDecimal().compareTo(input.toDouble().toBigDecimal())
 
 fun Number.tryCastToInt(): Number =
-		if (this.toDouble() - this.toInt() == 0.0)
-			this.toInt()
-		else
-			this.toDouble()
+		if (this.toDouble() - this.toInt() == 0.0) this.toInt()
+		else this.toDouble()
+
+fun Number.isZero() = this.compareTo(0.0) == 0

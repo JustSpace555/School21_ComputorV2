@@ -1,7 +1,6 @@
 package computation.polishnotation
 
 import computation.polishnotation.extensions.isOperandOrTempVariable
-import models.exception.calcexception.DivideByZeroException
 import models.exception.calcexception.IllegalTokenException
 import models.exception.calcexception.TooFewOperatorsException
 import models.exception.calcexception.variable.IllegalOperationException
@@ -56,11 +55,7 @@ fun calcPolishNotation(input: List<String>): DataSet {
 		val newNum = when (element) {
 			"+" -> firstElement + secondElement
 			"-" -> firstElement - secondElement
-			"/" -> {
-				if (secondElement is SetNumber && secondElement.compareTo(0) == secondElement.number)
-					throw DivideByZeroException()
-				firstElement / secondElement
-			}
+			"/" -> firstElement / secondElement
 			"*" -> firstElement * secondElement
 			"%" -> firstElement % secondElement
 			"^" -> {

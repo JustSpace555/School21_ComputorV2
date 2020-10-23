@@ -7,6 +7,6 @@ import parser.variable.numeric.toNumeric
 
 fun List<String>.parseAndInvokeFunctionFromListString(): Numeric {
 	val function = variables[first()] as Function
-	val number = this[2].toNumeric()
+	val number = this.last { it != "(" && it != ")" }.toNumeric()
 	return function(number)
 }

@@ -8,23 +8,23 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 
 	constructor(real: Number = 0, imaginary: Number) : this(SetNumber(real), SetNumber(imaginary))
 
-	override fun plus(other: DataSet): Complex =
+	override fun plus(other: DataSet): Numeric =
 		when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '+')
 			is Complex -> copy(
 				real = real + other.real,
 				imaginary = imaginary + other.imaginary
-			)
+			).tryCastToSetNumber()
 			else -> copy(real = real + other as SetNumber)
 		}
 
-	override fun minus(other: DataSet): Complex =
+	override fun minus(other: DataSet): Numeric =
 		when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '-')
 			is Complex -> copy(
 				real = real - other.real,
 				imaginary = imaginary - other.imaginary
-			)
+			).tryCastToSetNumber()
 			else -> copy(real = real - other as SetNumber)
 		}
 
@@ -34,11 +34,11 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 			is Complex -> copy(
 				real = real * other.real - imaginary * other.imaginary,
 				imaginary = real * other.imaginary + other.real * imaginary
-			)
-			else -> copy(real = real * other as SetNumber)
+			).tryCastToSetNumber()
+			else -> Complex(real * other as SetNumber, imaginary * other).tryCastToSetNumber()
 		}
 
-	override fun div(other: DataSet): Complex =
+	override fun div(other: DataSet): Numeric =
 		when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '/')
 			is Complex -> {
@@ -46,9 +46,9 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 				copy(
 					real = (real * other.real + imaginary * other.imaginary) / square,
 					imaginary = (imaginary * other.real - real * other.imaginary) / square
-				)
+				).tryCastToSetNumber()
 			}
-			else -> copy(real = real / other as SetNumber)
+			else -> Complex(real / other as SetNumber, imaginary / other).tryCastToSetNumber()
 		}
 
 	override fun rem(other: DataSet) = throw IllegalOperationException(this::class, other::class, '%')
@@ -56,6 +56,9 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 	override fun toString(): String {
 		if (real.number == 0.0)
 			return "${imaginary}i"
+
+		if (imaginary.compareTo(0) == 0)
+			return real.toString()
 
 		var tempIm = imaginary
 		val signString = if (imaginary < 0) {
@@ -66,4 +69,6 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 		}
 		return "$real$signString${tempIm}i"
 	}
+
+	private fun tryCastToSetNumber(): Numeric = if (imaginary.compareTo(0) == 0) real else this
 }
