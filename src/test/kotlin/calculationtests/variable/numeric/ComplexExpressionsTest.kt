@@ -59,6 +59,7 @@ class ComplexExpressionsTest {
 		assertEquals(Complex(imaginary = -4.4), Complex(2, -2) * Complex(1.1, -1.1))
 		assertEquals(SetNumber(4.84), Complex(1.1, -1.1) * Complex(2.2, 2.2))
 		assertEquals(Complex(-1, 3), Complex(1, 1) * Complex(1, 2))
+		assertEquals(SetNumber(-9), Complex(imaginary = 3) * Complex(imaginary = 3))
 	}
 
 

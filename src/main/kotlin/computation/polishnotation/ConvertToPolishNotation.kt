@@ -2,10 +2,10 @@ package computation.polishnotation
 
 import computation.polishnotation.extensions.getOperandLastIndex
 import computation.polishnotation.extensions.isComplexOrMatrixOrFunction
-import computation.polishnotation.extensions.isOperand
+import computation.polishnotation.extensions.isOperandOrTempVariable
 import models.exception.calcexception.BracketsAmountException
 import models.exception.calcexception.IllegalTokenException
-import models.math.tempVariables
+import models.putTempVariable
 import java.util.*
 
 private fun choosePriority(input: String): Int =
@@ -23,7 +23,7 @@ fun convertToPolishNotation(input: List<String>): List<String> {
 
 	var i = 0
 	while (i in input.indices) {
-		if (input[i].isOperand()) {
+		if (input[i].isOperandOrTempVariable()) {
 			output.add(input[i++])
 			continue
 		}
@@ -32,10 +32,7 @@ fun convertToPolishNotation(input: List<String>): List<String> {
 		if (checkingOperand.first) {
 			val lastIndexToSlice = input.getOperandLastIndex(checkingOperand.second)
 
-			"var_${tempVariables.size + 1}".also {
-				tempVariables[it] = Pair(input.subList(i, i + lastIndexToSlice), checkingOperand.second)
-				output.add(it)
-			}
+			putTempVariable(input.subList(i, i + lastIndexToSlice), checkingOperand.second).also { output.add(it) }
 			i += lastIndexToSlice
 			continue
 		}

@@ -5,8 +5,8 @@ import models.math.dataset.Function
 import models.math.dataset.Matrix
 import models.math.dataset.numeric.Complex
 import models.math.dataset.numeric.SetNumber
-import models.math.tempVariables
-import models.math.variables
+import models.tempVariables
+import models.variables
 import parser.variable.numeric.isComplex
 import kotlin.reflect.KClass
 

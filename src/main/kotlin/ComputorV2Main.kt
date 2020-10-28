@@ -3,7 +3,7 @@ import models.exception.ComputorException
 import models.math.MathExpression
 import models.math.calculation.Calculation
 import models.math.dataset.DataSet
-import models.math.variables
+import models.variables
 import parser.parser
 import java.util.*
 
