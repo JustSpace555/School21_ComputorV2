@@ -15,7 +15,6 @@ fun parseMatrixFromListString(input: Array<String>): List<List<Numeric>> {
 	for (row in filteredInput) {
 		val rowElements = row.split(',')
 		val newRow = mutableListOf<Numeric>()
-		//TODO обработка математических выражений
 		for (element in rowElements) {
 			val splittedElement = putSpaces(element).split(' ')
 			newRow.add(

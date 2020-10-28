@@ -7,6 +7,7 @@ import models.math.dataset.numeric.Complex
 import models.math.dataset.numeric.SetNumber
 import models.math.tempVariables
 import models.math.variables
+import parser.variable.numeric.isComplex
 import kotlin.reflect.KClass
 
 fun String.isOperand(): Boolean = this.toDoubleOrNull() != null || variables.containsKey(this)
@@ -16,7 +17,7 @@ fun String.isOperandOrTempVariable(): Boolean = this.isOperand() || tempVariable
 fun String.isComplexOrMatrixOrFunction(): Pair<Boolean, KClass<*>> =
 	when {
 		this.contains('i') -> {
-			if (!this.matches(Regex("\\d*i"))) throw NoSuchVariableException()
+			if (!this.isComplex()) throw NoSuchVariableException()
 			Pair(true, Complex::class)
 		}
 

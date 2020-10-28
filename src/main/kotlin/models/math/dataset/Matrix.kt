@@ -3,6 +3,7 @@ package models.math.dataset
 import models.exception.calcexception.variable.IllegalOperationException
 import models.exception.calcexception.variable.WrongMatrixSizeOperationException
 import models.math.dataset.numeric.Numeric
+import models.math.dataset.numeric.SetNumber
 import parser.variable.parseMatrixFromListString
 
 data class Matrix(val elementsCollection: List<List<Numeric>>) : DataSet {
@@ -30,13 +31,22 @@ data class Matrix(val elementsCollection: List<List<Numeric>>) : DataSet {
 
 		if (columns != other.rows) throw WrongMatrixSizeOperationException(this, other, '*')
 
-		val newElementsCollection = mutableListOf<MutableList<Numeric>>()
+		val newElementsCollection = mutableListOf<List<Numeric>>()
 
-		for (i in 0 until rows)
-			for (j in 0 until other.columns)
-				for (k in 0 until columns)
-					newElementsCollection[i][j] =
-						(newElementsCollection[i][j] + elementsCollection[i][k] * other[k][j]) as Numeric
+		for (i in 0 until rows) {
+			val newElementsRow = mutableListOf<Numeric>()
+
+			for (j in 0 until other.columns) {
+				var newElement = SetNumber(0) as Numeric
+
+				for (k in 0 until columns) {
+					newElement = (newElement + elementsCollection[i][k] * other[k][j]) as Numeric
+				}
+
+				newElementsRow.add(newElement)
+			}
+			newElementsCollection.add(newElementsRow)
+		}
 
 		return Matrix(newElementsCollection)
 	}
@@ -49,11 +59,15 @@ data class Matrix(val elementsCollection: List<List<Numeric>>) : DataSet {
 	override fun rem(other: DataSet): DataSet = throw IllegalOperationException(this::class, other::class, '%')
 
 	fun Matrix.transposed(): Matrix {
-		val newElementsList = mutableListOf<MutableList<Numeric>>()
+		val newElementsList = mutableListOf<List<Numeric>>()
 
-		for (j in 0 until columns)
-			for (i in 0 until rows)
-				newElementsList[i][j] = elementsCollection[i][j]
+		for (j in 0 until columns) {
+			val newElementsRow = mutableListOf<Numeric>()
+			for (i in 0 until rows) {
+				newElementsRow.add(elementsCollection[i][j])
+			}
+			newElementsList.add(newElementsRow)
+		}
 
 		return Matrix(newElementsList)
 	}
@@ -72,18 +86,9 @@ data class Matrix(val elementsCollection: List<List<Numeric>>) : DataSet {
 	}
 
 	private fun invokeMatrixOperation(input: DataSet, operation: (Numeric, DataSet) -> DataSet) =
-		if (input is Matrix) {
-			copy(elementsCollection = elementsCollection.mapIndexed { i, numericList ->
-				numericList.mapIndexed { j, element ->
-					operation(element, input[i][j]) as Numeric
-				}
-			})
-		} else {
-			input as Numeric
-			copy(elementsCollection = elementsCollection.map { numericList ->
-				numericList.map { element ->
-					operation(element, input) as Numeric
-				}
-			})
-		}
+		copy(elementsCollection = elementsCollection.mapIndexed { i, numericList ->
+			numericList.mapIndexed { j, element ->
+				operation(element, if (input is Matrix) input[i][j] else input) as Numeric
+			}
+		})
 }

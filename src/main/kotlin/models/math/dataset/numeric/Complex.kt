@@ -1,5 +1,6 @@
 package models.math.dataset.numeric
 
+import globalextensions.compareTo
 import models.exception.calcexception.variable.IllegalOperationException
 import models.math.dataset.DataSet
 import models.math.dataset.Matrix
@@ -54,7 +55,7 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 	override fun rem(other: DataSet) = throw IllegalOperationException(this::class, other::class, '%')
 
 	override fun toString(): String {
-		if (real.number == 0.0)
+		if (real.number.compareTo(0) == 0)
 			return "${imaginary}i"
 
 		if (imaginary.compareTo(0) == 0)

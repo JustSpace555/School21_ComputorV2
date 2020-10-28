@@ -39,5 +39,10 @@ class MatrixPlusExpressionTest : MatrixExpressionsTest() {
 			"[[1.1, 2.2] ; [3.3, 4.4]]".getMatrix(),
 			"[[1, 2.1] ; [2.2, 4]]".getMatrix() + "[[0.1, 0.1] ; [1.1, 0.4]".getMatrix()
 		)
+
+		assertEquals(
+			"[[1.1i, 1 + 3i]; [-5 - 5.1i, 3]]".getMatrix(),
+			"[[1i, 1]; [-2 - 3i, 1.5]]".getMatrix() + "[[0.1i, 3i]; [-3 - 2.1i, 1.5]]".getMatrix()
+		)
 	}
 }

@@ -18,19 +18,18 @@ class PolishNotationTest {
 	))
 
 	@Test(expected = DivideByZeroException::class)
-	fun testShouldThrowExceptionOnDivByZero() {
+	fun `fail cals test division by zero`() {
 		calc("  1    /     0")
 	}
 
 	@Test(expected = IllegalTokenException::class)
-	fun testShouldThrowExceptionIllegalTokenException() {
+	fun `fail calc test with token in wrong position`() {
 		calc("  +   1    /2")
-		calc("1    a")
 	}
 
 	@Test(expected = TooFewOperatorsException::class)
-	fun testShouldThrowExceptionTooFewOperators() {
-		calc("1      2")
+	fun `fail calc test with no operator`() {
+		calc("1    3i")
 	}
 
 	@Test

@@ -30,10 +30,10 @@ fun convertToPolishNotation(input: List<String>): List<String> {
 
 		val checkingOperand = input[i].isComplexOrMatrixOrFunction()
 		if (checkingOperand.first) {
-			val lastIndexToSlice = input.getOperandLastIndex(checkingOperand.second) + 1
+			val lastIndexToSlice = input.getOperandLastIndex(checkingOperand.second)
 
 			"var_${tempVariables.size + 1}".also {
-				tempVariables[it] = Pair(input.subList(i, lastIndexToSlice), checkingOperand.second)
+				tempVariables[it] = Pair(input.subList(i, i + lastIndexToSlice), checkingOperand.second)
 				output.add(it)
 			}
 			i += lastIndexToSlice

@@ -24,10 +24,13 @@ class ParseMatrixFromListStringTest {
 	fun validTests() {
 		val elements: List<List<Numeric>> = listOf(
 			listOf(SetNumber(1), SetNumber(2), SetNumber(-3)),
-			listOf(SetNumber(4), Complex(imaginary = SetNumber(5)), SetNumber(-6.6))
+			listOf(SetNumber(4), Complex(1.1, 5.5), SetNumber(-6.6))
 		)
 
-		assertEquals(elements,"[[1, 2, -3] ; [4, 5i, -6.6]]".getMatrix())
-		assertEquals(elements, "[[1 ^ 1, 3 + (-1), ")
+		assertEquals(elements,"[[1, 2, -3] ; [4, 1.1 + 5.5i, -6.6]]".getMatrix())
+		assertEquals(
+			elements,
+			"[[1 ^ 1, 3 + (-1), -3 ^ 1] ; [2 ^ 4 - 4 ^ 2 + 2 * 2, 6 - 5 + 0.1 + 10i - 5i + 0.5i, -6.6]]".getMatrix()
+		)
 	}
 }

@@ -8,5 +8,5 @@ class WrongMatrixSizeOperationException(
 		`fun`: Char
 ) : VariableCalculationException() {
 	override val message: String = "Unacceptable operation \"$`fun`\" between " +
-			"matrix (${matrix1.rows} x ${matrix1.columns}) and matrix (${matrix2.rows} x ${matrix2.columns}"
+			"matrix (${matrix1.rows} x ${matrix1.columns}) and matrix (${matrix2.rows} x ${matrix2.columns})"
 }

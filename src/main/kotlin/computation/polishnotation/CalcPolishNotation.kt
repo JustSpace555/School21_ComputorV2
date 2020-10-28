@@ -1,6 +1,7 @@
 package computation.polishnotation
 
 import computation.polishnotation.extensions.isOperandOrTempVariable
+import globalextensions.tryCastToInt
 import models.exception.calcexception.IllegalTokenException
 import models.exception.calcexception.TooFewOperatorsException
 import models.exception.calcexception.variable.IllegalOperationException
@@ -28,7 +29,7 @@ fun calcPolishNotation(input: List<String>): DataSet {
 				variables.containsKey(element) -> variables[element]
 
 				tempVariables.containsKey(element) -> {
-					val removedPair = tempVariables.remove(element) ?: throw RuntimeException()
+					val removedPair = tempVariables.remove(element)!!
 					when (removedPair.second) {
 						Complex::class -> removedPair.first.first().toComplex()
 						Function::class -> removedPair.first.parseAndInvokeFunctionFromListString()
@@ -63,7 +64,7 @@ fun calcPolishNotation(input: List<String>): DataSet {
 					throw IllegalOperationException(firstElement::class, secondElement::class, '^')
 
 				if (firstElement is SetNumber) {
-					SetNumber(firstElement.number.toDouble().pow(secondElement.number.toDouble()))
+					SetNumber((firstElement.number.toDouble().pow(secondElement.number.toDouble())).tryCastToInt())
 				} else {
 					if (secondElement.number is Double)
 						throw IllegalOperationException(firstElement::class, secondElement::class, '^')
