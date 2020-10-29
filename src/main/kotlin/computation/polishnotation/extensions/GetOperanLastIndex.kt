@@ -18,12 +18,17 @@ private fun getMatrixLastIndex(input: List<String>): Int {
 			return
 	})
 
-	return i
+	return i - 1
+}
+
+private fun getFunctionLastIndex(input: List<String>): Int {
+	val elementLength = input.indexOf(")") - input.indexOf("(") - 1
+	return elementLength + 3
 }
 
 fun List<String>.getOperandLastIndex(inputClass: KClass<*>): Int =
 	when (inputClass) {
 		Matrix::class -> getMatrixLastIndex(this)
-		Function::class -> 4
+		Function::class -> getFunctionLastIndex(this)
 		else -> 1
 	}

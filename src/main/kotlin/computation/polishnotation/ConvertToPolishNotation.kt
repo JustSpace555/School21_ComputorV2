@@ -5,7 +5,12 @@ import computation.polishnotation.extensions.isComplexOrMatrixOrFunction
 import computation.polishnotation.extensions.isOperandOrTempVariable
 import models.exception.calcexception.BracketsAmountException
 import models.exception.calcexception.IllegalTokenException
+import models.math.dataset.Function
+import models.math.dataset.Matrix
+import models.math.dataset.numeric.Complex
 import models.putTempVariable
+import parser.variable.numeric.parseComplexFromList
+import parser.variable.parseAndInvokeFunctionFromList
 import java.util.*
 
 private fun choosePriority(input: String): Int =
@@ -23,17 +28,27 @@ fun convertToPolishNotation(input: List<String>): List<String> {
 
 	var i = 0
 	while (i in input.indices) {
-		if (input[i].isOperandOrTempVariable()) {
-			output.add(input[i++])
-			continue
-		}
 
 		val checkingOperand = input[i].isComplexOrMatrixOrFunction()
 		if (checkingOperand.first) {
-			val lastIndexToSlice = input.getOperandLastIndex(checkingOperand.second)
+			val lastIndexToSlice = input.subList(i, input.size).getOperandLastIndex(checkingOperand.second)
+			val variableList = input.subList(i, i + lastIndexToSlice)
 
-			putTempVariable(input.subList(i, i + lastIndexToSlice), checkingOperand.second).also { output.add(it) }
+			val tempVarName = putTempVariable(
+				when(checkingOperand.second) {
+					Complex::class -> parseComplexFromList(variableList)
+					Function::class -> parseAndInvokeFunctionFromList(variableList)
+					else -> Matrix(variableList.toTypedArray())
+				}
+			)
+
+			output.add(tempVarName)
 			i += lastIndexToSlice
+			continue
+		}
+
+		if (input[i].isOperandOrTempVariable()) {
+			output.add(input[i++])
 			continue
 		}
 

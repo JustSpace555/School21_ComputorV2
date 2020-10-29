@@ -49,4 +49,6 @@ data class SetNumber(var number: Number = 0) : Numeric {
 	operator fun compareTo(other: SetNumber): Int = compareTo(other.number)
 
 	operator fun unaryMinus() = this * -1
+
+	fun isZero() = number.isZero()
 }

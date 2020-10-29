@@ -3,9 +3,9 @@ package models.math.dataset
 import computation.polishnotation.calcPolishNotation
 import computation.polishnotation.convertToPolishNotation
 import models.exception.calcexception.variable.IllegalOperationException
-import models.math.dataset.numeric.Complex
 import models.math.dataset.numeric.Numeric
 import models.math.dataset.numeric.SetNumber
+import models.putTempVariable
 import parser.extensions.putSpaces
 
 data class Function(val parameter: String, val function: List<String>) : DataSet {
@@ -16,17 +16,13 @@ data class Function(val parameter: String, val function: List<String>) : DataSet
 	override fun div(other: DataSet): DataSet = throw IllegalOperationException(this::class, other::class, '/')
 	override fun rem(other: DataSet): DataSet = throw IllegalOperationException(this::class, other::class, '%')
 
-	operator fun invoke(operand: Numeric): Numeric {
-		val operandString = if (operand is Complex && operand.real.compareTo(0) != 0) {
-
-		}
-		val newFunctionList = if (operand is Complex) {
+	operator fun invoke(operand: Number) = this(SetNumber(operand))
+	operator fun invoke(operand: DataSet): Numeric {
+		val newFunctionList =
 			putSpaces(
-				function.joinToString("").replace(parameter, "($operand)")
+				function.joinToString("").replace(parameter, putTempVariable(operand))
 			).split(' ')
-		}
 
 		return calcPolishNotation(convertToPolishNotation(newFunctionList)) as Numeric
 	}
-	operator fun invoke(operand: Number) = this(SetNumber(operand))
 }

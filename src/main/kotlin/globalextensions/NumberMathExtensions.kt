@@ -9,6 +9,8 @@ private fun Number.castToBigDecimal() = toDouble().toBigDecimal()
 private fun Number.invokeOperation(operation: (BigDecimal, BigDecimal) -> BigDecimal, other: Number) =
 	operation(this.castToBigDecimal(), other.castToBigDecimal()).tryCastToInt()
 
+
+
 operator fun Number.plus(input: Number) = invokeOperation(BigDecimal::add, input)
 operator fun Number.times(input: Number) = invokeOperation(BigDecimal::multiply, input)
 operator fun Number.minus(input: Number) = invokeOperation(BigDecimal::subtract, input)

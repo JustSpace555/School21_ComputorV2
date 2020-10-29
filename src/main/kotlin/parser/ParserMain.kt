@@ -29,5 +29,6 @@ fun parser(input: String): Pair<String, MathExpression> {
 	validateVariable(beforeEqual, parseableKClass)
 
 	//TODO поддержка множественных элементов до знака =
+	//TODO Чистить tempVariables
 	return Pair(beforeEqual.first(), calcPolishNotation(convertToPolishNotation(afterEqual)))
 }

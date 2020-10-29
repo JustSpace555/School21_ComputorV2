@@ -16,7 +16,7 @@ fun String.isOperandOrTempVariable(): Boolean = this.isOperand() || tempVariable
 
 fun String.isComplexOrMatrixOrFunction(): Pair<Boolean, KClass<*>> =
 	when {
-		this.contains('i') -> {
+		this.isComplex() -> {
 			if (!this.isComplex()) throw NoSuchVariableException()
 			Pair(true, Complex::class)
 		}

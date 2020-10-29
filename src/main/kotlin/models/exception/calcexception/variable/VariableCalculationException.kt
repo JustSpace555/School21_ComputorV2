@@ -10,7 +10,9 @@ class NoSuchVariableException(invalidVariableName: String = ""): VariableCalcula
 			if (invalidVariableName.isEmpty()) "" else ": $invalidVariableName"
 }
 
-class IllegalOperationException(arg1: KClass<*>, arg2: KClass<*>, `fun`: Char) : CalculationException() {
-	override val message: String = "Illegal operation " +
-			"\"$`fun`\" between ${arg1.simpleName} and ${arg2.simpleName}"
+class IllegalOperationException(
+	arg1: KClass<*>, arg2: KClass<*>, `fun`: Char? = null
+) : VariableCalculationException() {
+	override val message: String = "Illegal operation ${`fun` ?: ""}" +
+			"between ${arg1.simpleName} and ${arg2.simpleName}"
 }

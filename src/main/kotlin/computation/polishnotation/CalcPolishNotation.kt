@@ -6,16 +6,11 @@ import models.exception.calcexception.IllegalTokenException
 import models.exception.calcexception.TooFewOperatorsException
 import models.exception.calcexception.variable.IllegalOperationException
 import models.math.dataset.DataSet
-import models.math.dataset.Function
-import models.math.dataset.Matrix
-import models.math.dataset.numeric.Complex
 import models.math.dataset.numeric.Numeric
 import models.math.dataset.numeric.SetNumber
 import models.tempVariables
 import models.variables
-import parser.variable.numeric.parseComplexFromList
 import parser.variable.numeric.toSetNumber
-import parser.variable.parseAndInvokeFunctionFromList
 import java.util.*
 import kotlin.math.pow
 
@@ -25,18 +20,8 @@ fun calcPolishNotation(input: List<String>): DataSet {
 	for (element in input) {
 		if (element.isOperandOrTempVariable()) {
 			val dataSetElement = when {
-
 				variables.containsKey(element) -> variables[element]
-
-				tempVariables.containsKey(element) -> {
-					val removedPair = tempVariables.remove(element)!!
-					when (removedPair.second) {
-						Complex::class -> parseComplexFromList(removedPair.first)
-						Function::class -> parseAndInvokeFunctionFromList(removedPair.first)
-						else -> Matrix(removedPair.first.toTypedArray())
-					}
-				}
-
+				tempVariables.containsKey(element) -> tempVariables[element]
 				else -> element.toSetNumber()
 			}
 
@@ -68,10 +53,10 @@ fun calcPolishNotation(input: List<String>): DataSet {
 						(firstElement.number.toDouble().pow(secondElement.number.toDouble())).tryCastToInt()
 					)
 				} else {
-					if (secondElement.number is Double)
+					if (secondElement.number is Double || secondElement < 0)
 						throw IllegalOperationException(firstElement::class, secondElement::class, '^')
-					for (i in 1..secondElement.number as Int)
-						firstElement *= secondElement
+					for (i in 1 until secondElement.number as Int)
+						firstElement *= firstElement
 					firstElement
 				}
 			}

@@ -11,10 +11,18 @@ class FunctionExpressionTest {
 
 	@Test
 	fun validTest() {
-		val function: Function = Function("x", putSpaces("x^2 + x + 1").split(' '))
+		var function = Function("x", putSpaces("x^2 + x + 1").split(' '))
 
 		assertEquals(SetNumber(3), function(1))
 		assertEquals(SetNumber(3.31), function(1.1))
 		assertEquals(Complex(2, 3), function(Complex(1, 1)))
+
+		function = Function(
+			"abc",
+			putSpaces("0.5 * abc - abc + abc ^ 2 - (abc + abc * 2)").split(' ')
+		)
+		assertEquals(SetNumber(), function(0))
+		assertEquals(SetNumber(-2.5), function(2.5))
+		assertEquals(Complex(-3.5, -1.5), function(Complex(1, 1)))
 	}
 }

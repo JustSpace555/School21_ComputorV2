@@ -14,7 +14,10 @@ fun String.toSetNumber(): SetNumber {
 }
 
 fun String.toComplex(): Complex {
-	val parsed = removeSuffix("i").toDoubleOrNull()?.tryCastToInt()
+	val withoutI = removeSuffix("i")
+	if (withoutI.isEmpty()) return Complex(imaginary = 1)
+
+	val parsed = withoutI.toDoubleOrNull()?.tryCastToInt()
 		?: throw SetNumericFormatException(this, Complex::class)
 
 	return Complex(imaginary = SetNumber(parsed))
