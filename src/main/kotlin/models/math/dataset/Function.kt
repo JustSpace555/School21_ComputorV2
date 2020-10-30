@@ -6,7 +6,6 @@ import models.exception.calcexception.variable.IllegalOperationException
 import models.math.dataset.numeric.Numeric
 import models.math.dataset.numeric.SetNumber
 import models.putTempVariable
-import parser.extensions.putSpaces
 
 data class Function(val parameter: String, val function: List<String>) : DataSet {
 
@@ -18,11 +17,13 @@ data class Function(val parameter: String, val function: List<String>) : DataSet
 
 	operator fun invoke(operand: Number) = this(SetNumber(operand))
 	operator fun invoke(operand: DataSet): Numeric {
-		val newFunctionList =
-			putSpaces(
-				function.joinToString("").replace(parameter, putTempVariable(operand))
-			).split(' ')
+		val newVariableName = putTempVariable(operand)
+		val newFunctionList = function.toMutableList().apply {
+			replaceAll { if (it == parameter) newVariableName else it }
+		}
 
 		return calcPolishNotation(convertToPolishNotation(newFunctionList)) as Numeric
 	}
+
+	override fun toString(): String = function.joinToString(" ")
 }

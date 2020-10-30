@@ -9,7 +9,9 @@ import models.math.dataset.Function
 import models.math.dataset.Matrix
 import models.math.dataset.numeric.Complex
 import models.math.dataset.numeric.SetNumber
+import models.tempVariables
 import models.variables
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import parser.extensions.putSpaces
@@ -49,20 +51,26 @@ class PolishNotationTest {
 	@Test
 	fun allValidTest() {
 
+		variables["varA"] = SetNumber(2.1)
 		variables["funA"] = Function("x", "x ^ 2 + x + 1".split(' '))
 		variables["funB"] = Function("y", "y + funA ( y )".split(' '))
 		variables["funC"] = Function("z", "z * 0.5 - funA ( 1 ) + funB ( z )".split(' '))
 		variables["matA"] = Matrix(putSpaces("[[1, 2]; [3 + 3i, -5.5]]").split(' ').toTypedArray())
 
 		val result = calc(
-			"((3 + 1) * (-1.5) ^ 2 * (1 + i) / funA(1 + 1i)) * funB(5) / funC(1) * (matA + [[-1, -2]; [1, 2]])"
+			"((3 + 1) * (-1.5) ^ 2 * (1 + i) / funA(1 + 1i)) * funB(6 - 1) / funC(varA - 1.1) * (matA + [[-1, -2]; [1, 2]])"
 		)
 
 		val rightAnswer = Matrix(
-			putSpaces("[[120.96 + 17.28i, 241.92 + 34.56i]; [-976.32 - 509.76i, -1952.64 - 1019.52i]]")
+			putSpaces("[[0, 0]; [382.153846176 + 182.769230832i, -290.769230808 + 58.153846128i]]")
 				.split(' ').toTypedArray()
 		)
 
 		assertEquals(rightAnswer, result)
+	}
+
+	@After
+	fun afterAll() {
+		tempVariables.clear()
 	}
 }
