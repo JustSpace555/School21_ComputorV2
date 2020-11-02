@@ -1,6 +1,6 @@
 package calculationtests.variable.matrix
 
-import models.exception.calcexception.variable.WrongMatrixSizeOperationException
+import models.exceptions.computorv2.calcexception.variable.WrongMatrixSizeOperationException
 import models.math.dataset.numeric.Complex
 import models.math.dataset.numeric.SetNumber
 import org.junit.Assert.assertEquals

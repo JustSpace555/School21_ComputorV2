@@ -1,7 +1,7 @@
 package models.math.dataset
 
 import computation.polishnotation.extensions.compute
-import models.exception.calcexception.variable.IllegalOperationException
+import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
 import models.math.dataset.numeric.Numeric
 import models.math.dataset.numeric.SetNumber
 import models.putTempVariable

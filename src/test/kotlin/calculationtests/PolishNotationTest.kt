@@ -1,9 +1,9 @@
 package calculationtests
 
 import computation.polishnotation.extensions.compute
-import models.exception.calcexception.DivideByZeroException
-import models.exception.calcexception.IllegalTokenException
-import models.exception.calcexception.TooFewOperatorsException
+import models.exceptions.computorv2.calcexception.DivideByZeroException
+import models.exceptions.computorv2.calcexception.IllegalTokenException
+import models.exceptions.computorv2.calcexception.TooFewOperatorsException
 import models.math.dataset.Function
 import models.math.dataset.Matrix
 import models.math.dataset.numeric.Complex

@@ -1,6 +1,6 @@
 package parser.getparseable
 
-import models.exception.parserexception.variable.IllegalFunctionElement
+import models.exceptions.computorv2.parserexception.variable.IllegalFunctionElement
 import models.math.dataset.Function
 import models.math.dataset.Matrix
 import models.math.dataset.numeric.Complex

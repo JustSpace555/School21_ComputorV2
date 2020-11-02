@@ -1,6 +1,6 @@
 package parsertests.variable.numeric
 
-import models.exception.parserexception.variable.SetNumericFormatException
+import models.exceptions.computorv2.parserexception.variable.SetNumericFormatException
 import models.math.dataset.numeric.Complex
 import models.math.dataset.numeric.SetNumber
 import org.junit.Assert.assertEquals

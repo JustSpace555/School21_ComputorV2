@@ -1,7 +1,7 @@
 package parsertests.getparseable
 
-import models.exception.parserexception.variable.MultipleArgumentException
-import models.exception.parserexception.variable.WrongFunctionBracketsFormatException
+import models.exceptions.computorv2.parserexception.variable.MultipleArgumentException
+import models.exceptions.computorv2.parserexception.variable.WrongFunctionBracketsFormatException
 import models.math.dataset.Function
 import org.junit.Assert.assertEquals
 import org.junit.Test

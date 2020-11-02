@@ -1,7 +1,7 @@
 package parser.extensions
 
-import models.exception.parserexception.variable.InvalidVariableFormatException
-import models.exception.parserexception.variable.InvalidVariableNameException
+import models.exceptions.computorv2.parserexception.variable.InvalidVariableFormatException
+import models.exceptions.computorv2.parserexception.variable.InvalidVariableNameException
 import models.math.dataset.Function
 import kotlin.reflect.KClass
 

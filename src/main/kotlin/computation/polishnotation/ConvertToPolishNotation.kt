@@ -3,9 +3,9 @@ package computation.polishnotation
 import computation.polishnotation.extensions.getOperandLastIndex
 import computation.polishnotation.extensions.isComplexOrMatrixOrFunction
 import computation.polishnotation.extensions.isOperandOrTempVariable
-import models.exception.calcexception.BracketsAmountException
-import models.exception.calcexception.IllegalTokenException
-import models.exception.calcexception.variable.NoSuchVariableException
+import models.exceptions.computorv2.calcexception.BracketsAmountException
+import models.exceptions.computorv2.calcexception.IllegalTokenException
+import models.exceptions.computorv2.calcexception.variable.NoSuchVariableException
 import models.math.dataset.Function
 import models.math.dataset.Matrix
 import models.math.dataset.numeric.Complex

@@ -1,6 +1,6 @@
 package parsertests.variable
 
-import models.exception.parserexception.variable.InvalidVariableFormatException
+import models.exceptions.computorv2.parserexception.variable.InvalidVariableFormatException
 import models.math.dataset.Function
 import models.math.dataset.Matrix
 import models.math.dataset.numeric.Complex

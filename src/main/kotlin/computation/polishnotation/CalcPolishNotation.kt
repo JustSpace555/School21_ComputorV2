@@ -1,10 +1,10 @@
 package computation.polishnotation
 
 import computation.polishnotation.extensions.isOperandOrTempVariable
+import models.exceptions.computorv2.calcexception.IllegalTokenException
+import models.exceptions.computorv2.calcexception.TooFewOperatorsException
+import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
 import globalextensions.tryCastToInt
-import models.exception.calcexception.IllegalTokenException
-import models.exception.calcexception.TooFewOperatorsException
-import models.exception.calcexception.variable.IllegalOperationException
 import models.math.dataset.DataSet
 import models.math.dataset.numeric.Numeric
 import models.math.dataset.numeric.SetNumber

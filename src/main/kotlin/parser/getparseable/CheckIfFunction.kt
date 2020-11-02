@@ -1,7 +1,7 @@
 package parser.getparseable
 
-import models.exception.parserexception.variable.MultipleArgumentException
-import models.exception.parserexception.variable.WrongFunctionBracketsFormatException
+import models.exceptions.computorv2.parserexception.variable.MultipleArgumentException
+import models.exceptions.computorv2.parserexception.variable.WrongFunctionBracketsFormatException
 
 private fun List<String>.countInARow(input: String): Pair<Boolean, Int> {
 	val firstIndex = this.indexOf(input)

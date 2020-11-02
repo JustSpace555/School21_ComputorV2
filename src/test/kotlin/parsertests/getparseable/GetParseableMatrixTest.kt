@@ -1,7 +1,7 @@
 package parsertests.getparseable
 
-import models.exception.parserexception.variable.EmptyMatrixArgumentException
-import models.exception.parserexception.variable.WrongMatrixBracketsFormatException
+import models.exceptions.computorv2.parserexception.variable.EmptyMatrixArgumentException
+import models.exceptions.computorv2.parserexception.variable.WrongMatrixBracketsFormatException
 import models.math.dataset.Matrix
 import org.junit.Assert.assertEquals
 import org.junit.Test

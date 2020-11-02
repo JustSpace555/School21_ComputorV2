@@ -1,7 +1,7 @@
 package models.math.dataset
 
-import models.exception.calcexception.variable.IllegalOperationException
-import models.exception.calcexception.variable.WrongMatrixSizeOperationException
+import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
+import models.exceptions.computorv2.calcexception.variable.WrongMatrixSizeOperationException
 import models.math.dataset.numeric.Numeric
 import models.math.dataset.numeric.SetNumber
 import parser.variable.parseMatrixFromListString

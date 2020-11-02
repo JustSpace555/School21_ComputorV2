@@ -1,7 +1,7 @@
 package parser.variable.numeric
 
+import models.exceptions.computorv2.parserexception.variable.SetNumericFormatException
 import globalextensions.tryCastToInt
-import models.exception.parserexception.variable.SetNumericFormatException
 import models.math.dataset.numeric.Complex
 import models.math.dataset.numeric.Numeric
 import models.math.dataset.numeric.SetNumber

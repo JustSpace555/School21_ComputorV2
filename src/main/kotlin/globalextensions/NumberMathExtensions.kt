@@ -1,6 +1,6 @@
 package globalextensions
 
-import models.exception.calcexception.DivideByZeroException
+import models.exceptions.computorv2.calcexception.DivideByZeroException
 import java.math.BigDecimal
 import java.math.RoundingMode
 

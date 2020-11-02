@@ -1,7 +1,7 @@
 package parser.variable
 
 import computation.polishnotation.extensions.compute
-import models.exception.parserexception.variable.EmptyMatrixArgumentException
+import models.exceptions.computorv2.parserexception.variable.EmptyMatrixArgumentException
 import models.math.dataset.numeric.Numeric
 import parser.extensions.putSpaces
 import parser.variable.numeric.toNumeric

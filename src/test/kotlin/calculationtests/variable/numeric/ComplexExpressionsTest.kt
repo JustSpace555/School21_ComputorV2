@@ -1,7 +1,7 @@
 package calculationtests.variable.numeric
 
-import models.exception.calcexception.DivideByZeroException
-import models.exception.calcexception.variable.IllegalOperationException
+import models.exceptions.computorv2.calcexception.DivideByZeroException
+import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
 import models.math.dataset.Matrix
 import models.math.dataset.numeric.Complex
 import models.math.dataset.numeric.SetNumber

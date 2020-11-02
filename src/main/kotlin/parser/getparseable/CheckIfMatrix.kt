@@ -1,7 +1,7 @@
 package parser.getparseable
 
-import models.exception.parserexception.variable.EmptyMatrixArgumentException
-import models.exception.parserexception.variable.WrongMatrixBracketsFormatException
+import models.exceptions.computorv2.parserexception.variable.EmptyMatrixArgumentException
+import models.exceptions.computorv2.parserexception.variable.WrongMatrixBracketsFormatException
 
 fun checkIfMatrix(afterEqual: List<String>): Boolean {
 	val amountOfOpenBracket = afterEqual.count { it == "[" }

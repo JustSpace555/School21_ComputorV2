@@ -1,7 +1,7 @@
 package parser.variable
 
 import computation.polishnotation.extensions.compute
-import models.exception.calcexception.variable.IllegalOperationException
+import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
 import models.math.dataset.DataSet
 import models.math.dataset.Function
 import models.math.dataset.numeric.Numeric

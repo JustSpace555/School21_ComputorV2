@@ -1,6 +1,6 @@
 package parsertests.variable
 
-import models.exception.parserexception.variable.EmptyMatrixArgumentException
+import models.exceptions.computorv2.parserexception.variable.EmptyMatrixArgumentException
 import models.math.dataset.numeric.Complex
 import models.math.dataset.numeric.Numeric
 import models.math.dataset.numeric.SetNumber

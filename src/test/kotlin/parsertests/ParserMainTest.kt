@@ -1,8 +1,8 @@
 package parsertests
 
-import models.exception.parserexception.sign.EqualSignAmountException
-import models.exception.parserexception.sign.EqualSignPositionException
-import models.exception.parserexception.sign.QuestionMarkPositionException
+import models.exceptions.computorv1.parserexception.EqualSignAmountException
+import models.exceptions.computorv1.parserexception.EqualSignPositionException
+import models.exceptions.computorv2.parserexception.sign.QuestionMarkPositionException
 import org.junit.Test
 import parser.parser
 
