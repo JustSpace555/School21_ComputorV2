@@ -1,7 +1,6 @@
 package parser.variable
 
-import computation.polishnotation.calcPolishNotation
-import computation.polishnotation.convertToPolishNotation
+import computation.polishnotation.extensions.compute
 import models.exception.parserexception.variable.EmptyMatrixArgumentException
 import models.math.dataset.numeric.Numeric
 import parser.extensions.putSpaces
@@ -19,7 +18,7 @@ fun parseMatrixFromListString(input: Array<String>): List<List<Numeric>> {
 			val splittedElement = putSpaces(element).split(' ')
 			newRow.add(
 				if (splittedElement.size == 1) element.toNumeric()
-				else calcPolishNotation(convertToPolishNotation(splittedElement)) as Numeric
+				else splittedElement.compute() as Numeric
 			)
 		}
 		matrix.add(newRow)

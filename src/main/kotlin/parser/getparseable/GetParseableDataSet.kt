@@ -1,5 +1,6 @@
 package parser.getparseable
 
+import models.exception.parserexception.variable.IllegalFunctionElement
 import models.math.dataset.Function
 import models.math.dataset.Matrix
 import models.math.dataset.numeric.Complex
@@ -13,7 +14,11 @@ fun getParseableDataSet(input: List<String>): KClass<*> {
 	val afterEqual = input.subList(equalPosition + 1, input.lastIndex + 1)
 
 	return when {
-		checkIfFunction(beforeEqual) -> Function::class
+		checkIfFunction(beforeEqual) -> {
+			if (checkIfMatrix(afterEqual)) throw IllegalFunctionElement()
+			Function::class
+		}
+
 		checkIfMatrix(afterEqual) -> Matrix::class
 
 		afterEqual.any { it.isComplex() } -> Complex::class

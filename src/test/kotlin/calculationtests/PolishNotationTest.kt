@@ -1,7 +1,6 @@
 package calculationtests
 
-import computation.polishnotation.calcPolishNotation
-import computation.polishnotation.convertToPolishNotation
+import computation.polishnotation.extensions.compute
 import models.exception.calcexception.DivideByZeroException
 import models.exception.calcexception.IllegalTokenException
 import models.exception.calcexception.TooFewOperatorsException
@@ -19,9 +18,10 @@ import parser.extensions.putSpaces
 
 class PolishNotationTest {
 
-	private fun calc(input: String) = calcPolishNotation(convertToPolishNotation(
-		putSpaces(input).split(' ').filter { it.isNotEmpty() }
-	))
+	private fun calc(input: String) = putSpaces(input)
+		.split(' ')
+		.filter { it.isNotEmpty() }
+		.compute()
 
 	@Test(expected = DivideByZeroException::class)
 	fun `fail cals test division by zero`() {

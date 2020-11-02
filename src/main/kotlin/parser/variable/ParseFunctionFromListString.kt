@@ -1,7 +1,6 @@
 package parser.variable
 
-import computation.polishnotation.calcPolishNotation
-import computation.polishnotation.convertToPolishNotation
+import computation.polishnotation.extensions.compute
 import models.exception.calcexception.variable.IllegalOperationException
 import models.math.dataset.DataSet
 import models.math.dataset.Function
@@ -14,6 +13,8 @@ private fun Map<String, DataSet>.checkIsElementNumeric(name: String) {
 	val element = this.getOrElse(name) { return }
 	if (element !is Numeric) throw IllegalOperationException(Function::class, element::class)
 }
+
+fun parseFunctionFromList(beforeEqual: List<String>, afterEqual: List<String>) = Function(beforeEqual[2], afterEqual)
 
 fun parseAndInvokeFunctionFromList(input: List<String>): Numeric {
 	val function = variables[input.first()] as Function
@@ -32,7 +33,7 @@ fun parseAndInvokeFunctionFromList(input: List<String>): Numeric {
 			else -> varName.toNumeric()
 		}
 	} else {
-		calcPolishNotation(convertToPolishNotation(numberList))
+		numberList.compute()
 	} as Numeric
 
 	return function(number)

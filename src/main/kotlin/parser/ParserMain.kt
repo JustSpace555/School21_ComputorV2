@@ -1,34 +1,40 @@
 package parser
 
-import computation.polishnotation.calcPolishNotation
-import computation.polishnotation.convertToPolishNotation
-import models.exception.parserexception.equalsign.EqualAmountException
-import models.exception.parserexception.equalsign.EqualPositionException
-import models.math.MathExpression
-import models.math.calculation.Calculation
+import computation.polishnotation.extensions.compute
+import models.exception.parserexception.sign.EqualSignAmountException
+import models.exception.parserexception.sign.EqualSignPositionException
+import models.exception.parserexception.sign.QuestionMarkPositionException
+import models.tempVariables
+import models.variables
 import parser.extensions.putSpaces
 import parser.extensions.validateVariable
 import parser.getparseable.getParseableDataSet
 
-fun parser(input: String): Pair<String, MathExpression> {
+fun parser(input: String): String {
 	val mod = putSpaces(input).split(' ').filter { it.isNotEmpty() }
+	val isComputation = mod.contains("?")
+
+	if (!mod.contains("=") && !isComputation) return mod.compute().toString()
+
+	if (mod.count { it == "=" } > 1) throw EqualSignAmountException()
+
 	val indexOfEqual = mod.indexOf("=")
-
-	if (indexOfEqual != mod.lastIndexOf("="))
-		throw EqualAmountException()
-	else if (indexOfEqual == 0 || indexOfEqual == mod.lastIndex)
-		throw EqualPositionException()
-
-	if (indexOfEqual == -1 || mod.contains("?")) {
-		return Pair("", Calculation(mod.filter { it != "?" && it != "=" }))
-	}
+	if (indexOfEqual !in 1 until mod.lastIndex) throw EqualSignPositionException()
 
 	val beforeEqual = mod.subList(0, indexOfEqual)
-	val afterEqual = mod.subList(indexOfEqual + 1, mod.lastIndex)
-	val parseableKClass = getParseableDataSet(mod)
-	validateVariable(beforeEqual, parseableKClass)
+	val afterEqual = mod.subList(indexOfEqual + 1, mod.size)
 
-	//TODO поддержка множественных элементов до знака =
-	//TODO Чистить tempVariables
-	return Pair(beforeEqual.first(), calcPolishNotation(convertToPolishNotation(afterEqual)))
+	if (isComputation) {
+		if (mod.last() != "?") throw QuestionMarkPositionException()
+		if (indexOfEqual == mod.lastIndex - 1) return mod.subList(0, indexOfEqual).compute().toString()
+		TODO("Computor v1")
+	}
+
+	val parseableKClass = getParseableDataSet(mod)
+	val variableName = validateVariable(beforeEqual, parseableKClass)
+
+	return afterEqual.compute().also {
+		tempVariables.clear()
+		variables[variableName] = it
+	}.toString()
 }

@@ -1,7 +1,6 @@
 package models.math.dataset
 
-import computation.polishnotation.calcPolishNotation
-import computation.polishnotation.convertToPolishNotation
+import computation.polishnotation.extensions.compute
 import models.exception.calcexception.variable.IllegalOperationException
 import models.math.dataset.numeric.Numeric
 import models.math.dataset.numeric.SetNumber
@@ -22,7 +21,7 @@ data class Function(val parameter: String, val function: List<String>) : DataSet
 			replaceAll { if (it == parameter) newVariableName else it }
 		}
 
-		return calcPolishNotation(convertToPolishNotation(newFunctionList)) as Numeric
+		return newFunctionList.compute() as Numeric
 	}
 
 	override fun toString(): String = function.joinToString(" ")

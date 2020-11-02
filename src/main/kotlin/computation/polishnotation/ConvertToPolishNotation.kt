@@ -5,6 +5,7 @@ import computation.polishnotation.extensions.isComplexOrMatrixOrFunction
 import computation.polishnotation.extensions.isOperandOrTempVariable
 import models.exception.calcexception.BracketsAmountException
 import models.exception.calcexception.IllegalTokenException
+import models.exception.calcexception.variable.NoSuchVariableException
 import models.math.dataset.Function
 import models.math.dataset.Matrix
 import models.math.dataset.numeric.Complex
@@ -50,6 +51,8 @@ fun convertToPolishNotation(input: List<String>): List<String> {
 		if (input[i].isOperandOrTempVariable()) {
 			output.add(input[i++])
 			continue
+		} else if (!input[i].contains(Regex("[\\^*/%+\\-()]"))) {
+			throw NoSuchVariableException(input[i])
 		}
 
 		if (stack.isEmpty()) {

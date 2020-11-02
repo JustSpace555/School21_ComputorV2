@@ -1,9 +1,5 @@
 
 import models.exception.ComputorException
-import models.math.MathExpression
-import models.math.calculation.Calculation
-import models.math.dataset.DataSet
-import models.variables
 import parser.parser
 import java.util.*
 
@@ -16,7 +12,7 @@ fun main() {
 		input = scanner.nextLine()
 		if (input == "exit") return
 
-		lateinit var mathInstance: Pair<String, MathExpression>
+		lateinit var mathInstance: String
 		try {
 			mathInstance = parser(input)
 		} catch (e : ComputorException) {
@@ -24,12 +20,12 @@ fun main() {
 			continue
 		}
 
-		//TODO подумать как переделать
-		if (mathInstance.second is Calculation) {
-			println((mathInstance.second as Calculation).invoke())
-			continue
-		}
-
-		variables[mathInstance.first] = mathInstance.second as DataSet
+//		//TODO подумать как переделать
+//		if (mathInstance.second is Calculation) {
+//			println((mathInstance.second as Calculation).invoke())
+//			continue
+//		}
+//
+//		variables[mathInstance.first] = mathInstance.second as DataSet
 	}
 }
