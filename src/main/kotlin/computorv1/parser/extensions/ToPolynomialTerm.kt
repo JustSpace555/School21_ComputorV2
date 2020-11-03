@@ -46,7 +46,7 @@ internal fun String.getDegree(): Int {
 		slice(indexOf('^') + 1 until length).toInt()
 	} catch (e: NumberFormatException) {
 		throw WrongDegreeFormatException(this)
-	}
+	}.also { if (it < 0) throw WrongDegreeFormatException(it.toString()) }
 }
 
 internal fun String.toPolynomialTerm() : PolynomialTerm {

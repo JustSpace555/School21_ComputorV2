@@ -18,7 +18,7 @@ internal fun getReducedForm(polynomial: List<PolynomialTerm>, degree: Int): Stri
 	}
 
 	output.delete(0, 3)
-	if (polynomial[2 - degree].number < 0)
+	if (polynomial.first().number < 0)
 		output.insert(0, "-")
 
 	return output.toString()

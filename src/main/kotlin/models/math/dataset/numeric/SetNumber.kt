@@ -1,11 +1,11 @@
 package models.math.dataset.numeric
 
-import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
 import globalextensions.*
+import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
 import models.math.dataset.DataSet
 import models.math.dataset.Matrix
 
-data class SetNumber(var number: Number = 0) : Numeric {
+data class SetNumber(var number: Number = 0) : Numeric, Comparable<SetNumber> {
 
 	override fun toString(): String = number.toString()
 
@@ -46,9 +46,7 @@ data class SetNumber(var number: Number = 0) : Numeric {
 		else throw IllegalOperationException(this::class, other::class, '%')
 
 	operator fun compareTo(other: Number): Int = number.compareTo(other)
-	operator fun compareTo(other: SetNumber): Int = compareTo(other.number)
+	override operator fun compareTo(other: SetNumber): Int = compareTo(other.number)
 
 	operator fun unaryMinus() = this * -1
-
-	fun isZero() = number.isZero()
 }

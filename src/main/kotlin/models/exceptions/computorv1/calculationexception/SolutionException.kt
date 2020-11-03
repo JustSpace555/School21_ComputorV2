@@ -6,12 +6,22 @@ import models.exceptions.computorv1.ComputorV1Exception
 import models.exceptions.globalexceptions.CalculationException
 
 @ComputorV1Exception
-class EveryNumberIsSolutionException(polynomialList: List<PolynomialTerm>, degree: Int) : CalculationException() {
-	override val message: String = getOkOutput(polynomialList, degree) + "\nEvery value for X is a solution."
+open class SolutionException(polynomialList: List<PolynomialTerm>, degree: Int) : CalculationException() {
+	override val message: String = getOkOutput(polynomialList, degree) + "\n"
 }
 
 @ComputorV1Exception
-class NoSolutionsException(polynomialList: List<PolynomialTerm>, degree: Int) : CalculationException() {
-	override val message: String = getOkOutput(polynomialList, degree) +
-			"\nThere is no solution because the equation is inconsistent."
+class EveryNumberIsSolutionException(
+	polynomialList: List<PolynomialTerm>,
+	degree: Int
+) : SolutionException(polynomialList, degree) {
+	override val message: String = super.message + "Every value for X is a solution."
+}
+
+@ComputorV1Exception
+class NoSolutionsException(
+	polynomialList: List<PolynomialTerm>,
+	degree: Int
+) : SolutionException(polynomialList, degree) {
+	override val message: String = super.message + "There is no solution because the equation is inconsistent."
 }

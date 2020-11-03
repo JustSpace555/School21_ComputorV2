@@ -37,7 +37,7 @@ internal fun parser(input: String): String {
 
 	if (parseableKClass == Function::class) {
 		val function = parseFunctionFromList(beforeEqual, afterEqual)
-		//TODO переделать simplify 
+		//TODO переделать simplify
 	}
 
 	return afterEqual.compute().also {

@@ -9,6 +9,8 @@ private fun Number.castToBigDecimal() = toDouble().toBigDecimal()
 private fun Number.invokeOperation(operation: (BigDecimal, BigDecimal) -> BigDecimal, other: Number) =
 	operation(this.castToBigDecimal(), other.castToBigDecimal()).tryCastToInt()
 
+private fun Number.isZero() = castToBigDecimal().compareTo(0.0) == 0
+
 
 
 operator fun Number.plus(input: Number) = invokeOperation(BigDecimal::add, input)
@@ -31,5 +33,3 @@ operator fun Number.compareTo(input: Number) = this.castToBigDecimal().compareTo
 fun Number.tryCastToInt(): Number =
 		if (this.toDouble() - this.toInt() == 0.0) toInt()
 		else toDouble()
-
-fun Number.isZero() = toDouble().compareTo(0.0) == 0
