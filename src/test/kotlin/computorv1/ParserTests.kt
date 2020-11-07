@@ -61,7 +61,7 @@ class ParserTests {
 	private fun testInvalidInputs(input: List<String>) {
 		for (element in input) {
 			val parserOutput = try {
-				parser(element)
+				parser(element, true)
 			} catch (e: ComputorException) {
 				println("Test passed: $element")
 				println("Fails with message:\n${e.message}\n")

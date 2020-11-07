@@ -1,7 +1,7 @@
 package models.exceptions.computorv1.calculationexception
 
 import computorv1.models.PolynomialTerm
-import computorv1.output.ok.getOkOutput
+import computorv1.output.getOkOutput
 import models.exceptions.computorv1.ComputorV1Exception
 import models.exceptions.globalexceptions.CalculationException
 

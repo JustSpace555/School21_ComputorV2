@@ -10,7 +10,7 @@ import models.exceptions.computorv1.calculationexception.TooHighPolynomialDegree
 import models.exceptions.computorv1.parserexception.EqualSignAmountException
 import models.exceptions.computorv1.parserexception.EqualSignPositionException
 
-internal fun parser(input: String): Pair<List<PolynomialTerm>, Int> {
+internal fun parser(input: String, isNeedToCheckDegree: Boolean): Pair<List<PolynomialTerm>, Int> {
 	val inputArray: List<String> = putSpaces(input).split(' ').filter { it.isNotEmpty() }
 
 	val indexOfEqual = inputArray.indexOf("=")
@@ -22,7 +22,9 @@ internal fun parser(input: String): Pair<List<PolynomialTerm>, Int> {
 
 	val simpledPolynomial = simplifyPolynomial(listPair).also {
 		if (it.isEmpty()) throw EveryNumberIsSolutionException(listOf(), 0)
-		maxDegree = it.first().degree.also { degree -> if (degree > 2) throw TooHighPolynomialDegreeException() }
+		maxDegree = it.first().degree.also { degree ->
+			if (isNeedToCheckDegree && degree > 2) throw TooHighPolynomialDegreeException()
+		}
 
 		if (it.first().degree == 0 && it.first().number != 0) throw NoSolutionsException(it, maxDegree)
 		else if (it.all { term -> term.number == 0 }) throw EveryNumberIsSolutionException(listOf(), 0)

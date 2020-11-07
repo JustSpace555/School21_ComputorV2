@@ -1,10 +1,10 @@
-package computorv1.output.ok
+package computorv1.output
 
 import computorv1.models.PolynomialTerm
 import globalextensions.compareTo
 import globalextensions.times
 
-internal fun getReducedForm(polynomial: List<PolynomialTerm>, degree: Int): String {
+internal fun getReducedForm(polynomial: List<PolynomialTerm>): String {
 	if (polynomial.isEmpty() || polynomial.all { it.number.toDouble() == 0.0 }) return "0"
 
 	val output = StringBuilder()
@@ -25,5 +25,5 @@ internal fun getReducedForm(polynomial: List<PolynomialTerm>, degree: Int): Stri
 }
 
 internal fun getOkOutput(polynomial: List<PolynomialTerm>, degree: Int) =
-	"Reduced form: ${getReducedForm(polynomial, degree)} = 0\n" +
+	"Reduced form: ${getReducedForm(polynomial)} = 0\n" +
 	"Polynomial degree: $degree"
