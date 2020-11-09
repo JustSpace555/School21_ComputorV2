@@ -18,7 +18,7 @@ fun computorV1(input: String): String {
 }
 
 fun List<String>.getSimplifiedFunction(parameter: String): List<PolynomialTerm> = parser(
-	this.apply { toMutableList().replaceAll { if (it == parameter) "x" else it } }.joinToString(""),
+	this.apply { toMutableList().replaceAll { if (it == parameter) "x" else it } }.joinToString(" "),
 	false
 ).first
 

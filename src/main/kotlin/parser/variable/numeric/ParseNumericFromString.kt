@@ -1,7 +1,7 @@
 package parser.variable.numeric
 
-import models.exceptions.computorv2.parserexception.variable.SetNumericFormatException
 import globalextensions.tryCastToInt
+import models.exceptions.computorv2.parserexception.variable.SetNumericFormatException
 import models.math.dataset.numeric.Complex
 import models.math.dataset.numeric.Numeric
 import models.math.dataset.numeric.SetNumber
@@ -24,3 +24,13 @@ fun String.toComplex(): Complex {
 }
 
 fun String.toNumeric(): Numeric = if (isComplex()) toComplex() else toSetNumber()
+
+fun String.isNumeric(): Boolean {
+	if (isComplex()) return true
+	try {
+		this.toSetNumber()
+	} catch (exc: SetNumericFormatException) {
+		return false
+	}
+	return true
+}

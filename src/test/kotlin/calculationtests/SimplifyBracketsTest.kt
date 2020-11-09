@@ -8,6 +8,6 @@ class SimplifyBracketsTest {
 
 	@Test
 	fun validTest() {
-		simplifyBrackets(putSpaces("x + x^2 - 3 + 2 + (((x + 2) + 3) ^ 2)").split(' '), "x")()
+		println(simplifyBrackets(putSpaces("x + x^2 - 3 + 2 - (((x + 2) + 3) ^ 2)").split(' '), "x")())
 	}
 }
