@@ -1,10 +1,10 @@
 package computation.polishnotation
 
 import computation.polishnotation.extensions.isOperandOrTempVariable
+import globalextensions.tryCastToInt
 import models.exceptions.computorv2.calcexception.IllegalTokenException
 import models.exceptions.computorv2.calcexception.TooFewOperatorsException
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
-import globalextensions.tryCastToInt
 import models.math.dataset.DataSet
 import models.math.dataset.numeric.Numeric
 import models.math.dataset.numeric.SetNumber
@@ -14,7 +14,7 @@ import parser.variable.numeric.toSetNumber
 import java.util.*
 import kotlin.math.pow
 
-fun calcPolishNotation(input: List<String>): DataSet {
+fun calcPolishNotation(input: List<String>, parameter: String = ""): DataSet {
 	val stack = Stack<DataSet>()
 
 	for (element in input) {

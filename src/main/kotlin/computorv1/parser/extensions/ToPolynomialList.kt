@@ -1,7 +1,7 @@
 package computorv1.parser.extensions
 
 import computorv1.models.PolynomialTerm
-import globalextensions.times
+import models.math.dataset.numeric.SetNumber
 
 internal fun List<String>.toPolynomialList(): List<PolynomialTerm> {
 	val output = mutableListOf<PolynomialTerm>()
@@ -13,9 +13,9 @@ internal fun List<String>.toPolynomialList(): List<PolynomialTerm> {
 			continue
 		}
 
-		val term = element.toPolynomialTerm()
+		var term = element.toPolynomialTerm()
 		if (isWasEquality)
-			term.number *= -1
+			term = (term * SetNumber(-1)) as PolynomialTerm
 
 		output.add(term)
 	}

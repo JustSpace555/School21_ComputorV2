@@ -1,7 +1,7 @@
 package models.math.dataset.numeric
 
-import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
 import globalextensions.compareTo
+import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
 import models.math.dataset.DataSet
 import models.math.dataset.Matrix
 

@@ -1,8 +1,6 @@
 package models.math.dataset
 
-import models.math.MathExpression
-
-interface DataSet: MathExpression {
+interface DataSet {
 	operator fun plus(other: DataSet): DataSet
 	operator fun minus(other: DataSet): DataSet
 	operator fun times(other: DataSet): DataSet

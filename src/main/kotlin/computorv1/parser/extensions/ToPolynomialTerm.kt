@@ -5,6 +5,7 @@ import globalextensions.times
 import models.exceptions.computorv1.parserexception.WrongArgumentNameException
 import models.exceptions.computorv1.parserexception.WrongDegreeFormatException
 import models.exceptions.computorv1.parserexception.WrongNumberFormatException
+import models.math.dataset.numeric.SetNumber
 
 internal fun String.containsX() = contains('x') || contains('X')
 
@@ -53,5 +54,5 @@ internal fun String.toPolynomialTerm() : PolynomialTerm {
 	forEach {
 		if (it.isLetter() && !(it == 'x' || it == 'X')) throw WrongArgumentNameException(this)
 	}
-	return PolynomialTerm(getConstNumber(), getDegree())
+	return PolynomialTerm(SetNumber(getConstNumber()), getDegree())
 }

@@ -1,76 +1,111 @@
 package models.math
 
-import computation.polishnotation.extensions.compute
-import computorv1.getReducedListTermForm
-import computorv1.getSimplifiedFunction
-import computorv1.getSimplifiedFunctionString
 import computorv1.models.PolynomialTerm
+import computorv1.reducedString
+import computorv1.simplify
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
+import models.math.dataset.DataSet
+import models.math.dataset.Matrix
+import models.math.dataset.numeric.Numeric
 import models.math.dataset.numeric.SetNumber
-import parser.variable.numeric.toSetNumber
 
-class FunctionBrackets(private val parameter: String, val listOfExpressions: MutableList<Any> = mutableListOf()) {
 
-	operator fun invoke(): List<String> {
+class FunctionBrackets(var listOfOperands: MutableList<PolynomialTerm> = mutableListOf()): DataSet {
 
-		if (listOfExpressions.all { it is String }) {
+	override fun plus(other: DataSet): DataSet =
+		when(other) {
+			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '+')
 
-			with(listOfExpressions.filterIsInstance<String>()) {
+			is Numeric -> this.apply { addElements(PolynomialTerm(other, 0)) }
 
-				return if (!this.contains(parameter)) {
-					listOf(this.compute().toString())
-				} else {
-					this.getSimplifiedAndSplit(parameter)
-				}
+			is PolynomialTerm -> this.apply { addElements(other) }
+
+			else -> this.apply {
+					(other as FunctionBrackets).listOfOperands.forEach { applyOnEachElement(PolynomialTerm::plus, it) }
 			}
 		}
 
-		val listOfSimplifiedString = mutableListOf<String>()
-		listOfExpressions.forEach {
-			if (it is FunctionBrackets) listOfSimplifiedString.addAll(it())
-			else listOfSimplifiedString.add(it.toString())
+	override fun minus(other: DataSet): DataSet =
+		when(other) {
+			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '-')
+
+			is Numeric -> this.apply { addElements(PolynomialTerm((other * SetNumber(-1)) as Numeric)) }
+
+			is PolynomialTerm -> this.apply { addElements((other * SetNumber(-1)) as PolynomialTerm) }
+
+			else -> this.apply {
+				(other as FunctionBrackets).listOfOperands.forEach { applyOnEachElement(PolynomialTerm::minus, it) }
+			}
 		}
 
-		val outputList = if (listOfSimplifiedString.contains("^")) {
-			if (listOfSimplifiedString.count { it == "^" } > 1 ||
-				listOfSimplifiedString.indexOf("^") != listOfSimplifiedString.lastIndex - 1
-			) {
-				throw IllegalOperationException(this::class, SetNumber::class, '^')
+	override fun times(other: DataSet): DataSet =
+		when(other) {
+			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '*')
+
+			is Numeric -> this.apply {
+				applyOnEachElement(PolynomialTerm::times, PolynomialTerm(other))
 			}
 
-			val degree = listOfSimplifiedString.last().toString().toSetNumber()
-			if (degree.number is Double) throw IllegalOperationException(this::class, SetNumber::class, '^')
+			is PolynomialTerm -> this.apply { applyOnEachElement(PolynomialTerm::times, other) }
 
-			var newFunctionBrackets = FunctionBrackets(
-				parameter, listOfSimplifiedString.subList(0, listOfSimplifiedString.lastIndex - 1).toMutableList()
-			)
+			else -> this.apply {
+				(other as FunctionBrackets).listOfOperands.forEach { applyOnEachElement(PolynomialTerm::times, it) }
+			}
+		}
 
-			if (degree.number == 0) return listOf("0")
+	override fun div(other: DataSet): DataSet =
+		when(other) {
+			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '/')
 
-			repeat(degree.number as Int - 1) { newFunctionBrackets *= newFunctionBrackets }
+			is Numeric -> this.apply {
+				applyOnEachElement(PolynomialTerm::div, PolynomialTerm(other))
+			}
 
-			newFunctionBrackets.listOfExpressions
+			is PolynomialTerm -> this.apply { applyOnEachElement(PolynomialTerm::div, other) }
 
-		} else listOfSimplifiedString
+			else -> this.apply {
+				(other as FunctionBrackets).listOfOperands.forEach { applyOnEachElement(PolynomialTerm::div, it) }
+			}
+		}
 
-		return outputList.filterIsInstance<String>().getSimplifiedAndSplit(parameter)
+	override fun rem(other: DataSet): DataSet = throw IllegalOperationException(this::class, other::class, '%')
+
+	override fun toString(): String = listOfOperands.reducedString()
+
+	fun addElements(vararg elements: PolynomialTerm) {
+		listOfOperands = listOfOperands.apply { addAll(elements.toList()) }.simplify().toMutableList()
 	}
 
-	override fun toString(): String = listOfExpressions.joinToString(" ")
-
-	private operator fun times(other: FunctionBrackets): FunctionBrackets {
-		val simplifiedThis = listOfExpressions.filterIsInstance<String>().getSimplifiedFunction(parameter)
-		val simplifiedOther = other.listOfExpressions.filterIsInstance<String>().getSimplifiedFunction(parameter)
-
-		val outputList = mutableListOf<PolynomialTerm>()
-		simplifiedThis.forEach { thisTerm ->
-			simplifiedOther.forEach { otherTerm ->
-				outputList.add(thisTerm * otherTerm)
+	private fun applyOnEachElement(
+		function: (PolynomialTerm, PolynomialTerm) -> DataSet,
+		element: PolynomialTerm
+	) {
+		val newElementsList = mutableListOf<PolynomialTerm>()
+			listOfOperands.forEach {
+			when (val newElement = function(it, element)) {
+				is FunctionBrackets -> newElementsList.addAll(newElement.listOfOperands)
+				else -> newElementsList.add(newElement as PolynomialTerm)
 			}
 		}
-		return FunctionBrackets(parameter, outputList.getReducedListTermForm().split(' ').toMutableList())
+
+		listOfOperands = newElementsList.simplify().toMutableList()
 	}
 
-	private fun List<String>.getSimplifiedAndSplit(parameter: String) =
-		getSimplifiedFunctionString(parameter).split(' ')
+	override fun equals(other: Any?): Boolean =
+		when {
+			other == null -> false
+			this === other -> true
+			other !is FunctionBrackets -> false
+			listOfOperands.size != other.listOfOperands.size -> false
+			else -> {
+				val pairList = listOfOperands.zip(other.listOfOperands)
+				pairList.all { (el1, el2) -> el1 == el2}
+			}
+		}
+
+	override fun hashCode(): Int {
+		var result = 17
+		result = 31  * result + listOfOperands.hashCode()
+		return result
+	}
 }

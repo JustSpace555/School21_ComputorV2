@@ -23,7 +23,7 @@ private fun choosePriority(input: String): Int =
 		else -> throw IllegalTokenException(input)
 	}
 
-fun convertToPolishNotation(input: List<String>): List<String> {
+fun convertToPolishNotation(input: List<String>, parameter: String = ""): List<String> {
 	val output = mutableListOf<String>()
 	val stack = Stack<String>()
 
@@ -48,7 +48,7 @@ fun convertToPolishNotation(input: List<String>): List<String> {
 			continue
 		}
 
-		if (input[i].isOperandOrTempVariable()) {
+		if (input[i].isOperandOrTempVariable() || input[i] == parameter) {
 			output.add(input[i++])
 			continue
 		} else if (!input[i].contains(Regex("[\\^*/%+\\-()]"))) {
