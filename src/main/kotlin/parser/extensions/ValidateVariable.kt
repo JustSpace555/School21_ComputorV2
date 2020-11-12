@@ -16,8 +16,7 @@ fun validateVariable(beforeEqual: List<String>, inputKClass: KClass<*>): String 
 	)
 
 	val name = beforeEqual.first()
-	if (name == "i" || name.contains(Regex("[0-9]")))
-		throw InvalidVariableNameException(name)
+	if (name == "i" || name.contains(Regex("[0-9]"))) throw InvalidVariableNameException(name)
 
 	return name
 }

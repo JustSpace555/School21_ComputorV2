@@ -19,8 +19,12 @@ fun computorV1(input: String): String {
 }
 
 fun List<PolynomialTerm>.simplify(): List<PolynomialTerm> = simplifyPolynomial(this)
-fun List<PolynomialTerm>.reducedString(): String = getReducedForm(this)
-	.replace("1 * ", "")
-	.replace("^1", "")
-	.replace(" * X^0", "")
-	.toLowerCase()
+fun List<PolynomialTerm>.reducedString(parameter: String = ""): String {
+	val reducedString = getReducedForm(this)
+		.replace("^1", "")
+		.replace(" * X^0", "")
+		.replace("1 * ", "")
+		.replace("X", "x")
+
+	return if (parameter.isNotEmpty()) reducedString.replace("x", parameter) else reducedString
+}

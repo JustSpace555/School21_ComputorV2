@@ -11,7 +11,7 @@ class FunctionExpressionTest {
 
 	@Test
 	fun validTest() {
-		var function = Function("x", putSpaces("x^2 + x + 1").split(' '))
+		var function = Function("x", putSpaces("x^2 + x + 1").split(' ').toTypedArray())
 
 		assertEquals(SetNumber(3), function(1))
 		assertEquals(SetNumber(3.31), function(1.1))
@@ -19,7 +19,7 @@ class FunctionExpressionTest {
 
 		function = Function(
 			"abc",
-			putSpaces("0.5 * abc - abc + abc ^ 2 - (abc + abc * 2)").split(' ')
+			putSpaces("0.5 * abc - abc + abc ^ 2 - (abc + abc * 2)").split(' ').toTypedArray()
 		)
 		assertEquals(SetNumber(), function(0))
 		assertEquals(SetNumber(-2.5), function(2.5))

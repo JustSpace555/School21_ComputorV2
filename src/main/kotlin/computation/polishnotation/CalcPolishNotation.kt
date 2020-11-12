@@ -1,20 +1,15 @@
 package computation.polishnotation
 
 import computation.polishnotation.extensions.isOperandOrTempVariable
-import globalextensions.tryCastToInt
 import models.exceptions.computorv2.calcexception.IllegalTokenException
 import models.exceptions.computorv2.calcexception.TooFewOperatorsException
-import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
 import models.math.dataset.DataSet
-import models.math.dataset.numeric.Numeric
-import models.math.dataset.numeric.SetNumber
 import models.tempVariables
 import models.variables
 import parser.variable.numeric.toSetNumber
 import java.util.*
-import kotlin.math.pow
 
-fun calcPolishNotation(input: List<String>, parameter: String = ""): DataSet {
+fun calcPolishNotation(input: List<String>): DataSet {
 	val stack = Stack<DataSet>()
 
 	for (element in input) {
@@ -35,7 +30,7 @@ fun calcPolishNotation(input: List<String>, parameter: String = ""): DataSet {
 			secondElement = stack.pop()
 			firstElement = stack.pop()
 		} catch (e: EmptyStackException) {
-			throw IllegalTokenException()
+			throw IllegalTokenException(element)
 		}
 
 		val newNum = when (element) {
@@ -44,22 +39,7 @@ fun calcPolishNotation(input: List<String>, parameter: String = ""): DataSet {
 			"/" -> firstElement / secondElement
 			"*" -> firstElement * secondElement
 			"%" -> firstElement % secondElement
-			"^" -> {
-				if (firstElement !is Numeric || secondElement !is SetNumber)
-					throw IllegalOperationException(firstElement::class, secondElement::class, '^')
-
-				if (firstElement is SetNumber) {
-					SetNumber(
-						(firstElement.number.toDouble().pow(secondElement.number.toDouble())).tryCastToInt()
-					)
-				} else {
-					if (secondElement.number is Double || secondElement < 0)
-						throw IllegalOperationException(firstElement::class, secondElement::class, '^')
-					for (i in 1 until secondElement.number as Int)
-						firstElement *= firstElement
-					firstElement
-				}
-			}
+			"^" -> firstElement.pow(secondElement)
 			else -> throw IllegalTokenException(element)
 		}
 

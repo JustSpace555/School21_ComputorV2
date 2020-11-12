@@ -1,7 +1,7 @@
 package computorv1
 
 import computorv1.models.PolynomialTerm
-import models.math.FunctionBrackets
+import models.math.dataset.Brackets
 import models.math.dataset.numeric.Complex
 import models.math.dataset.numeric.SetNumber
 import org.junit.Assert.assertEquals
@@ -30,11 +30,11 @@ class PolynomialTermTests {
 		assertEquals(PolynomialTerm(), PolynomialTerm(1.5) + PolynomialTerm(-1.5))
 		assertEquals(PolynomialTerm(1, 2), PolynomialTerm(-2, 2) + PolynomialTerm(3, 2))
 
-		val expected = FunctionBrackets(mutableListOf(
+		val expected = Brackets(mutableListOf(
 					PolynomialTerm(1, 2), PolynomialTerm(-1, 1), PolynomialTerm(3, 0)
 				))
 
-		val actual = PolynomialTerm(-1, 2) + PolynomialTerm(-2, 1)+ PolynomialTerm(5.5, 0) +
+		val actual = PolynomialTerm(-1, 2) + PolynomialTerm(-2, 1) + PolynomialTerm(5.5, 0) +
 				PolynomialTerm(2, 2) + PolynomialTerm(1, 1) + PolynomialTerm(-2.5, 0)
 
 		assertEquals(expected, actual)
@@ -45,7 +45,7 @@ class PolynomialTermTests {
 		assertEquals(PolynomialTerm(3), PolynomialTerm(1.5) - PolynomialTerm(-1.5))
 		assertEquals(PolynomialTerm(-5, 2), PolynomialTerm(-2, 2) - PolynomialTerm(3, 2))
 
-		val expected = FunctionBrackets(mutableListOf(
+		val expected = Brackets(mutableListOf(
 			PolynomialTerm(1, 2), PolynomialTerm(-3, 1), PolynomialTerm(Complex(3, -3), 0)
 		))
 

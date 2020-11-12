@@ -20,3 +20,5 @@ class IllegalOperationException(
 	override val message: String = "Illegal operation ${`fun` ?: ""}" +
 			"between ${arg1.simpleName} and ${arg2.simpleName}"
 }
+//TODO Добавить пробел, а то получается
+// Illegal operation *between Function and SetNumber

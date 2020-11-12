@@ -2,6 +2,7 @@ package computorv1.parser.extensions
 
 import computorv1.models.PolynomialTerm
 import models.math.dataset.DataSet
+import models.math.dataset.numeric.Numeric
 import models.math.dataset.numeric.SetNumber
 
 internal fun simplifyPolynomial(input: List<DataSet>): List<PolynomialTerm> {
@@ -17,6 +18,6 @@ internal fun simplifyPolynomial(input: List<DataSet>): List<PolynomialTerm> {
 
 	return polynomialMap
 		.map { it.value }
-		.filter { !it.number.isZero() }
+		.filter { if (it.number is Numeric) it.number.isNotZero() else true }
 		.sortedByDescending { SetNumber(it.degree) }
 }

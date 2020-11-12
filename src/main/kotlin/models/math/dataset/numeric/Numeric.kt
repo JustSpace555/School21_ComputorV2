@@ -10,4 +10,6 @@ interface Numeric : DataSet {
 		this as Complex
 		return this.real.compareTo(0.0) == 0 && this.imaginary.compareTo(0.0) == 0
 	}
+
+	fun isNotZero(): Boolean = !this.isZero()
 }

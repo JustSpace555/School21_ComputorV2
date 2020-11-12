@@ -8,7 +8,7 @@ internal class Discriminant(polynomial: List<PolynomialTerm>) {
 	val argC = (polynomial.find { it.degree == 0 }?.number ?: SetNumber()) as SetNumber
 
 	val result = when {
-		(argA).compareTo(0.0) == 0 -> SetNumber()
+		argA.isZero() -> SetNumber()
 		else -> argB * argB - SetNumber(4) * argA * argC
 	}
 

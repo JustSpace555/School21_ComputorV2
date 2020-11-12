@@ -1,8 +1,9 @@
 package computation.polishnotation
 
 import computation.polishnotation.extensions.getOperandLastIndex
-import computation.polishnotation.extensions.isComplexOrMatrixOrFunction
+import computation.polishnotation.extensions.isComplexOrMatrixOrFunctionOrParameter
 import computation.polishnotation.extensions.isOperandOrTempVariable
+import computorv1.models.PolynomialTerm
 import models.exceptions.computorv2.calcexception.BracketsAmountException
 import models.exceptions.computorv2.calcexception.IllegalTokenException
 import models.exceptions.computorv2.calcexception.variable.NoSuchVariableException
@@ -11,7 +12,7 @@ import models.math.dataset.Matrix
 import models.math.dataset.numeric.Complex
 import models.putTempVariable
 import parser.variable.numeric.parseComplexFromList
-import parser.variable.parseAndInvokeFunctionFromList
+import parser.variable.parseFunctionFromList
 import java.util.*
 
 private fun choosePriority(input: String): Int =
@@ -30,7 +31,7 @@ fun convertToPolishNotation(input: List<String>, parameter: String = ""): List<S
 	var i = 0
 	while (i in input.indices) {
 
-		val checkingOperand = input[i].isComplexOrMatrixOrFunction()
+		val checkingOperand = input[i].isComplexOrMatrixOrFunctionOrParameter(parameter)
 		if (checkingOperand.first) {
 			val lastIndexToSlice = input.subList(i, input.size).getOperandLastIndex(checkingOperand.second)
 			val variableList = input.subList(i, i + lastIndexToSlice)
@@ -38,7 +39,11 @@ fun convertToPolishNotation(input: List<String>, parameter: String = ""): List<S
 			val tempVarName = putTempVariable(
 				when(checkingOperand.second) {
 					Complex::class -> parseComplexFromList(variableList)
-					Function::class -> parseAndInvokeFunctionFromList(variableList)
+					Function::class -> parseFunctionFromList(variableList, parameter)
+					PolynomialTerm::class -> {
+						val degree = if (i + 1 in input.indices && input[i + 1] == "^") 0 else 1
+						PolynomialTerm(1, degree, input[i])
+					}
 					else -> Matrix(variableList.toTypedArray())
 				}
 			)
@@ -48,7 +53,7 @@ fun convertToPolishNotation(input: List<String>, parameter: String = ""): List<S
 			continue
 		}
 
-		if (input[i].isOperandOrTempVariable() || input[i] == parameter) {
+		if (input[i].isOperandOrTempVariable()) {
 			output.add(input[i++])
 			continue
 		} else if (!input[i].contains(Regex("[\\^*/%+\\-()]"))) {

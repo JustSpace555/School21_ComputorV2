@@ -1,7 +1,9 @@
 package models.math.dataset.numeric
 
+import computorv1.models.PolynomialTerm
 import globalextensions.*
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
+import models.math.dataset.Brackets
 import models.math.dataset.DataSet
 import models.math.dataset.Matrix
 
@@ -14,7 +16,7 @@ data class SetNumber(var number: Number = 0) : Numeric, Comparable<SetNumber> {
 	override fun plus(other: DataSet) =
 		when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '+')
-			is Complex -> other.copy(real = this + other.real)
+			is Complex, is Brackets, is PolynomialTerm -> other + this
 			else -> this + other as SetNumber
 		}
 
@@ -24,6 +26,10 @@ data class SetNumber(var number: Number = 0) : Numeric, Comparable<SetNumber> {
 		when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '-')
 			is Complex -> other.copy(real = this - other.real, imaginary = -other.imaginary)
+			is Brackets -> {
+				other * PolynomialTerm(-1) + this
+			}
+			is PolynomialTerm -> other * SetNumber(-1) + this
 			else -> this - other as SetNumber
 		}
 
@@ -44,6 +50,11 @@ data class SetNumber(var number: Number = 0) : Numeric, Comparable<SetNumber> {
 	override fun rem(other: DataSet) =
 		if (other is SetNumber) this % other
 		else throw IllegalOperationException(this::class, other::class, '%')
+
+	override fun pow(other: DataSet): SetNumber {
+		if (other !is SetNumber) throw IllegalOperationException(this::class, other::class, '^')
+		return SetNumber(number.elevate(other.number))
+	}
 
 	operator fun compareTo(other: Number): Int = number.compareTo(other)
 	override operator fun compareTo(other: SetNumber): Int = compareTo(other.number)

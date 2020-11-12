@@ -3,6 +3,7 @@ package globalextensions
 import models.exceptions.computorv2.calcexception.DivideByZeroException
 import java.math.BigDecimal
 import java.math.RoundingMode
+import kotlin.math.pow
 
 private fun Number.castToBigDecimal() = toDouble().toBigDecimal()
 
@@ -29,6 +30,8 @@ operator fun Number.rem(input: Number): Number {
 
 operator fun Number.unaryMinus() = this * -1
 operator fun Number.compareTo(input: Number) = this.castToBigDecimal().compareTo(input.castToBigDecimal())
+
+fun Number.elevate(other: Number): Number = this.toDouble().pow(other.toDouble()).tryCastToInt()
 
 fun Number.tryCastToInt(): Number =
 		if (this.toDouble() - this.toInt() == 0.0) toInt()

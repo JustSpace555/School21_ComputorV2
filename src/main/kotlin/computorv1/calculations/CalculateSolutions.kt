@@ -16,14 +16,13 @@ private fun calculateComplexArgs(discriminant: Discriminant): Pair<Complex, Comp
 }
 
 private fun calculateTwoArg(discriminant: Discriminant, func: (Double) -> Double): SetNumber =
-		((-discriminant.argB + func(sqrt(discriminant.result.number.toDouble()))) / (discriminant.argA * 2))
+		(-discriminant.argB + func(sqrt(discriminant.result.number.toDouble()))) / (discriminant.argA * 2)
 
 private fun calculateOneArg(discriminant: Discriminant): SetNumber =
-		(if (discriminant.argA < 0.0)
-			-discriminant.argC / discriminant.argB
-		else
+		if (discriminant.argA.isNotZero())
 			-discriminant.argB / (discriminant.argA * 2)
-		)
+		else
+			-discriminant.argC / discriminant.argB
 
 internal fun calculateSolutions(polynomial: List<PolynomialTerm>): Triple<Discriminant, Numeric, Numeric?> {
 	val discriminant = Discriminant(polynomial)
@@ -33,7 +32,7 @@ internal fun calculateSolutions(polynomial: List<PolynomialTerm>): Triple<Discri
 			Triple(discriminant, complexPair.first, complexPair.second)
 		}
 
-		discriminant.result.compareTo(0.0) == 0 -> {
+		discriminant.result.isZero() -> {
 			Triple(discriminant, calculateOneArg(discriminant), null)
 		}
 
