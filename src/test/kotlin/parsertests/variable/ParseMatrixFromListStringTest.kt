@@ -1,9 +1,9 @@
 package parsertests.variable
 
 import models.exceptions.computorv2.parserexception.variable.EmptyMatrixArgumentException
-import models.math.dataset.numeric.Complex
-import models.math.dataset.numeric.Numeric
-import models.math.dataset.numeric.SetNumber
+import models.dataset.numeric.Complex
+import models.dataset.numeric.Numeric
+import models.dataset.numeric.SetNumber
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import parser.extensions.putSpaces

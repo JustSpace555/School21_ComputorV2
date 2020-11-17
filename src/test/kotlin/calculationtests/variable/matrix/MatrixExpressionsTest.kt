@@ -1,6 +1,6 @@
 package calculationtests.variable.matrix
 
-import models.math.dataset.Matrix
+import models.dataset.Matrix
 import parser.extensions.putSpaces
 
 abstract class MatrixExpressionsTest {

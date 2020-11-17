@@ -9,6 +9,7 @@ import models.exceptions.computorv1.calculationexception.NoSolutionsException
 import models.exceptions.computorv1.calculationexception.TooHighPolynomialDegreeException
 import models.exceptions.computorv1.parserexception.EqualSignAmountException
 import models.exceptions.computorv1.parserexception.EqualSignPositionException
+import models.dataset.numeric.Numeric
 
 internal fun parser(input: String, isNeedToCheckDegree: Boolean): Pair<List<PolynomialTerm>, Int> {
 	val inputArray: List<String> = putSpaces(input).split(' ').filter { it.isNotEmpty() }
@@ -22,12 +23,17 @@ internal fun parser(input: String, isNeedToCheckDegree: Boolean): Pair<List<Poly
 
 	val simpledPolynomial = simplifyPolynomial(listPair).also {
 		if (it.isEmpty()) throw EveryNumberIsSolutionException(listOf(), 0)
-		maxDegree = it.first().degree.also { degree ->
+
+		val firstElement = it.first()
+		maxDegree = firstElement.degree.also { degree ->
 			if (isNeedToCheckDegree && degree > 2) throw TooHighPolynomialDegreeException()
 		}
 
-		if (it.first().degree == 0 && it.first().number != 0) throw NoSolutionsException(it, maxDegree)
-		else if (it.all { term -> term.number == 0 }) throw EveryNumberIsSolutionException(listOf(), 0)
+		if (firstElement.degree == 0 && (firstElement.number as Numeric).isNotZero())
+			throw NoSolutionsException(it, maxDegree)
+		else if (it.all { term -> (term.number as Numeric).isZero() }) {
+			throw EveryNumberIsSolutionException(listOf(), 0)
+		}
 	}
 
 	return Pair(simpledPolynomial, maxDegree)

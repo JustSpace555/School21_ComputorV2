@@ -1,10 +1,10 @@
 package parser.getparseable
 
 import models.exceptions.computorv2.parserexception.variable.IllegalFunctionElement
-import models.math.dataset.Function
-import models.math.dataset.Matrix
-import models.math.dataset.numeric.Complex
-import models.math.dataset.numeric.SetNumber
+import models.dataset.Function
+import models.dataset.Matrix
+import models.dataset.numeric.Complex
+import models.dataset.numeric.SetNumber
 import parser.variable.numeric.isComplex
 import kotlin.reflect.KClass
 

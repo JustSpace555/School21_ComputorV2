@@ -1,16 +1,15 @@
 package computorv1.models
 
-import globalextensions.minus
-import globalextensions.times
+import models.dataset.numeric.SetNumber
 
 internal class Discriminant(polynomial: List<PolynomialTerm>) {
-	val argA = polynomial.find { it.degree == 2 }?.number ?: 0
-	val argB = polynomial.find { it.degree == 1 }?.number ?: 0
-	val argC = polynomial.find { it.degree == 0 }?.number ?: 0
+	val argA = (polynomial.find { it.degree == 2 }?.number ?: SetNumber()) as SetNumber
+	val argB = (polynomial.find { it.degree == 1 }?.number ?: SetNumber()) as SetNumber
+	val argC = (polynomial.find { it.degree == 0 }?.number ?: SetNumber()) as SetNumber
 
 	val result = when {
-		argA.toDouble() == 0.0 -> 0
-		else -> argB * argB - 4 * argA * argC
+		argA.isZero() -> SetNumber()
+		else -> argB * argB - SetNumber(4) * argA * argC
 	}
 
 	override fun toString(): String = result.toString()

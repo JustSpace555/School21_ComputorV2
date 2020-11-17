@@ -1,12 +1,115 @@
 package computorv1.models
 
-import globalextensions.plus
-import globalextensions.times
+import models.dataset.DataSet
+import models.dataset.Function
+import models.dataset.Matrix
+import models.dataset.numeric.Complex
+import models.dataset.numeric.Numeric
+import models.dataset.numeric.SetNumber
+import models.dataset.wrapping.Brackets
+import models.dataset.wrapping.FunctionStack
+import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
 
-data class PolynomialTerm(var number: Number, var degree: Int) {
-	override fun toString(): String = "$number * X^$degree"
+data class PolynomialTerm(
+	val number: DataSet = SetNumber(),
+	var degree: Int = 0,
+	val name: String = "X"
+) : DataSet {
 
-	operator fun plus(input: PolynomialTerm): PolynomialTerm = this.copy(number = number + input.number)
-	operator fun times(input: PolynomialTerm): PolynomialTerm =
-		this.copy(number = number * input.number, degree = degree + input.degree)
+	constructor(number: Number, degree: Int = 0, name: String = "X") : this(SetNumber(number), degree, name)
+
+	override fun plus(other: DataSet): DataSet =
+		when (other) {
+			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '+')
+
+			is PolynomialTerm -> {
+				if (other.degree == degree) {
+					copy(number = number + other.number).tryCastToNumeric()
+				} else {
+					Brackets(this, other)
+				}
+			}
+
+			is Brackets -> other + this
+
+			else -> {
+				if (degree == 0) {
+					copy(number = number + other).tryCastToNumeric()
+				} else {
+					Brackets(this, PolynomialTerm(other))
+				}
+			}
+		}
+
+	override fun minus(other: DataSet): DataSet =
+		when (other) {
+			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '-')
+
+			is PolynomialTerm -> {
+				if (other.degree == degree) {
+					copy(number = number - other.number).tryCastToNumeric()
+				} else {
+					Brackets(this, other.copy(number = other.number * SetNumber(-1)))
+				}
+			}
+
+			is Brackets -> other - this
+
+			else -> {
+				if (degree == 0) {
+					copy(number = (number + other) as Numeric).tryCastToNumeric()
+				} else {
+					Brackets(this, PolynomialTerm(other * SetNumber(-1)))
+				}
+			}
+		}
+
+	override fun times(other: DataSet): DataSet =
+		when (other) {
+			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '*')
+
+			is PolynomialTerm -> copy(number = number * other.number, degree = degree + other.degree).tryCastToNumeric()
+
+			is Brackets -> other * this
+
+			is Function -> copy(number = FunctionStack(mutableListOf(PolynomialTerm(number), PolynomialTerm(other))))
+				.tryCastToNumeric()
+
+			else -> copy(number = number * other).tryCastToNumeric()
+		}
+
+	override fun div(other: DataSet): DataSet =
+		when (other) {
+			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '/')
+
+			is PolynomialTerm -> copy(number = number / other.number, degree = degree - other.degree).tryCastToNumeric()
+
+			is Brackets -> throw IllegalOperationException(this::class, Brackets::class, '/')
+
+			else -> copy(number = number / other).tryCastToNumeric()
+		}
+
+	override fun rem(other: DataSet) = throw IllegalOperationException(this::class, other::class, '%')
+
+	override fun pow(other: DataSet): DataSet {
+		if (other !is SetNumber || other.number is Double)
+			throw IllegalOperationException(this::class, other::class, '^')
+
+		return copy(degree = other.number as Int + degree).tryCastToNumeric()
+	}
+
+	override fun toString(): String {
+		val numberStr = if (number is Complex) {
+			if (number.real.isZero() || number.imaginary.isZero()) number.toString() else "($number)"
+		} else {
+			number.toString()
+		}
+
+		return "$numberStr * $name^$degree"
+	}
+
+	private fun tryCastToNumeric(): DataSet = if (degree == 0) number else this
+
+	operator fun invoke(): Numeric = number.pow(degree) as Numeric
+	operator fun invoke(input: DataSet): Numeric = input.pow(degree) as Numeric
 }

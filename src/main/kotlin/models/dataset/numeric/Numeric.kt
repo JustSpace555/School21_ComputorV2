@@ -1,0 +1,15 @@
+package models.dataset.numeric
+
+import models.dataset.DataSet
+
+interface Numeric : DataSet {
+
+	fun isZero(): Boolean {
+		if (this is SetNumber) return this.compareTo(0.0) == 0
+
+		this as Complex
+		return this.real.compareTo(0.0) == 0 && this.imaginary.compareTo(0.0) == 0
+	}
+
+	fun isNotZero(): Boolean = !this.isZero()
+}

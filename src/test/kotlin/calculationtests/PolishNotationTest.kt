@@ -4,10 +4,10 @@ import computation.polishnotation.extensions.compute
 import models.exceptions.computorv2.calcexception.DivideByZeroException
 import models.exceptions.computorv2.calcexception.IllegalTokenException
 import models.exceptions.computorv2.calcexception.TooFewOperatorsException
-import models.math.dataset.Function
-import models.math.dataset.Matrix
-import models.math.dataset.numeric.Complex
-import models.math.dataset.numeric.SetNumber
+import models.dataset.Matrix
+import models.dataset.Function
+import models.dataset.numeric.Complex
+import models.dataset.numeric.SetNumber
 import models.tempVariables
 import models.variables
 import org.junit.After
@@ -52,9 +52,9 @@ class PolishNotationTest {
 	fun allValidTest() {
 
 		variables["varA"] = SetNumber(2.1)
-		variables["funA"] = Function("x", "x ^ 2 + x + 1".split(' '))
-		variables["funB"] = Function("y", "y + funA ( y )".split(' '))
-		variables["funC"] = Function("z", "z * 0.5 - funA ( 1 ) + funB ( z )".split(' '))
+		variables["funA"] = Function("x", "x ^ 2 + x + 1".split(' ').toTypedArray())
+		variables["funB"] = Function("y", "y + funA ( y )".split(' ').toTypedArray())
+		variables["funC"] = Function("z", "z * 0.5 - funA ( 1 ) + funB ( z )".split(' ').toTypedArray())
 		variables["matA"] = Matrix(putSpaces("[[1, 2]; [3 + 3i, -5.5]]").split(' ').toTypedArray())
 
 		val result = calc(

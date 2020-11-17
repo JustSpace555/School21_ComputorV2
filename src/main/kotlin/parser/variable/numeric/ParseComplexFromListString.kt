@@ -1,7 +1,7 @@
 package parser.variable.numeric
 
-import models.math.dataset.numeric.Complex
-import models.math.dataset.numeric.SetNumber
+import models.dataset.numeric.Complex
+import models.dataset.numeric.SetNumber
 
 fun parseComplexFromList(input: List<String>): Complex {
 

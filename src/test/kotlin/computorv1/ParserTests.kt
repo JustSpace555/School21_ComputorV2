@@ -23,7 +23,6 @@ class ParserTests {
 		inputs = ArrayList()
 		inputs.add(".2x^1=0")
 		inputs.add("a2x^1=0")
-		inputs.add(".1=0")
 		inputs.add("a1=0")
 		inputs.add("111111111111111111111111111*x=0")
 		testInvalidInputs(inputs)
