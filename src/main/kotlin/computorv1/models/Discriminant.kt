@@ -1,6 +1,6 @@
 package computorv1.models
 
-import models.math.dataset.numeric.SetNumber
+import models.dataset.numeric.SetNumber
 
 internal class Discriminant(polynomial: List<PolynomialTerm>) {
 	val argA = (polynomial.find { it.degree == 2 }?.number ?: SetNumber()) as SetNumber

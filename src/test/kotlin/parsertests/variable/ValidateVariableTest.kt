@@ -1,10 +1,10 @@
 package parsertests.variable
 
 import models.exceptions.computorv2.parserexception.variable.InvalidVariableFormatException
-import models.math.dataset.Function
-import models.math.dataset.Matrix
-import models.math.dataset.numeric.Complex
-import models.math.dataset.numeric.SetNumber
+import models.dataset.Function
+import models.dataset.Matrix
+import models.dataset.numeric.Complex
+import models.dataset.numeric.SetNumber
 import org.junit.Test
 import parser.extensions.validateVariable
 import parsertests.ParserTest

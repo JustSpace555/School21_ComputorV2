@@ -2,12 +2,13 @@ package parser.variable
 
 import computation.polishnotation.extensions.compute
 import computorv1.models.PolynomialTerm
+import globalextensions.mapToPolynomialList
+import models.dataset.DataSet
+import models.dataset.Function
+import models.dataset.Matrix
+import models.dataset.numeric.Numeric
+import models.dataset.wrapping.Brackets
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
-import models.math.dataset.Brackets
-import models.math.dataset.DataSet
-import models.math.dataset.Function
-import models.math.dataset.Matrix
-import models.math.dataset.numeric.Numeric
 import models.tempVariables
 import models.variables
 import parser.variable.numeric.toNumeric
@@ -19,7 +20,7 @@ private fun Map<String, DataSet>.checkIsElementNumeric(name: String) {
 
 fun DataSet.toPolynomialList() =
 	when(this) {
-		is Brackets -> this.listOfOperands
+		is Brackets -> this.listOfOperands.mapToPolynomialList()
 		is PolynomialTerm -> listOf(this)
 		else -> listOf(PolynomialTerm(this as Numeric))
 	}
@@ -45,7 +46,7 @@ fun parseFunctionFromList(input: List<String>, parameter: String): DataSet {
 			else -> varName.toNumeric()
 		}
 	} else {
-		numberList.compute()
+		numberList.compute(parameter)
 	}
 
 	if (number is Matrix) throw IllegalOperationException(Function::class, Matrix::class)

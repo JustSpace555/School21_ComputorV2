@@ -17,8 +17,6 @@ class NoSuchVariableException(invalidVariableName: String = ""): VariableCalcula
 class IllegalOperationException(
 	arg1: KClass<*>, arg2: KClass<*>, `fun`: Char? = null
 ) : VariableCalculationException() {
-	override val message: String = "Illegal operation ${`fun` ?: ""}" +
+	override val message: String = "Illegal operation ${`fun`?.toString() + " "}" +
 			"between ${arg1.simpleName} and ${arg2.simpleName}"
 }
-//TODO Добавить пробел, а то получается
-// Illegal operation *between Function and SetNumber

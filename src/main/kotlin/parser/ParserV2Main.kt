@@ -1,14 +1,15 @@
 package parser
 
 import computation.polishnotation.extensions.compute
-import computation.polishnotation.extensions.getList
 import computorv1.computorV1
+import globalextensions.getBracketList
+import models.dataset.Function
+import models.dataset.Matrix
+import models.dataset.wrapping.Brackets
 import models.exceptions.computorv1.parserexception.EqualSignAmountException
 import models.exceptions.computorv1.parserexception.EqualSignPositionException
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
 import models.exceptions.computorv2.parserexception.sign.QuestionMarkPositionException
-import models.math.dataset.Function
-import models.math.dataset.Matrix
 import models.tempVariables
 import models.variables
 import parser.extensions.putSpaces
@@ -34,8 +35,8 @@ internal fun parser(input: String): String {
 		if (mod.last() != "?") throw QuestionMarkPositionException()
 		if (indexOfEqual == mod.lastIndex - 1) return beforeEqual.compute().toString()
 
-		val computedBeforeEqual = beforeEqual.compute().getList()
-		val computedAfterEqual = afterEqual.compute().getList()
+		val computedBeforeEqual = beforeEqual.compute().getBracketList()
+		val computedAfterEqual = afterEqual.compute().getBracketList()
 		if (computedAfterEqual.first() is Matrix || computedBeforeEqual.first() is Matrix)
 			throw IllegalOperationException(computedBeforeEqual::class, computedAfterEqual::class)
 
@@ -53,10 +54,12 @@ internal fun parser(input: String): String {
 //		val function = parseFunctionFromList(beforeEqual, afterEqual)
 		//TODO переделать simplify
 //	}
-
-	return afterEqual.compute(parameter).also {
+	val computed = afterEqual.compute(parameter)
+	val computedStr = computed.also {
 		tempVariables.clear()
 		//TODO Переделать (заглушка)
 		variables[variableName] = if (isFunction) parseFunctionFromList(beforeEqual, afterEqual) else it
 	}.toString()
+
+	return if (computed is Brackets) computedStr.removePrefix("(").removeSuffix(")") else computedStr
 }

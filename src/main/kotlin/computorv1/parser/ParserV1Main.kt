@@ -9,7 +9,7 @@ import models.exceptions.computorv1.calculationexception.NoSolutionsException
 import models.exceptions.computorv1.calculationexception.TooHighPolynomialDegreeException
 import models.exceptions.computorv1.parserexception.EqualSignAmountException
 import models.exceptions.computorv1.parserexception.EqualSignPositionException
-import models.math.dataset.numeric.Numeric
+import models.dataset.numeric.Numeric
 
 internal fun parser(input: String, isNeedToCheckDegree: Boolean): Pair<List<PolynomialTerm>, Int> {
 	val inputArray: List<String> = putSpaces(input).split(' ').filter { it.isNotEmpty() }

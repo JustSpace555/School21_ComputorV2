@@ -1,7 +1,7 @@
 package computorv1.output
 
 import computorv1.models.Discriminant
-import models.math.dataset.numeric.Numeric
+import models.dataset.numeric.Numeric
 
 internal fun getStringSolutions(answer: Triple<Discriminant, Numeric, Numeric?>, degree: Int): String {
 	var output = ""

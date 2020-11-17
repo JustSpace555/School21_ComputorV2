@@ -1,6 +1,6 @@
-package models.math.dataset.numeric
+package models.dataset.numeric
 
-import models.math.dataset.DataSet
+import models.dataset.DataSet
 
 interface Numeric : DataSet {
 

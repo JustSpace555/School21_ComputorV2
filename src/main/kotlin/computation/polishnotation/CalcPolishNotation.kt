@@ -1,9 +1,9 @@
 package computation.polishnotation
 
 import computation.polishnotation.extensions.isOperandOrTempVariable
+import models.dataset.DataSet
 import models.exceptions.computorv2.calcexception.IllegalTokenException
 import models.exceptions.computorv2.calcexception.TooFewOperatorsException
-import models.math.dataset.DataSet
 import models.tempVariables
 import models.variables
 import parser.variable.numeric.toSetNumber

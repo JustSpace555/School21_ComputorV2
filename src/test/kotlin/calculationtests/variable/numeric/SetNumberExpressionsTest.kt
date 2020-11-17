@@ -1,10 +1,10 @@
 package calculationtests.variable.numeric
 
+import models.dataset.Matrix
+import models.dataset.numeric.Complex
+import models.dataset.numeric.SetNumber
 import models.exceptions.computorv2.calcexception.DivideByZeroException
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
-import models.math.dataset.Matrix
-import models.math.dataset.numeric.Complex
-import models.math.dataset.numeric.SetNumber
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import parser.variable.numeric.toNumeric
@@ -68,11 +68,6 @@ class SetNumberExpressionsTest {
 	}
 
 
-
-	@Test(expected = IllegalOperationException::class)
-	fun `fail divide test with Complex`() {
-		SetNumber(1) / Complex(1, 1)
-	}
 
 	@Test(expected = IllegalOperationException::class)
 	fun `fail divide test with Matrix`() {

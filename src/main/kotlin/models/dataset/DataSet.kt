@@ -1,6 +1,6 @@
-package models.math.dataset
+package models.dataset
 
-import models.math.dataset.numeric.SetNumber
+import models.dataset.numeric.SetNumber
 
 interface DataSet {
 	operator fun plus(other: DataSet): DataSet

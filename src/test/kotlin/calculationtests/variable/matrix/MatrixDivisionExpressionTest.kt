@@ -1,8 +1,8 @@
 package calculationtests.variable.matrix
 
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
-import models.math.dataset.numeric.Complex
-import models.math.dataset.numeric.SetNumber
+import models.dataset.numeric.Complex
+import models.dataset.numeric.SetNumber
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

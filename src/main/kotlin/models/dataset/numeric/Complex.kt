@@ -1,11 +1,11 @@
-package models.math.dataset.numeric
+package models.dataset.numeric
 
 import computorv1.models.PolynomialTerm
-import globalextensions.minus
+import models.dataset.DataSet
+import models.dataset.Matrix
+import models.dataset.wrapping.Brackets
+import models.dataset.wrapping.Fraction
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
-import models.math.dataset.DataSet
-import models.math.dataset.Brackets
-import models.math.dataset.Matrix
 
 data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber): Numeric {
 
@@ -78,16 +78,20 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 
 	override fun rem(other: DataSet) = throw IllegalOperationException(this::class, other::class, '%')
 
-	override fun pow(other: DataSet): Numeric {
-		if (other !is SetNumber || other.number is Double )
+	override fun pow(other: DataSet): DataSet {
+		if (other !is SetNumber || other.number !is Int)
 			throw IllegalOperationException(this::class, other::class, '^')
 
-		var newComplex = this as Numeric
-		repeat((other.number - 1) as Int) {
-			newComplex = (newComplex * newComplex) as Numeric
-		}
+		var degree = other.number as Int
+		if (degree == 0) return SetNumber(1)
 
-		return newComplex
+		val belowZero = degree < 0
+		if (belowZero) degree *= -1
+
+		var newComplex = this as DataSet
+		repeat(degree - 1) { newComplex *= newComplex }
+
+		return if (belowZero) Fraction(SetNumber(1), newComplex) else newComplex
 	}
 
 	override fun toString(): String {

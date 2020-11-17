@@ -2,7 +2,7 @@ package parser.extensions
 
 import models.exceptions.computorv2.parserexception.variable.InvalidVariableFormatException
 import models.exceptions.computorv2.parserexception.variable.InvalidVariableNameException
-import models.math.dataset.Function
+import models.dataset.Function
 import kotlin.reflect.KClass
 
 private fun List<String>.checkSize(rightSize: Int) { if (size != rightSize) throw InvalidVariableFormatException() }

@@ -2,9 +2,9 @@ package parser.variable.numeric
 
 import globalextensions.tryCastToInt
 import models.exceptions.computorv2.parserexception.variable.SetNumericFormatException
-import models.math.dataset.numeric.Complex
-import models.math.dataset.numeric.Numeric
-import models.math.dataset.numeric.SetNumber
+import models.dataset.numeric.Complex
+import models.dataset.numeric.Numeric
+import models.dataset.numeric.SetNumber
 
 fun String.isComplex() = contains(Regex("\\d*i"))
 

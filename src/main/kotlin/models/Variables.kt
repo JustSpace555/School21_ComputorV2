@@ -1,6 +1,6 @@
 package models
 
-import models.math.dataset.DataSet
+import models.dataset.DataSet
 
 val variables = mutableMapOf<String, DataSet>()
 

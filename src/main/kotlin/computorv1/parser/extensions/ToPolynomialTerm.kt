@@ -5,7 +5,7 @@ import globalextensions.times
 import models.exceptions.computorv1.parserexception.WrongArgumentNameException
 import models.exceptions.computorv1.parserexception.WrongDegreeFormatException
 import models.exceptions.computorv1.parserexception.WrongNumberFormatException
-import models.math.dataset.numeric.SetNumber
+import models.dataset.numeric.SetNumber
 
 internal fun String.containsX() = contains('x') || contains('X')
 

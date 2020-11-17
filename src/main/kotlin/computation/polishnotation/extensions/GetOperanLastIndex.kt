@@ -1,8 +1,8 @@
 package computation.polishnotation.extensions
 
 import models.exceptions.computorv2.calcexception.BracketsAmountException
-import models.math.dataset.Function
-import models.math.dataset.Matrix
+import models.dataset.Function
+import models.dataset.Matrix
 import java.util.*
 import kotlin.reflect.KClass
 
@@ -10,16 +10,15 @@ private fun getMatrixLastIndex(input: List<String>): Int {
 	val stack = Stack<Char>()
 	var i = 0
 
-	input.forEach (fun(element: String) {
+	for (element in input) {
 		if (element == "[") stack.push('[')
 		else if (element == "]") stack.pop()
 		i++
 
-		if (stack.isEmpty())
-			return
-	})
+		if (stack.isEmpty()) break
+	}
 
-	return i - 1
+	return i
 }
 
 private fun getFunctionLastIndex(input: List<String>): Int {

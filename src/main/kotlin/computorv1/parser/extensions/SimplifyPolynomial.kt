@@ -1,23 +1,22 @@
 package computorv1.parser.extensions
 
 import computorv1.models.PolynomialTerm
-import models.math.dataset.DataSet
-import models.math.dataset.numeric.Numeric
-import models.math.dataset.numeric.SetNumber
+import globalextensions.toPolynomial
+import models.dataset.numeric.Numeric
+import models.dataset.numeric.SetNumber
 
-internal fun simplifyPolynomial(input: List<DataSet>): List<PolynomialTerm> {
+internal fun simplifyPolynomial(input: List<PolynomialTerm>): List<PolynomialTerm> {
 	val polynomialMap: MutableMap<Int, PolynomialTerm> = mutableMapOf()
 
 	input.forEach {
-		val degree = if (it is PolynomialTerm) it.degree else 0
-		if (!polynomialMap.containsKey(degree)) {
-			polynomialMap[degree] = PolynomialTerm(SetNumber(0), degree)
+		if (!polynomialMap.containsKey(it.degree)) {
+			polynomialMap[it.degree] = PolynomialTerm(SetNumber(0), it.degree, it.name)
 		}
-		polynomialMap[degree] = (polynomialMap[degree]!! + it) as PolynomialTerm
+		polynomialMap[it.degree] = (polynomialMap[it.degree]!! + it).toPolynomial()
 	}
 
 	return polynomialMap
 		.map { it.value }
 		.filter { if (it.number is Numeric) it.number.isNotZero() else true }
-		.sortedByDescending { SetNumber(it.degree) }
+		.sortedByDescending { it.degree }
 }

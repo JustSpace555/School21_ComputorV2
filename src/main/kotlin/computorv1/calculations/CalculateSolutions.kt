@@ -3,9 +3,9 @@ package computorv1.calculations
 import computorv1.models.Discriminant
 import computorv1.models.PolynomialTerm
 import globalextensions.unaryMinus
-import models.math.dataset.numeric.Complex
-import models.math.dataset.numeric.Numeric
-import models.math.dataset.numeric.SetNumber
+import models.dataset.numeric.Complex
+import models.dataset.numeric.Numeric
+import models.dataset.numeric.SetNumber
 import kotlin.math.sqrt
 
 private fun calculateComplexArgs(discriminant: Discriminant): Pair<Complex, Complex> {

@@ -1,11 +1,10 @@
 package calculationtests.variable
 
 import computorv1.models.PolynomialTerm
-import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
-import models.math.dataset.Brackets
-import models.math.dataset.DataSet
-import models.math.dataset.numeric.Complex
-import models.math.dataset.numeric.SetNumber
+import models.dataset.DataSet
+import models.dataset.wrapping.Brackets
+import models.dataset.numeric.Complex
+import models.dataset.numeric.SetNumber
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -92,11 +91,6 @@ class BracketsExpressionTest {
 		secondFunction = Brackets(PolynomialTerm(1, -1), PolynomialTerm(5))
 
 		assertEquals(expected, firstFunction * secondFunction)
-	}
-
-	@Test(expected = IllegalOperationException::class)
-	fun `invalid div test with FunctionBrackets in input`() {
-		Brackets() / Brackets()
 	}
 
 	@Test
