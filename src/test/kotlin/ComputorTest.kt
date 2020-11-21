@@ -1,7 +1,5 @@
-package parsertests
-
 import parser.extensions.putSpaces
 
-abstract class ParserTest {
+abstract class ComputorTest {
 	protected fun String.getList() = putSpaces(this).split(' ').filter { it.isNotEmpty() }
 }

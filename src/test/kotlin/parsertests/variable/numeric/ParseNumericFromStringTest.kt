@@ -1,13 +1,14 @@
 package parsertests.variable.numeric
 
-import models.exceptions.computorv2.parserexception.variable.SetNumericFormatException
+import ComputorTest
 import models.dataset.numeric.Complex
 import models.dataset.numeric.SetNumber
+import models.exceptions.computorv2.parserexception.variable.SetNumericFormatException
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import parser.variable.numeric.toNumeric
 
-class ParseNumericFromStringTest {
+class ParseNumericFromStringTest : ComputorTest() {
 
 	@Test(expected = SetNumericFormatException::class)
 	fun `test with invalid SetNumber Int input`() {

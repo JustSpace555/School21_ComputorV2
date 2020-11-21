@@ -1,9 +1,9 @@
 package models.dataset.wrapping
 
 import computorv1.models.PolynomialTerm
+import globalextensions.isEmpty
 import models.dataset.DataSet
 import models.dataset.Matrix
-import models.dataset.numeric.Numeric
 import models.dataset.numeric.SetNumber
 import models.exceptions.computorv2.calcexception.DivideByZeroException
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
@@ -11,8 +11,11 @@ import models.exceptions.computorv2.calcexception.variable.NotEqualDenominatorEx
 
 data class Fraction(val numerator: DataSet, val denominator: DataSet) : Wrapping() {
 
+	override val isEmpty: Boolean
+
 	init {
-		if (denominator is Numeric && denominator.isZero()) throw DivideByZeroException()
+		if (denominator.isEmpty()) throw DivideByZeroException()
+		isEmpty = numerator.isEmpty()
 	}
 
 	override fun plus(other: DataSet): DataSet =
@@ -23,7 +26,7 @@ data class Fraction(val numerator: DataSet, val denominator: DataSet) : Wrapping
 				copy(numerator = numerator + other.numerator).simplify()
 			}
 			else -> {
-				if (other is Numeric && other.isZero())
+				if (other.isEmpty())
 					this
 				else
 					copy(numerator = numerator + other * denominator).simplify()
@@ -38,7 +41,7 @@ data class Fraction(val numerator: DataSet, val denominator: DataSet) : Wrapping
 				copy(numerator = numerator - other.numerator).simplify()
 			}
 			else -> {
-				if (other is Numeric && other.isZero())
+				if (other.isEmpty())
 					this
 				else
 					copy(numerator = numerator - other * denominator).simplify()
@@ -54,7 +57,7 @@ data class Fraction(val numerator: DataSet, val denominator: DataSet) : Wrapping
 			is PolynomialTerm -> other.copy(number = this * other.number)
 
 			else -> when {
-				other is Numeric && other.isZero() -> SetNumber(0)
+				other.isEmpty() -> SetNumber(0)
 				other is SetNumber && other.compareTo(1.0) == 0 -> this
 				else -> copy(numerator = numerator * other).simplify()
 			}
@@ -69,7 +72,7 @@ data class Fraction(val numerator: DataSet, val denominator: DataSet) : Wrapping
 			is PolynomialTerm -> other.copy(number = this / other.number)
 
 			else -> when {
-				other is Numeric && other.isZero() -> throw DivideByZeroException()
+				other.isEmpty() -> throw DivideByZeroException()
 				other is SetNumber && other.compareTo(1.0) == 0 -> this
 				else -> copy(numerator = denominator * other).simplify()
 			}
@@ -105,21 +108,30 @@ data class Fraction(val numerator: DataSet, val denominator: DataSet) : Wrapping
 		}
 	}
 
-	override fun toString(): String = "($numerator / $denominator)"
+	override fun toString(): String = "(($numerator) / ($denominator))"
 
-	private fun simplify(): DataSet =
+	fun simplify(): DataSet =
 		when {
 			numerator == denominator -> SetNumber(1)
-			!(numerator is SetNumber && denominator is SetNumber) -> this
-			!(numerator.number is Int && denominator.number is Int) -> this
-			else -> {
-				var f1Number = numerator.number as Int
-				var f2Number = denominator.number as Int
 
-				while (f1Number != f2Number && f1Number > 0 && f2Number > 0) {
-					if (f1Number > f2Number) f1Number -= f2Number else f2Number -= f1Number
+			denominator !is SetNumber -> this
+
+			else -> when {
+				denominator.compareTo(1.0) == 0 -> numerator
+				denominator.compareTo(-1.0) == 0 -> numerator * SetNumber(-1)
+
+				else -> if (numerator is SetNumber && numerator.number is Int && denominator.number is Int) {
+
+					var f1Number = numerator.number as Int
+					var f2Number = denominator.number as Int
+
+					while (f1Number != f2Number && f1Number > 0 && f2Number > 0) {
+						if (f1Number > f2Number) f1Number -= f2Number else f2Number -= f1Number
+					}
+					SetNumber(f1Number)
+				} else {
+					this
 				}
-				SetNumber(f1Number)
 			}
 		}
 }

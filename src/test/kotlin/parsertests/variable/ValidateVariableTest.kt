@@ -1,15 +1,15 @@
 package parsertests.variable
 
-import models.exceptions.computorv2.parserexception.variable.InvalidVariableFormatException
+import ComputorTest
 import models.dataset.Function
 import models.dataset.Matrix
 import models.dataset.numeric.Complex
 import models.dataset.numeric.SetNumber
+import models.exceptions.computorv2.parserexception.variable.InvalidVariableFormatException
 import org.junit.Test
 import parser.extensions.validateVariable
-import parsertests.ParserTest
 
-class ValidateVariableTest : ParserTest() {
+class ValidateVariableTest : ComputorTest() {
 
 	@Test(expected = InvalidVariableFormatException::class)
 	fun `fail test with wrong before equal size for SetNumber`() {

@@ -1,5 +1,6 @@
 package computorv1
 
+import ComputorTest
 import models.exceptions.ComputorException
 import models.exceptions.computorv1.calculationexception.EveryNumberIsSolutionException
 import models.exceptions.computorv1.calculationexception.NoSolutionsException
@@ -7,7 +8,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import kotlin.reflect.KClass
 
-class SolverTest {
+class SolverTest : ComputorTest() {
 
 	@Test
 	fun testLinearEquationSolver() {

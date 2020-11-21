@@ -1,14 +1,15 @@
 package calculationtests.variable
 
+import ComputorTest
 import computorv1.models.PolynomialTerm
 import models.dataset.DataSet
-import models.dataset.wrapping.Brackets
 import models.dataset.numeric.Complex
 import models.dataset.numeric.SetNumber
+import models.dataset.wrapping.Brackets
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class BracketsExpressionTest {
+class BracketsExpressionTest : ComputorTest() {
 
 	@Test
 	fun validPlusTest() {

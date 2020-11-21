@@ -1,11 +1,12 @@
 package computorv1
 
+import ComputorTest
 import computorv1.parser.parser
 import models.exceptions.ComputorException
 import org.junit.Test
 import java.util.*
 
-class ParserTests {
+class ParserTests : ComputorTest() {
 
 	@Test
 	fun testInvalidEquations() {
@@ -62,8 +63,6 @@ class ParserTests {
 			val parserOutput = try {
 				parser(element, true)
 			} catch (e: ComputorException) {
-				println("Test passed: $element")
-				println("Fails with message:\n${e.message}\n")
 				continue
 			}
 			val message = "Test fail on: $element with and output: $parserOutput"

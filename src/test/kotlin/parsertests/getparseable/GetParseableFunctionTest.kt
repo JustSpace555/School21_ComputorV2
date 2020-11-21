@@ -1,14 +1,14 @@
 package parsertests.getparseable
 
+import ComputorTest
+import models.dataset.Function
 import models.exceptions.computorv2.parserexception.variable.MultipleArgumentException
 import models.exceptions.computorv2.parserexception.variable.WrongFunctionBracketsFormatException
-import models.dataset.Function
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import parser.getparseable.getParseableDataSet
-import parsertests.ParserTest
 
-class GetParseableFunctionTest : ParserTest() {
+class GetParseableFunctionTest : ComputorTest() {
 
 	@Test(expected = WrongFunctionBracketsFormatException::class)
 	fun `fail function test without open bracket`() {

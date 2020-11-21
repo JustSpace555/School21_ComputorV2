@@ -1,12 +1,12 @@
 package parsertests.getparseable
 
+import ComputorTest
 import models.dataset.numeric.Complex
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import parser.getparseable.getParseableDataSet
-import parsertests.ParserTest
 
-class GetParseableComplexTest : ParserTest() {
+class GetParseableComplexTest : ComputorTest() {
 
 	@Test
 	fun validTests() {

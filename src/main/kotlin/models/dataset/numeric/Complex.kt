@@ -96,7 +96,7 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 
 	override fun toString(): String {
 		if (real.isZero())
-			return "${imaginary}i"
+			return "${imaginary.toAllString()}i"
 
 		if (imaginary.isZero())
 			return real.toString()
@@ -108,8 +108,15 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 		} else {
 			" + "
 		}
-		return "$real$signString${tempIm}i"
+		return "$real$signString${tempIm.toAllString()}i"
 	}
+
+	private fun SetNumber.toAllString() =
+		when(number) {
+			1, 1.0 -> ""
+			-1, -1.0 -> "-"
+			else -> this
+		}
 
 	private fun tryCastToSetNumber(): Numeric = if (imaginary.isZero()) real else this
 }

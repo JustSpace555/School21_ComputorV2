@@ -4,4 +4,6 @@ import models.dataset.DataSet
 
 abstract class Wrapping : DataSet {
 	open val listOfOperands: List<DataSet> = listOf()
+
+	abstract val isEmpty: Boolean
 }

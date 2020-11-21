@@ -99,10 +99,10 @@ data class PolynomialTerm(
 	}
 
 	override fun toString(): String {
-		val numberStr = if (number is Complex) {
-			if (number.real.isZero() || number.imaginary.isZero()) number.toString() else "($number)"
-		} else {
-			number.toString()
+		val numberStr = when(number) {
+			is Complex -> { if (number.real.isZero() || number.imaginary.isZero()) number.toString() else "($number)" }
+			is Function -> "($number)"
+			else -> number.toString()
 		}
 
 		return "$numberStr * $name^$degree"

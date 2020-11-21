@@ -1,15 +1,16 @@
 package parsertests.variable
 
-import models.exceptions.computorv2.parserexception.variable.EmptyMatrixArgumentException
+import ComputorTest
 import models.dataset.numeric.Complex
 import models.dataset.numeric.Numeric
 import models.dataset.numeric.SetNumber
+import models.exceptions.computorv2.parserexception.variable.EmptyMatrixArgumentException
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import parser.extensions.putSpaces
 import parser.variable.parseMatrixFromListString
 
-class ParseMatrixFromListStringTest {
+class ParseMatrixFromListStringTest : ComputorTest() {
 
 	private fun String.getMatrix() = parseMatrixFromListString(
 		putSpaces(this).split(' ').toTypedArray()

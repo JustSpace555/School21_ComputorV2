@@ -1,13 +1,14 @@
 package calculationtests
 
+import ComputorTest
 import computation.polishnotation.extensions.compute
+import models.dataset.Function
+import models.dataset.Matrix
+import models.dataset.numeric.Complex
+import models.dataset.numeric.SetNumber
 import models.exceptions.computorv2.calcexception.DivideByZeroException
 import models.exceptions.computorv2.calcexception.IllegalTokenException
 import models.exceptions.computorv2.calcexception.TooFewOperatorsException
-import models.dataset.Matrix
-import models.dataset.Function
-import models.dataset.numeric.Complex
-import models.dataset.numeric.SetNumber
 import models.tempVariables
 import models.variables
 import org.junit.After
@@ -16,12 +17,9 @@ import org.junit.Test
 import parser.extensions.putSpaces
 
 
-class PolishNotationTest {
+class PolishNotationTest : ComputorTest() {
 
-	private fun calc(input: String) = putSpaces(input)
-		.split(' ')
-		.filter { it.isNotEmpty() }
-		.compute()
+	private fun calc(input: String) = input.getList().compute()
 
 	@Test(expected = DivideByZeroException::class)
 	fun `fail cals test division by zero`() {

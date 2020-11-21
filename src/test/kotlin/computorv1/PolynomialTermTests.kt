@@ -1,13 +1,14 @@
 package computorv1
 
+import ComputorTest
 import computorv1.models.PolynomialTerm
-import models.dataset.wrapping.Brackets
 import models.dataset.numeric.Complex
 import models.dataset.numeric.SetNumber
+import models.dataset.wrapping.Brackets
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class PolynomialTermTests {
+class PolynomialTermTests : ComputorTest() {
 
 	@Test
 	fun toStringTest() {

@@ -1,11 +1,11 @@
 package parsertests.extensions
 
+import ComputorTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import parser.extensions.putSpaces
-import parsertests.ParserTest
 
-class PutSpacesTest : ParserTest() {
+class PutSpacesTest : ComputorTest() {
 
 	@Test
 	fun validTests() {

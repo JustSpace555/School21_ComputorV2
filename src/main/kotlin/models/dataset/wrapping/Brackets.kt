@@ -4,6 +4,7 @@ import computorv1.models.PolynomialTerm
 import computorv1.reducedString
 import computorv1.simplify
 import globalextensions.getBracketList
+import globalextensions.isEmpty
 import globalextensions.mapToPolynomialList
 import models.dataset.DataSet
 import models.dataset.Function
@@ -17,75 +18,101 @@ class Brackets(override val listOfOperands: List<DataSet> = listOf()): Wrapping(
 
 	constructor(vararg elements: DataSet) : this(elements.toList())
 
-	override fun plus(other: DataSet): DataSet =
-		when(other) {
-			is Matrix -> throw IllegalOperationException(Brackets::class, Matrix::class, '+')
-			is Brackets -> addElements(other.listOfOperands).tryCastToPolynomialTerm()
-			else -> if (other is Numeric && other.isZero())
+	override val isEmpty: Boolean = listOfOperands.isEmpty()
+
+	override fun plus(other: DataSet): DataSet {
+		if (other is Matrix) throw IllegalOperationException(Brackets::class, Matrix::class, '+')
+
+		if (isEmpty) return other
+
+		return when (other) {
+			is Brackets -> addElements(other.listOfOperands)
+			else -> if (other.isEmpty())
 				this
 			else
 				addElements(other)
 		}
+	}
 
 	override fun minus(other: DataSet): DataSet {
 		val minusOne = SetNumber(-1)
 
+		if (other is Matrix) throw IllegalOperationException(Brackets::class, Matrix::class, '+')
+
+		if (isEmpty) return other * minusOne
+
 		return when(other) {
 			is Matrix -> throw IllegalOperationException(Brackets::class, Matrix::class, '-')
-			is Brackets -> addElements(other.listOfOperands.map { it * minusOne }).tryCastToPolynomialTerm()
-			else -> if (other is Numeric && other.isZero())
+			is Brackets -> addElements(other.listOfOperands.map { it * minusOne })
+			else -> if (other.isEmpty())
 				this
 			else
 				addElements(other * minusOne)
 		}
 	}
 
-	override fun times(other: DataSet): DataSet =
-		when(other) {
+	override fun times(other: DataSet): DataSet {
+		if (other is Matrix) throw IllegalOperationException(Brackets::class, Matrix::class, '+')
+
+		if (isEmpty) return SetNumber()
+
+		return when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '*')
 
 			is Brackets -> {
-				val newFunctionList = mutableListOf<Brackets>()
+				if (other.isEmpty) return this
+
+				val newFunctionList = mutableListOf<DataSet>()
 				other.listOfOperands.forEach {
 					newFunctionList.add(applyOnEachElement(DataSet::times, it))
 				}
 
-				Brackets(newFunctionList.flatMap { it.getBracketList() }.simplifyPolynomials()).tryCastToPolynomialTerm()
+				Brackets(newFunctionList.flatMap { it.getBracketList() }
+					.simplifyPolynomials()).reduceList()
 			}
 
 			else -> when {
-				other is Numeric && other.isZero() -> other
+				other.isEmpty() -> SetNumber()
 				other is SetNumber && other.compareTo(1.0) == 0 -> this
-				else -> applyOnEachElement(DataSet::times, other).tryCastToPolynomialTerm()
+				else -> applyOnEachElement(DataSet::times, other)
 			}
 		}
+	}
 
-	override fun div(other: DataSet): DataSet =
-		when(other) {
+	override fun div(other: DataSet): DataSet {
+		if (other is Matrix) throw IllegalOperationException(Brackets::class, Matrix::class, '+')
+
+		if (other.isEmpty()) throw DivideByZeroException()
+
+		if (isEmpty) return SetNumber()
+
+		return when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, other::class, '/')
 
 			is Brackets, is Function -> Fraction(this, other)
 
 			is PolynomialTerm -> {
 				if (listOfOperands.all { it is PolynomialTerm || it is Numeric }) {
-					applyOnEachElement(DataSet::div, other).tryCastToPolynomialTerm()
+					applyOnEachElement(DataSet::div, other)
 				} else {
 					Fraction(this, other)
 				}
 			}
 
 			else -> when {
-				other is Numeric && other.isZero() -> throw DivideByZeroException()
 				other is SetNumber && other.compareTo(1.0) == 0 -> this
-				else -> applyOnEachElement(DataSet::div, other).tryCastToPolynomialTerm()
+				else -> applyOnEachElement(DataSet::div, other)
 			}
 		}
+	}
 
 	override fun rem(other: DataSet): DataSet = throw IllegalOperationException(this::class, other::class, '%')
 
 	override fun pow(other: DataSet): DataSet {
 		if (other !is SetNumber || other.number !is Int || other < 0)
 			throw IllegalOperationException(this::class, other::class, '^')
+
+		if (isEmpty) return SetNumber()
 
 		var number = other.number as Int
 		val belowZero = number < 0
@@ -99,9 +126,9 @@ class Brackets(override val listOfOperands: List<DataSet> = listOf()): Wrapping(
 				repeat(number - 1) { newBrackets = (newBrackets * newBrackets) as Brackets }
 
 				return if (belowZero)
-					Fraction(SetNumber(1), newBrackets.tryCastToPolynomialTerm())
+					Fraction(SetNumber(1), newBrackets.reduceList())
 				else
-					newBrackets.tryCastToPolynomialTerm()
+					newBrackets.reduceList()
 			}
 		}
 	}
@@ -131,15 +158,15 @@ class Brackets(override val listOfOperands: List<DataSet> = listOf()): Wrapping(
 	}
 
 	private fun addElements(elements: List<DataSet>) =
-		Brackets((listOfOperands + elements).simplifyPolynomials())
+		Brackets((listOfOperands + elements).simplifyPolynomials()).reduceList()
 
 	private fun addElements(vararg elements: DataSet) =
-		Brackets((listOfOperands + elements.toList()).simplifyPolynomials())
+		Brackets((listOfOperands + elements.toList()).simplifyPolynomials()).reduceList()
 
 	private fun applyOnEachElement(
 		function: (DataSet, DataSet) -> DataSet,
 		element: DataSet
-	): Brackets {
+	): DataSet {
 
 		if (element is SetNumber && element.compareTo(1.0) == 0) return this
 
@@ -153,21 +180,20 @@ class Brackets(override val listOfOperands: List<DataSet> = listOf()): Wrapping(
 			}
 		}.simplifyPolynomials()
 
-		return Brackets(newElementsList)
+		return Brackets(newElementsList).reduceList()
 	}
 
-	private fun tryCastToPolynomialTerm(): DataSet =
-		when {
-			listOfOperands.isEmpty() -> SetNumber(0)
-			listOfOperands.size == 1 -> listOfOperands.first()
-			else -> this
+	private fun List<PolynomialTerm>.simplifyOnlyIterable(): List<DataSet> {
+		val getDataList: List<PolynomialTerm>.() -> List<DataSet> = {
+			this.flatMap {
+				if (it.degree == 0) it.number.getBracketList() else listOf(it)
+			}
 		}
 
-	private fun List<PolynomialTerm>.simplifyOnlyIterable(): List<DataSet> {
 		val filtered = this
 			.mapToPolynomialList()
 			.filter { it.number is Numeric }
-			.also { if (it.isEmpty()) return this }
+			.also { if (it.isEmpty()) return this.getDataList() }
 			.simplify()
 
 		return mutableListOf<PolynomialTerm>().apply {
@@ -176,8 +202,15 @@ class Brackets(override val listOfOperands: List<DataSet> = listOf()): Wrapping(
 			}
 			addAll(this@simplifyOnlyIterable.filter { it.number !is Numeric })
 			sortByDescending { it.degree }
-		}.flatMap { if (it.degree == 0) it.number.getBracketList() else listOf(it) }
+		}.getDataList()
 	}
 
 	private fun List<DataSet>.simplifyPolynomials(): List<DataSet> = mapToPolynomialList().simplifyOnlyIterable()
+
+	fun reduceList() =
+		when {
+			isEmpty -> SetNumber(0)
+			listOfOperands.size == 1 -> listOfOperands.first()
+			else -> this
+		}
 }

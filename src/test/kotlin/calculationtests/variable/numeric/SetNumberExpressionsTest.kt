@@ -1,5 +1,6 @@
 package calculationtests.variable.numeric
 
+import ComputorTest
 import models.dataset.Matrix
 import models.dataset.numeric.Complex
 import models.dataset.numeric.SetNumber
@@ -9,7 +10,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import parser.variable.numeric.toNumeric
 
-class SetNumberExpressionsTest {
+class SetNumberExpressionsTest : ComputorTest() {
 
 	private val tempMatrix = Matrix(listOf(
 		listOf("-1.1".toNumeric(), "-1.1i".toNumeric())

@@ -25,6 +25,8 @@ data class Function(val parameter: String, val function: List<PolynomialTerm>, v
 	override fun plus(other: DataSet): DataSet =
 		when(other) {
 			is Matrix -> throw IllegalOperationException(this::class, other::class, '+')
+			is Brackets, is FunctionStack -> other + this
+			is Function -> if (this == other) FunctionStack(SetNumber(2), this) else Brackets(this, other)
 			else -> {
 				if (other is Numeric && other.isZero())
 					this
@@ -36,6 +38,8 @@ data class Function(val parameter: String, val function: List<PolynomialTerm>, v
 	override fun minus(other: DataSet): DataSet =
 		when(other) {
 			is Matrix -> throw IllegalOperationException(this::class, other::class, '-')
+			is Brackets, is FunctionStack -> other * SetNumber(-1) + this
+			is Function -> if (this == other) SetNumber(0) else Brackets(this, other * SetNumber(-1))
 			else -> {
 				if (other is Numeric && other.isZero())
 					this
@@ -47,6 +51,7 @@ data class Function(val parameter: String, val function: List<PolynomialTerm>, v
 	override fun times(other: DataSet): DataSet =
 		when(other) {
 			is Matrix -> throw IllegalOperationException(this::class, other::class, '*')
+			is FunctionStack, is Brackets -> other * this
 			else -> when {
 				other is Numeric && other.isZero() -> SetNumber(0)
 				other is SetNumber && other.compareTo(1.0) == 0 -> this
@@ -57,10 +62,15 @@ data class Function(val parameter: String, val function: List<PolynomialTerm>, v
 	override fun div(other: DataSet): DataSet =
 		when(other) {
 			is Matrix -> throw IllegalOperationException(this::class, other::class, '/')
+			is Fraction -> Fraction(other.denominator * this, other.numerator)
+			is Brackets -> {
+				if (other.isEmpty) throw DivideByZeroException()
+				Fraction(this, other).simplify()
+			}
 			else -> when {
 				other is Numeric && other.isZero() -> throw DivideByZeroException()
 				other is SetNumber && other.compareTo(1.0) == 0 -> this
-				else -> Fraction(this, other)
+				else -> Fraction(this, other).simplify()
 			}
 		}
 

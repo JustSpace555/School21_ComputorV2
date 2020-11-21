@@ -1,15 +1,16 @@
 package calculationtests.variable.numeric
 
-import models.exceptions.computorv2.calcexception.DivideByZeroException
-import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
+import ComputorTest
 import models.dataset.Matrix
 import models.dataset.numeric.Complex
 import models.dataset.numeric.SetNumber
+import models.exceptions.computorv2.calcexception.DivideByZeroException
+import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import parser.variable.numeric.toNumeric
 
-class ComplexExpressionsTest {
+class ComplexExpressionsTest : ComputorTest() {
 	
 	private val tempMatrix = Matrix(listOf(
 		listOf("-1.1".toNumeric(), "-1.1i".toNumeric())

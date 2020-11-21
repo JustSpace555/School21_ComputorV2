@@ -1,36 +1,14 @@
 package computorv1.output
 
 import computorv1.models.PolynomialTerm
-import models.dataset.numeric.Complex
 import models.dataset.numeric.Numeric
-import models.dataset.numeric.SetNumber
 
-internal fun getReducedForm(polynomial: List<PolynomialTerm>): String {
-	if (polynomial.isEmpty() || polynomial.all { it.number is Numeric && it.number.isZero() }) return "0"
-
-	val output = StringBuilder()
-	polynomial.forEach {
-		if (it.number is Numeric && it.number.isNotZero()) {
-			if (it.number is SetNumber && it.number < 0.0 ||
-				it.number is Complex && it.number.real < 0.0
-			) {
-				output.append(" - ${it.number * SetNumber(-1)} * ${it.name}^${it.degree}")
-			} else {
-				output.append(" + $it")
-			}
-		} else {
-			output.append(" + $it")
-		}
+internal fun getReducedForm(polynomial: List<PolynomialTerm>): String =
+	if (polynomial.isEmpty() || polynomial.all { it.number is Numeric && it.number.isZero() }) {
+		"0"
+	} else {
+		polynomial.joinToString(" + ").replace(" + -", " - ")
 	}
-
-	output.delete(0, 3)
-	val firstEl = polynomial.first().number
-	if (firstEl is SetNumber && firstEl < 0.0 || firstEl is Complex && firstEl.real < 0.0) {
-		output.insert(0, "-")
-	}
-
-	return output.toString().replace(" + -", " - ")
-}
 
 internal fun getOkOutput(polynomial: List<PolynomialTerm>, degree: Int) =
 	"Reduced form: ${getReducedForm(polynomial)} = 0\n" +

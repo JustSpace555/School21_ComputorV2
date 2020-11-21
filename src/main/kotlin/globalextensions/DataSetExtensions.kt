@@ -2,6 +2,7 @@ package globalextensions
 
 import computorv1.models.PolynomialTerm
 import models.dataset.DataSet
+import models.dataset.numeric.Numeric
 import models.dataset.wrapping.Brackets
 import models.dataset.wrapping.FunctionStack
 import models.dataset.wrapping.Wrapping
@@ -32,3 +33,9 @@ fun DataSet.toPolynomial(): PolynomialTerm =
 
 fun List<DataSet>.mapToPolynomialList(): List<PolynomialTerm> = this.map { it.toPolynomial() }
 
+fun DataSet.isEmpty() =
+	when(this) {
+		is Wrapping -> this.isEmpty
+		is Numeric -> this.isZero()
+		else -> false
+	}

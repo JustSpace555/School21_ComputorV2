@@ -1,14 +1,14 @@
 package parsertests.getparseable
 
+import ComputorTest
+import models.dataset.Matrix
 import models.exceptions.computorv2.parserexception.variable.EmptyMatrixArgumentException
 import models.exceptions.computorv2.parserexception.variable.WrongMatrixBracketsFormatException
-import models.dataset.Matrix
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import parser.getparseable.getParseableDataSet
-import parsertests.ParserTest
 
-class GetParseableMatrixTest : ParserTest() {
+class GetParseableMatrixTest : ComputorTest() {
 
 	@Test(expected = WrongMatrixBracketsFormatException::class)
 	fun `fail test without brackets`() {
