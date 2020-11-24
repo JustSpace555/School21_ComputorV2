@@ -1,12 +1,12 @@
 package parser.variable.numeric
 
 import globalextensions.tryCastToInt
-import models.exceptions.computorv2.parserexception.variable.SetNumericFormatException
 import models.dataset.numeric.Complex
 import models.dataset.numeric.Numeric
 import models.dataset.numeric.SetNumber
+import models.exceptions.computorv2.parserexception.variable.SetNumericFormatException
 
-fun String.isComplex() = contains(Regex("\\d*i"))
+fun String.isComplex() = contains(Regex("[0-9]*i"))
 
 fun String.toSetNumber(): SetNumber {
 	val parsed = toDoubleOrNull()?.tryCastToInt() ?: throw SetNumericFormatException(this, SetNumber::class)

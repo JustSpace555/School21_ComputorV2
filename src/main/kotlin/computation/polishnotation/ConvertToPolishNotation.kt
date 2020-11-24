@@ -4,7 +4,7 @@ import computation.polishnotation.extensions.getOperandLastIndex
 import computation.polishnotation.extensions.isComplexOrMatrixOrFunctionOrParameter
 import computation.polishnotation.extensions.isOperandOrTempVariable
 import computorv1.models.PolynomialTerm
-import models.dataset.Function
+import models.dataset.function.Function
 import models.dataset.Matrix
 import models.dataset.numeric.Complex
 import models.exceptions.computorv2.calcexception.BracketsAmountException
@@ -77,14 +77,14 @@ fun convertToPolishNotation(input: List<String>, parameter: String = ""): List<S
 			continue
 		} else {
 			val elementPriority = choosePriority(input[i])
-			while (!stack.isEmpty() && choosePriority(stack.peek()) >= elementPriority && elementPriority > 1)
+			while (stack.isNotEmpty() && choosePriority(stack.peek()) >= elementPriority && elementPriority > 1)
 				output.add(stack.pop())
 
 			stack.push(input[i++])
 		}
 	}
 
-	while (stack.isNotEmpty())
-		output.add(stack.pop())
+	while (stack.isNotEmpty()) output.add(stack.pop())
+
 	return output
 }

@@ -1,5 +1,9 @@
 
 import models.exceptions.ComputorException
+import models.tempVariables
+import parser.extensions.addToHistory
+import parser.extensions.getHistory
+import parser.extensions.getVariablesList
 import parser.parser
 import java.util.*
 
@@ -7,25 +11,26 @@ fun main() {
 	val scanner = Scanner(System.`in`)
 	var input: String
 
-	//TODO команды выхода, help, т.д.
 	while (scanner.hasNext()) {
 		input = scanner.nextLine()
-		if (input == "exit") return
 
-		lateinit var mathInstance: String
-		try {
-			mathInstance = parser(input)
-		} catch (e : ComputorException) {
-			println(e.message)
-			continue
+		when {
+			input.startsWith("exit") -> return
+			input.startsWith("history") -> { println(getHistory()); continue }
+			input.startsWith("variables") -> { println(getVariablesList()); continue }
 		}
 
-//		//TODO подумать как переделать
-//		if (mathInstance.second is Calculation) {
-//			println((mathInstance.second as Calculation).invoke())
-//			continue
-//		}
-//
-//		variables[mathInstance.first] = mathInstance.second as DataSet
+		try {
+			parser(input).also {
+				addToHistory(input, it)
+				println("$it\n")
+			}
+		} catch (e : ComputorException) {
+			println(e.message)
+		} catch (e: Exception) {
+			println("Something went wrong :(\n${e.message}\n${e.stackTrace}")
+		} finally {
+			tempVariables.clear()
+		}
 	}
 }

@@ -16,7 +16,7 @@ fun computorV1(input: String): String {
 	val solutions = calculateSolutions(polynomial.first)
 
 	return getOkOutput(polynomial.first, polynomial.second) + "\n" +
-			getStringSolutions(solutions, polynomial.second)
+			getStringSolutions(solutions, polynomial.second) + "\n"
 }
 
 fun List<PolynomialTerm>.simplify(): List<PolynomialTerm> = simplifyPolynomial(this.mapToPolynomialList())

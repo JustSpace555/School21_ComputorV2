@@ -134,4 +134,6 @@ data class Fraction(val numerator: DataSet, val denominator: DataSet) : Wrapping
 				}
 			}
 		}
+
+	//TODO Изменить на обычный класс и переписать hashCode, equals
 }

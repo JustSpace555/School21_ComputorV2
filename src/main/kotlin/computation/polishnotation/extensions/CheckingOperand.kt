@@ -1,14 +1,16 @@
 package computation.polishnotation.extensions
 
 import computorv1.models.PolynomialTerm
-import models.exceptions.computorv2.calcexception.variable.NoSuchVariableException
+import models.dataset.function.Function
 import models.dataset.Matrix
-import models.dataset.Function
 import models.dataset.numeric.Complex
 import models.dataset.numeric.SetNumber
+import models.exceptions.computorv2.calcexception.variable.NoSuchVariableException
+import models.exceptions.computorv2.parserexception.variable.SetNumericFormatException
 import models.tempVariables
 import models.variables
 import parser.variable.numeric.isComplex
+import parser.variable.numeric.toComplex
 import kotlin.reflect.KClass
 
 fun String.isOperand(): Boolean = this.toDoubleOrNull() != null || variables.containsKey(this)
@@ -18,7 +20,11 @@ fun String.isOperandOrTempVariable(): Boolean = this.isOperand() || tempVariable
 fun String.isComplexOrMatrixOrFunctionOrParameter(parameter: String = ""): Pair<Boolean, KClass<*>> =
 	when {
 		this.isComplex() -> {
-			if (!this.isComplex()) throw NoSuchVariableException()
+			try {
+				this.toComplex()
+			} catch (e: SetNumericFormatException) {
+				throw NoSuchVariableException(this)
+			}
 			Pair(true, Complex::class)
 		}
 

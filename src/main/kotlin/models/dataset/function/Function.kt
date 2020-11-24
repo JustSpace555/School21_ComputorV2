@@ -1,8 +1,12 @@
-package models.dataset
+package models.dataset.function
 
 import computation.polishnotation.extensions.compute
 import computorv1.models.PolynomialTerm
 import computorv1.reducedString
+import globalextensions.isEmpty
+import globalextensions.toPolynomialList
+import models.dataset.DataSet
+import models.dataset.Matrix
 import models.dataset.numeric.Numeric
 import models.dataset.numeric.SetNumber
 import models.dataset.wrapping.Brackets
@@ -11,11 +15,10 @@ import models.dataset.wrapping.FunctionStack
 import models.exceptions.computorv2.calcexception.DivideByZeroException
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
 import parser.extensions.putSpaces
-import parser.variable.toPolynomialList
 
-data class Function(val parameter: String, val function: List<PolynomialTerm>, val name: String = "") : DataSet {
+open class Function(val parameter: String, val function: List<PolynomialTerm>, val name: String = "") : DataSet {
 
-	private val listOfPolynomialsBeforeInvoke = mutableListOf<PolynomialTerm>()
+	protected val listOfPolynomialsBeforeInvoke = mutableListOf<PolynomialTerm>()
 
 	constructor(
 		parameter: String,
@@ -28,7 +31,7 @@ data class Function(val parameter: String, val function: List<PolynomialTerm>, v
 			is Brackets, is FunctionStack -> other + this
 			is Function -> if (this == other) FunctionStack(SetNumber(2), this) else Brackets(this, other)
 			else -> {
-				if (other is Numeric && other.isZero())
+				if (other.isEmpty())
 					this
 				else
 					Brackets(this, other)
@@ -41,38 +44,41 @@ data class Function(val parameter: String, val function: List<PolynomialTerm>, v
 			is Brackets, is FunctionStack -> other * SetNumber(-1) + this
 			is Function -> if (this == other) SetNumber(0) else Brackets(this, other * SetNumber(-1))
 			else -> {
-				if (other is Numeric && other.isZero())
+				if (other.isEmpty())
 					this
 				else
 					Brackets(this, other * SetNumber(-1))
 			}
 		}
 
-	override fun times(other: DataSet): DataSet =
-		when(other) {
+	override fun times(other: DataSet): DataSet {
+
+		if (other.isEmpty()) return SetNumber()
+
+		return when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, other::class, '*')
 			is FunctionStack, is Brackets -> other * this
 			else -> when {
-				other is Numeric && other.isZero() -> SetNumber(0)
 				other is SetNumber && other.compareTo(1.0) == 0 -> this
 				else -> FunctionStack(this, other)
 			}
 		}
+	}
 
-	override fun div(other: DataSet): DataSet =
-		when(other) {
+	override fun div(other: DataSet): DataSet {
+
+		if (other.isEmpty()) throw DivideByZeroException()
+
+		return when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, other::class, '/')
 			is Fraction -> Fraction(other.denominator * this, other.numerator)
-			is Brackets -> {
-				if (other.isEmpty) throw DivideByZeroException()
-				Fraction(this, other).simplify()
-			}
+			is Brackets -> Fraction(this, other).simplify()
 			else -> when {
-				other is Numeric && other.isZero() -> throw DivideByZeroException()
 				other is SetNumber && other.compareTo(1.0) == 0 -> this
 				else -> Fraction(this, other).simplify()
 			}
 		}
+	}
 
 	override fun rem(other: DataSet): DataSet = throw IllegalOperationException(this::class, other::class, '%')
 
@@ -117,4 +123,23 @@ data class Function(val parameter: String, val function: List<PolynomialTerm>, v
 		listOfPolynomialsBeforeInvoke.addAll(elements)
 
 	fun clearPolynomialsBeforeInvoke() = listOfPolynomialsBeforeInvoke.clear()
+
+	override fun equals(other: Any?): Boolean =
+		when {
+			other == null -> false
+			other !is Function -> false
+			this === other -> true
+			name != other.name -> false
+			parameter != other.parameter -> false
+			function != other.function -> false
+			else -> true
+		}
+
+	override fun hashCode(): Int {
+		var result = 17
+		result = 31 * result + parameter.hashCode()
+		result = 31 * result + function.hashCode()
+		result = 31 * result + name.hashCode()
+		return result
+	}
 }

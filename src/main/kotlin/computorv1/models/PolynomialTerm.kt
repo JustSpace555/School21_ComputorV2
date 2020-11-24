@@ -1,7 +1,7 @@
 package computorv1.models
 
 import models.dataset.DataSet
-import models.dataset.Function
+import models.dataset.function.Function
 import models.dataset.Matrix
 import models.dataset.numeric.Complex
 import models.dataset.numeric.Numeric

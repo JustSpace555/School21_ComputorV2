@@ -2,10 +2,12 @@ package globalextensions
 
 import computorv1.models.PolynomialTerm
 import models.dataset.DataSet
+import models.dataset.Matrix
 import models.dataset.numeric.Numeric
 import models.dataset.wrapping.Brackets
 import models.dataset.wrapping.FunctionStack
 import models.dataset.wrapping.Wrapping
+import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
 
 fun DataSet.getBracketList(): List<DataSet> = when(this) {
 	!is Brackets -> listOf(this)
@@ -14,13 +16,16 @@ fun DataSet.getBracketList(): List<DataSet> = when(this) {
 
 fun DataSet.toPolynomial(): PolynomialTerm =
 	when (this) {
+
+		is Matrix -> throw IllegalOperationException(PolynomialTerm::class, Matrix::class)
+
 		is Wrapping -> when {
 			listOfOperands.any { it is PolynomialTerm } -> {
 				val newList = listOfOperands.toMutableList()
 				val maxPol = listOfOperands.filterIsInstance<PolynomialTerm>().maxByOrNull { it.degree }!!
 				newList.remove(maxPol)
 				val newVal = if (this is Brackets) Brackets(newList) else FunctionStack(newList)
-				PolynomialTerm(newVal * maxPol.number, maxPol.degree, maxPol.name)
+				maxPol.copy(number = newVal * maxPol.number)
 			}
 
 			else -> PolynomialTerm(this)
@@ -38,4 +43,11 @@ fun DataSet.isEmpty() =
 		is Wrapping -> this.isEmpty
 		is Numeric -> this.isZero()
 		else -> false
+	}
+
+fun DataSet.toPolynomialList() =
+	when(this) {
+		is Wrapping -> listOfOperands.mapToPolynomialList()
+		is PolynomialTerm -> listOf(this)
+		else -> listOf(PolynomialTerm(this))
 	}

@@ -2,7 +2,7 @@ package calculationtests
 
 import ComputorTest
 import computation.polishnotation.extensions.compute
-import models.dataset.Function
+import models.dataset.function.Function
 import models.dataset.Matrix
 import models.dataset.numeric.Complex
 import models.dataset.numeric.SetNumber

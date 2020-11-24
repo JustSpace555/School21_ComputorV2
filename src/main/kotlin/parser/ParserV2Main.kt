@@ -2,23 +2,24 @@ package parser
 
 import computation.polishnotation.extensions.compute
 import computorv1.computorV1
+import computorv1.reducedString
 import globalextensions.getBracketList
-import models.dataset.Function
-import models.dataset.Matrix
+import globalextensions.mapToPolynomialList
+import globalextensions.toPolynomialList
+import models.dataset.function.Function
 import models.dataset.wrapping.Brackets
 import models.exceptions.computorv1.parserexception.EqualSignAmountException
 import models.exceptions.computorv1.parserexception.EqualSignPositionException
-import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
 import models.exceptions.computorv2.parserexception.sign.QuestionMarkPositionException
-import models.tempVariables
+import models.exceptions.computorv2.parserexception.variable.MultipleArgumentException
 import models.variables
 import parser.extensions.putSpaces
 import parser.extensions.validateVariable
 import parser.getparseable.getParseableDataSet
-import parser.variable.parseFunctionFromList
 
 internal fun parser(input: String): String {
 	val mod = putSpaces(input).split(' ').filter { it.isNotEmpty() }
+
 	val isComputation = mod.contains("?")
 
 	if (!mod.contains("=") && !isComputation) return mod.compute().toString()
@@ -35,31 +36,62 @@ internal fun parser(input: String): String {
 		if (mod.last() != "?") throw QuestionMarkPositionException()
 		if (indexOfEqual == mod.lastIndex - 1) return beforeEqual.compute().toString()
 
-		val computedBeforeEqual = beforeEqual.compute().getBracketList()
-		val computedAfterEqual = afterEqual.compute().getBracketList()
-		if (computedAfterEqual.first() is Matrix || computedBeforeEqual.first() is Matrix)
-			throw IllegalOperationException(computedBeforeEqual::class, computedAfterEqual::class)
+		val parameter = beforeEqual.find {
+			!variables.containsKey(it) && !it.contains(Regex("[0-9+\\-*/^()%;\\[\\],]"))
+		} ?: ""
 
-		return computorV1(
-			computedBeforeEqual.joinToString("") + "=" + computedAfterEqual.joinToString("")
-		)
+		val parameterAfterEquals = afterEqual.dropLast(1).find {
+			!variables.containsKey(it) && !it.contains(Regex("[0-9+\\-*/^()%;\\[\\],]"))
+		} ?: ""
+
+		if (parameter.isNotEmpty() && parameterAfterEquals.isNotEmpty() && parameter != parameterAfterEquals)
+			throw MultipleArgumentException()
+
+		val computedBeforeEqual = getStringWithFunctions(beforeEqual)
+			.compute(parameter)
+			.getBracketList()
+			.mapToPolynomialList()
+			.reducedString(parameter)
+			.replace(parameter, "X")
+
+		val computedAfterEqual = getStringWithFunctions(afterEqual.dropLast(1))
+			.compute(parameter)
+			.getBracketList()
+			.mapToPolynomialList()
+			.reducedString(parameter)
+			.replace(parameter, "X")
+
+		return computorV1("$computedBeforeEqual = $computedAfterEqual").replace("X", parameter)
 	}
 
 	val parseableKClass = getParseableDataSet(mod)
 	val variableName = validateVariable(beforeEqual, parseableKClass)
 
 	val isFunction = parseableKClass == Function::class
-	val parameter = if (isFunction) parseFunctionFromList(beforeEqual, afterEqual).parameter else ""
-//	if (parseableKClass == Function::class) {
-//		val function = parseFunctionFromList(beforeEqual, afterEqual)
-		//TODO переделать simplify
-//	}
-	val computed = afterEqual.compute(parameter)
-	val computedStr = computed.also {
-		tempVariables.clear()
-		//TODO Переделать (заглушка)
-		variables[variableName] = if (isFunction) parseFunctionFromList(beforeEqual, afterEqual) else it
-	}.toString()
+	val parameter = if (isFunction) beforeEqual[2] else ""
+	val computed = afterEqual.compute(parameter).also {
+		variables[variableName] = if (isFunction) { Function(parameter, it.toPolynomialList()) } else it
+	}
 
-	return if (computed is Brackets) computedStr.removePrefix("(").removeSuffix(")") else computedStr
+	return when(computed) {
+		is Brackets -> computed.toString().removePrefix("(").removeSuffix(")")
+		else -> computed.toString()
+	}
+}
+
+//TODO Подумать как переписать
+fun getStringWithFunctions(input: List<String>): List<String> {
+	var i = 0
+	val output = mutableListOf<String>()
+
+	while (i in input.indices) {
+		if (variables.containsKey(input[i]) && variables[input[i]] is Function) {
+			val function = variables[input[i]] as Function
+			output.addAll(putSpaces(function.function.reducedString(function.parameter)).split(' '))
+			i += 4
+			continue
+		}
+		output.add(input[i++])
+	}
+	return output
 }

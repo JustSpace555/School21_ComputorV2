@@ -3,7 +3,7 @@ package models.dataset.wrapping
 import computorv1.models.PolynomialTerm
 import globalextensions.isEmpty
 import models.dataset.DataSet
-import models.dataset.Function
+import models.dataset.function.Function
 import models.dataset.Matrix
 import models.dataset.numeric.Numeric
 import models.dataset.numeric.SetNumber
@@ -102,4 +102,6 @@ class FunctionStack(override val listOfOperands: List<DataSet> = listOf()) : Wra
 			listOfOperands.size == 1 -> listOfOperands.first()
 			else -> this
 		}
+
+	//TODO Изменить на обычный класс и переписать hashCode, equals
 }

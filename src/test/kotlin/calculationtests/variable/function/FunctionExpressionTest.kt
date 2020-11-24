@@ -1,7 +1,7 @@
 package calculationtests.variable.function
 
 import ComputorTest
-import models.dataset.Function
+import models.dataset.function.Function
 import models.dataset.numeric.Complex
 import models.dataset.numeric.SetNumber
 import models.dataset.wrapping.Brackets
