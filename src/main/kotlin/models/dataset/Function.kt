@@ -1,12 +1,11 @@
-package models.dataset.function
+package models.dataset
 
 import computation.polishnotation.extensions.compute
 import computorv1.models.PolynomialTerm
 import computorv1.reducedString
 import globalextensions.isEmpty
 import globalextensions.toPolynomialList
-import models.dataset.DataSet
-import models.dataset.Matrix
+import models.dataset.numeric.Complex
 import models.dataset.numeric.Numeric
 import models.dataset.numeric.SetNumber
 import models.dataset.wrapping.Brackets
@@ -16,9 +15,13 @@ import models.exceptions.computorv2.calcexception.DivideByZeroException
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
 import parser.extensions.putSpaces
 
-open class Function(val parameter: String, val function: List<PolynomialTerm>, val name: String = "") : DataSet {
+open class Function(
+	open val parameter: String,
+	open val function: List<PolynomialTerm>,
+	val name: String = ""
+) : DataSet {
 
-	protected val listOfPolynomialsBeforeInvoke = mutableListOf<PolynomialTerm>()
+	private val listOfPolynomialsBeforeInvoke = mutableListOf<PolynomialTerm>()
 
 	constructor(
 		parameter: String,
@@ -96,10 +99,10 @@ open class Function(val parameter: String, val function: List<PolynomialTerm>, v
 	}
 
 	operator fun invoke(operand: Number) = this(SetNumber(operand))
-	operator fun invoke(operand: DataSet): Numeric {
+	open operator fun invoke(operand: DataSet): Numeric {
 		val rightOperand = if (listOfPolynomialsBeforeInvoke.isNotEmpty()) {
 			var newOperand = SetNumber(0) as DataSet
-			listOfPolynomialsBeforeInvoke.forEach { newOperand += it() }
+			listOfPolynomialsBeforeInvoke.forEach { newOperand += it.number.pow(it.degree) }
 			newOperand
 		} else operand
 

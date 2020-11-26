@@ -40,10 +40,19 @@ fun List<DataSet>.mapToPolynomialList(): List<PolynomialTerm> = this.map { it.to
 
 fun DataSet.isEmpty() =
 	when(this) {
-		is Wrapping -> this.isEmpty
-		is Numeric -> this.isZero()
+		is Wrapping -> isEmpty
+		is Numeric -> isZero()
+		is PolynomialTerm -> {
+			when (number) {
+				is Wrapping -> number.isEmpty
+				is Numeric -> number.isZero()
+				else -> false
+			}
+		}
 		else -> false
 	}
+
+fun DataSet.isNotEmpty() = !isEmpty()
 
 fun DataSet.toPolynomialList() =
 	when(this) {

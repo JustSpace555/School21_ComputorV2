@@ -1,12 +1,13 @@
 package computation.polishnotation.extensions
 
 import computorv1.models.PolynomialTerm
-import models.dataset.function.Function
+import models.dataset.Function
 import models.dataset.Matrix
 import models.dataset.numeric.Complex
 import models.dataset.numeric.SetNumber
 import models.exceptions.computorv2.calcexception.variable.NoSuchVariableException
-import models.exceptions.computorv2.parserexception.variable.SetNumericFormatException
+import models.exceptions.computorv2.parserexception.variable.NumericFormatException
+import models.reservedFunctionNames
 import models.tempVariables
 import models.variables
 import parser.variable.numeric.isComplex
@@ -19,18 +20,21 @@ fun String.isOperandOrTempVariable(): Boolean = this.isOperand() || tempVariable
 
 fun String.isComplexOrMatrixOrFunctionOrParameter(parameter: String = ""): Pair<Boolean, KClass<*>> =
 	when {
+
+		variables.containsKey(this) && variables[this] is Function || this in reservedFunctionNames -> {
+			Pair(true, Function::class)
+		}
+
 		this.isComplex() -> {
 			try {
 				this.toComplex()
-			} catch (e: SetNumericFormatException) {
+			} catch (e: NumericFormatException) {
 				throw NoSuchVariableException(this)
 			}
 			Pair(true, Complex::class)
 		}
 
 		this == "[" -> Pair(true, Matrix::class)
-
-		variables.containsKey(this) && variables[this] is Function -> Pair(true, Function::class)
 
 		this == parameter -> Pair(true, PolynomialTerm::class)
 

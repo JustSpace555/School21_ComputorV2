@@ -4,7 +4,7 @@ import computation.polishnotation.extensions.getOperandLastIndex
 import computation.polishnotation.extensions.isComplexOrMatrixOrFunctionOrParameter
 import computation.polishnotation.extensions.isOperandOrTempVariable
 import computorv1.models.PolynomialTerm
-import models.dataset.function.Function
+import models.dataset.Function
 import models.dataset.Matrix
 import models.dataset.numeric.Complex
 import models.exceptions.computorv2.calcexception.BracketsAmountException
@@ -41,8 +41,7 @@ fun convertToPolishNotation(input: List<String>, parameter: String = ""): List<S
 					Complex::class -> parseComplexFromList(variableList)
 					Function::class -> parseFunctionFromList(variableList, parameter)
 					PolynomialTerm::class -> {
-						val degree = if (i + 1 in input.indices && input[i + 1] == "^") 0 else 1
-						PolynomialTerm(1, degree, if (parameter.isNotEmpty()) parameter else "X")
+						PolynomialTerm(1, 1, if (parameter.isNotEmpty()) parameter else "X")
 					}
 					else -> Matrix(variableList.toTypedArray())
 				}
@@ -66,11 +65,9 @@ fun convertToPolishNotation(input: List<String>, parameter: String = ""): List<S
 		}
 
 		if (input[i] == ")") {
-			while (stack.isNotEmpty() && stack.peek() != "(")
-				output.add(stack.pop())
+			while (stack.isNotEmpty() && stack.peek() != "(") output.add(stack.pop())
 
-			if (stack.isEmpty())
-				throw BracketsAmountException()
+			if (stack.isEmpty()) throw BracketsAmountException()
 
 			stack.pop()
 			i++

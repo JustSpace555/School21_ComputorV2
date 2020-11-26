@@ -118,5 +118,5 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 			else -> this
 		}
 
-	private fun tryCastToSetNumber(): Numeric = if (imaginary.isZero()) real else this
+	fun tryCastToSetNumber(): Numeric = if (imaginary.isZero()) real else this
 }

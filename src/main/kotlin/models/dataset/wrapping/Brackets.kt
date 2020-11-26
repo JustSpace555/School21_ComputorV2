@@ -7,7 +7,7 @@ import globalextensions.getBracketList
 import globalextensions.isEmpty
 import globalextensions.mapToPolynomialList
 import models.dataset.DataSet
-import models.dataset.function.Function
+import models.dataset.Function
 import models.dataset.Matrix
 import models.dataset.numeric.Numeric
 import models.dataset.numeric.SetNumber

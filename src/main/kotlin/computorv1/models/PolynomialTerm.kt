@@ -1,12 +1,13 @@
 package computorv1.models
 
 import models.dataset.DataSet
-import models.dataset.function.Function
+import models.dataset.Function
 import models.dataset.Matrix
 import models.dataset.numeric.Complex
 import models.dataset.numeric.Numeric
 import models.dataset.numeric.SetNumber
 import models.dataset.wrapping.Brackets
+import models.dataset.wrapping.Fraction
 import models.dataset.wrapping.FunctionStack
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
 
@@ -34,9 +35,9 @@ data class PolynomialTerm(
 
 			else -> {
 				if (degree == 0) {
-					copy(number = number + other).tryCastToNumeric()
+					number + other
 				} else {
-					Brackets(this, PolynomialTerm(other))
+					Brackets(this, other)
 				}
 			}
 		}
@@ -57,9 +58,9 @@ data class PolynomialTerm(
 
 			else -> {
 				if (degree == 0) {
-					copy(number = (number + other) as Numeric).tryCastToNumeric()
+					number - other
 				} else {
-					Brackets(this, PolynomialTerm(other * SetNumber(-1)))
+					Brackets(this, other * SetNumber(-1))
 				}
 			}
 		}
@@ -72,8 +73,7 @@ data class PolynomialTerm(
 
 			is Brackets -> other * this
 
-			is Function -> copy(number = FunctionStack(mutableListOf(PolynomialTerm(number), PolynomialTerm(other))))
-				.tryCastToNumeric()
+			is Function -> copy(number = FunctionStack(mutableListOf(number, other))).tryCastToNumeric()
 
 			else -> copy(number = number * other).tryCastToNumeric()
 		}
@@ -84,7 +84,7 @@ data class PolynomialTerm(
 
 			is PolynomialTerm -> copy(number = number / other.number, degree = degree - other.degree).tryCastToNumeric()
 
-			is Brackets -> throw IllegalOperationException(this::class, Brackets::class, '/')
+			is Brackets -> copy(number = Fraction(SetNumber(1), other)).tryCastToNumeric()
 
 			else -> copy(number = number / other).tryCastToNumeric()
 		}
@@ -95,7 +95,7 @@ data class PolynomialTerm(
 		if (other !is SetNumber || other.number is Double)
 			throw IllegalOperationException(this::class, other::class, '^')
 
-		return copy(degree = other.number as Int + degree).tryCastToNumeric()
+		return copy(degree = other.number as Int * degree).tryCastToNumeric()
 	}
 
 	override fun toString(): String {
@@ -109,7 +109,4 @@ data class PolynomialTerm(
 	}
 
 	private fun tryCastToNumeric(): DataSet = if (degree == 0) number else this
-
-	operator fun invoke(): Numeric = number.pow(degree) as Numeric
-	operator fun invoke(input: DataSet): Numeric = input.pow(degree) as Numeric
 }

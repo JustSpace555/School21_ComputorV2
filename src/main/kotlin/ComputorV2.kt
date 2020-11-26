@@ -14,21 +14,25 @@ fun main() {
 	while (scanner.hasNext()) {
 		input = scanner.nextLine()
 
+		var isPlot = false
 		when {
 			input.startsWith("exit") -> return
 			input.startsWith("history") -> { println(getHistory()); continue }
 			input.startsWith("variables") -> { println(getVariablesList()); continue }
+			input.startsWith("plot") -> { isPlot = true }
 		}
 
 		try {
-			parser(input).also {
+			parser(input, isPlot).also {
 				addToHistory(input, it)
 				println("$it\n")
 			}
 		} catch (e : ComputorException) {
-			println(e.message)
+			addToHistory(input, e.message)
+			println(e.message + "\n")
 		} catch (e: Exception) {
-			println("Something went wrong :(\n${e.message}\n${e.stackTrace}")
+			addToHistory(input, e.message ?: "Exception")
+			println("Something went wrong :(\n${e.message}\n${e.stackTrace}\n")
 		} finally {
 			tempVariables.clear()
 		}

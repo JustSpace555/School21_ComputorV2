@@ -1,15 +1,16 @@
 package models.dataset.numeric
 
+import globalextensions.isZero
 import models.dataset.DataSet
 
 interface Numeric : DataSet {
 
 	fun isZero(): Boolean {
-		if (this is SetNumber) return this.compareTo(0.0) == 0
+		if (this is SetNumber) return number.isZero()
 
 		this as Complex
-		return this.real.compareTo(0.0) == 0 && this.imaginary.compareTo(0.0) == 0
+		return real.number.isZero() && imaginary.number.isZero()
 	}
 
-	fun isNotZero(): Boolean = !this.isZero()
+	fun isNotZero(): Boolean = !isZero()
 }

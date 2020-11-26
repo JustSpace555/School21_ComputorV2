@@ -4,12 +4,12 @@ import globalextensions.tryCastToInt
 import models.dataset.numeric.Complex
 import models.dataset.numeric.Numeric
 import models.dataset.numeric.SetNumber
-import models.exceptions.computorv2.parserexception.variable.SetNumericFormatException
+import models.exceptions.computorv2.parserexception.variable.NumericFormatException
 
 fun String.isComplex() = contains(Regex("[0-9]*i"))
 
 fun String.toSetNumber(): SetNumber {
-	val parsed = toDoubleOrNull()?.tryCastToInt() ?: throw SetNumericFormatException(this, SetNumber::class)
+	val parsed = toDoubleOrNull()?.tryCastToInt() ?: throw NumericFormatException(this, SetNumber::class)
 	return SetNumber(parsed)
 }
 
@@ -18,7 +18,7 @@ fun String.toComplex(): Complex {
 	if (withoutI.isEmpty()) return Complex(imaginary = 1)
 
 	val parsed = withoutI.toDoubleOrNull()?.tryCastToInt()
-		?: throw SetNumericFormatException(this, Complex::class)
+		?: throw NumericFormatException(this, Complex::class)
 
 	return Complex(imaginary = SetNumber(parsed))
 }
@@ -29,7 +29,7 @@ fun String.isNumeric(): Boolean {
 	if (isComplex()) return true
 	try {
 		this.toSetNumber()
-	} catch (exc: SetNumericFormatException) {
+	} catch (exc: NumericFormatException) {
 		return false
 	}
 	return true

@@ -2,22 +2,22 @@ package computorv1.parser.extensions
 
 import computorv1.models.PolynomialTerm
 import globalextensions.times
+import globalextensions.tryCastToInt
 import models.exceptions.computorv1.parserexception.WrongArgumentNameException
 import models.exceptions.computorv1.parserexception.WrongDegreeFormatException
 import models.exceptions.computorv1.parserexception.WrongNumberFormatException
 import models.dataset.numeric.SetNumber
 
-internal fun String.containsX() = contains('x') || contains('X')
+private fun String.containsX() = contains('x') || contains('X')
 
-internal fun String.getConstNumber(): Number {
+private fun String.getConstNumber(): Number {
 
 	if (first().isLetter())
 		return 1
 
 	val numberListStr =
 		if (contains('*'))
-			split('*').filter {
-				!it.contains('^') && !it.contains('x') && !it.contains('X') }
+			split('*').filter { !it.contains(Regex("[xX^]")) }
 		else
 			listOf(this)
 
@@ -31,16 +31,16 @@ internal fun String.getConstNumber(): Number {
 		}
 	}
 
-	if (number.toDouble() - number.toInt() == 0.0)
-		number = number.toInt()
-
-	return number
+	return number.tryCastToInt()
 }
 
-internal fun String.getDegree(): Int {
+private fun String.getDegree(): Int {
 	if (!contains('^')) {
-		return if (last().isDigit() && containsX()) throw WrongDegreeFormatException(this)
-		else if (containsX()) 1 else 0
+		return when{
+			last().isDigit() && containsX() -> throw WrongDegreeFormatException(this)
+			containsX() -> 1
+			else -> 0
+		}
 	}
 
 	return try {

@@ -1,6 +1,6 @@
 package parser.extensions
 
-import models.dataset.function.Function
+import models.dataset.Function
 import models.exceptions.computorv2.parserexception.variable.InvalidVariableFormatException
 import models.exceptions.computorv2.parserexception.variable.InvalidVariableNameException
 import kotlin.reflect.KClass

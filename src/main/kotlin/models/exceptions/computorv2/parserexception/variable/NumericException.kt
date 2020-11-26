@@ -4,10 +4,10 @@ import models.exceptions.computorv2.ComputorV2Exception
 import kotlin.reflect.KClass
 
 @ComputorV2Exception
-abstract class SetNumberException : VariableParserException()
+abstract class NumericException : VariableParserException()
 
 @ComputorV2Exception
-class SetNumericFormatException(input: String = "", parseTo: KClass<*>? = null) : SetNumberException() {
+class NumericFormatException(input: String = "", parseTo: KClass<*>? = null) : NumericException() {
     override val message: String = "SetNumber format exception. " +
             if (input.isNotEmpty() && parseTo != null) "Can't parse $input to ${parseTo.simpleName}" else ""
 }

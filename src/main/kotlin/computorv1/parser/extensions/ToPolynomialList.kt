@@ -8,13 +8,13 @@ internal fun List<String>.toPolynomialList(): List<PolynomialTerm> {
 	val output = mutableListOf<PolynomialTerm>()
 	var isWasEquality = false
 
-	for (element in this) {
-		if (element == "=") {
+	forEach {
+		if (it == "=") {
 			isWasEquality = true
-			continue
+			return@forEach
 		}
 
-		var term = element.toPolynomialTerm()
+		var term = it.toPolynomialTerm()
 		if (isWasEquality)
 			term = (term * SetNumber(-1)).toPolynomial()
 

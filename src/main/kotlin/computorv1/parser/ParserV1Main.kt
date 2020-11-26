@@ -4,6 +4,8 @@ import computorv1.models.PolynomialTerm
 import computorv1.parser.extensions.putSpaces
 import computorv1.parser.extensions.simplifyPolynomial
 import computorv1.parser.extensions.toPolynomialList
+import globalextensions.isEmpty
+import globalextensions.isNotEmpty
 import models.exceptions.computorv1.calculationexception.EveryNumberIsSolutionException
 import models.exceptions.computorv1.calculationexception.NoSolutionsException
 import models.exceptions.computorv1.calculationexception.TooHighPolynomialDegreeException
@@ -11,14 +13,16 @@ import models.exceptions.computorv1.parserexception.EqualSignAmountException
 import models.exceptions.computorv1.parserexception.EqualSignPositionException
 import models.dataset.numeric.Numeric
 
-internal fun parser(input: String, isNeedToCheckDegree: Boolean): Pair<List<PolynomialTerm>, Int> {
-	val inputArray: List<String> = putSpaces(input).split(' ').filter { it.isNotEmpty() }
+internal fun parser(input: String): Pair<List<PolynomialTerm>, Int> {
+	val mod: List<String> = putSpaces(input).split(' ').filter { it.isNotEmpty() }
 
-	val indexOfEqual = inputArray.indexOf("=")
-	if (indexOfEqual != inputArray.lastIndexOf("=")) throw EqualSignAmountException()
-	else if (indexOfEqual != -1 && indexOfEqual !in 1 until inputArray.lastIndex) throw EqualSignPositionException()
+	val indexOfEqual = mod.indexOf("=")
+	when {
+		indexOfEqual != mod.lastIndexOf("=") -> throw EqualSignAmountException()
+		indexOfEqual != -1 && indexOfEqual !in 1 until mod.lastIndex -> throw EqualSignPositionException()
+	}
 
-	val listPair = inputArray.toPolynomialList().also { if (it.isEmpty()) throw EveryNumberIsSolutionException(it, 0) }
+	val listPair = mod.toPolynomialList().also { if (it.isEmpty()) throw EveryNumberIsSolutionException(it, 0) }
 	var maxDegree: Int
 
 	val simpledPolynomial = simplifyPolynomial(listPair).also {
@@ -26,13 +30,12 @@ internal fun parser(input: String, isNeedToCheckDegree: Boolean): Pair<List<Poly
 
 		val firstElement = it.first()
 		maxDegree = firstElement.degree.also { degree ->
-			if (isNeedToCheckDegree && degree > 2) throw TooHighPolynomialDegreeException()
+			if (degree > 2) throw TooHighPolynomialDegreeException()
 		}
 
-		if (firstElement.degree == 0 && (firstElement.number as Numeric).isNotZero())
-			throw NoSolutionsException(it, maxDegree)
-		else if (it.all { term -> (term.number as Numeric).isZero() }) {
-			throw EveryNumberIsSolutionException(listOf(), 0)
+		when {
+			firstElement.degree == 0 && firstElement.number.isNotEmpty() -> throw NoSolutionsException(it, maxDegree)
+			it.all { term -> term.number.isEmpty() } -> throw EveryNumberIsSolutionException(listOf(), 0)
 		}
 	}
 

@@ -1,7 +1,7 @@
 package computation.polishnotation.extensions
 
 import models.exceptions.computorv2.calcexception.BracketsAmountException
-import models.dataset.function.Function
+import models.dataset.Function
 import models.dataset.Matrix
 import java.util.*
 import kotlin.reflect.KClass

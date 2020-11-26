@@ -7,6 +7,7 @@ internal fun getStringSolutions(answer: Triple<Discriminant, Numeric, Numeric?>,
 	var output = ""
 
 	if (degree == 2) output += "Discriminant: ${answer.first}\n"
+
 	output += if (answer.third != null) {
 		"The two solutions are:\n${answer.second}\n${answer.third}"
 	} else {

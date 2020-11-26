@@ -6,7 +6,7 @@ import computorv1.reducedString
 import globalextensions.getBracketList
 import globalextensions.mapToPolynomialList
 import globalextensions.toPolynomialList
-import models.dataset.function.Function
+import models.dataset.Function
 import models.dataset.wrapping.Brackets
 import models.exceptions.computorv1.parserexception.EqualSignAmountException
 import models.exceptions.computorv1.parserexception.EqualSignPositionException
@@ -17,8 +17,10 @@ import parser.extensions.putSpaces
 import parser.extensions.validateVariable
 import parser.getparseable.getParseableDataSet
 
-internal fun parser(input: String): String {
-	val mod = putSpaces(input).split(' ').filter { it.isNotEmpty() }
+internal fun parser(input: String, isPlot: Boolean = false): String {
+	val mod = putSpaces(input).split(' ').filter { it.isNotEmpty() }.apply {
+		if (isPlot) drop(1)
+	}
 
 	val isComputation = mod.contains("?")
 

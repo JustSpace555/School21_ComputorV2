@@ -61,7 +61,7 @@ class ParserTests : ComputorTest() {
 	private fun testInvalidInputs(input: List<String>) {
 		for (element in input) {
 			val parserOutput = try {
-				parser(element, true)
+				parser(element)
 			} catch (e: ComputorException) {
 				continue
 			}

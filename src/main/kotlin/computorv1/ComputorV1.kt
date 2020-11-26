@@ -11,7 +11,7 @@ import globalextensions.mapToPolynomialList
 
 fun computorV1(input: String): String {
 
-	val polynomial = parser(input, true)
+	val polynomial = parser(input)
 
 	val solutions = calculateSolutions(polynomial.first)
 
@@ -19,10 +19,10 @@ fun computorV1(input: String): String {
 			getStringSolutions(solutions, polynomial.second) + "\n"
 }
 
-fun List<PolynomialTerm>.simplify(): List<PolynomialTerm> = simplifyPolynomial(this.mapToPolynomialList())
+fun List<PolynomialTerm>.simplify() = simplifyPolynomial(this)
 fun List<PolynomialTerm>.reducedString(parameter: String = "X"): String =
 	getReducedForm(this)
 		.replace("X", parameter)
 		.replace("^1", "")
-		.replace(Regex(" \\* [a-zA-Z]?\\^0"), "")
+		.replace(Regex(" \\* \\D?\\^0"), "")
 		.replace("1 * ", "")

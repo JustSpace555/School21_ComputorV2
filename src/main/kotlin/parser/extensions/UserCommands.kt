@@ -1,6 +1,6 @@
 package parser.extensions
 
-import models.dataset.function.Function
+import models.dataset.Function
 import models.history
 import models.variables
 

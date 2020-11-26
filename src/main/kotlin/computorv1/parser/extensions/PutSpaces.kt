@@ -6,7 +6,7 @@ internal fun putSpaces(input: String): String {
 	input.forEachIndexed { i: Int, c: Char ->
 		when (c) {
 			' ' -> {}
-			'+' -> { output.append(' ') }
+			'+' -> output.append(' ')
 			'=' -> output.append(" $c ")
 			'-' -> {
 				if (i + 1 in input.indices && input[i + 1] == ' ')
