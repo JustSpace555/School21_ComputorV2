@@ -6,6 +6,7 @@ import computorv1.simplify
 import globalextensions.getBracketList
 import globalextensions.isEmpty
 import globalextensions.mapToPolynomialList
+import globalextensions.toPolynomial
 import models.dataset.DataSet
 import models.dataset.Function
 import models.dataset.Matrix
@@ -35,14 +36,12 @@ class Brackets(override val listOfOperands: List<DataSet> = listOf()): Wrapping(
 	}
 
 	override fun minus(other: DataSet): DataSet {
+		if (other is Matrix) throw IllegalOperationException(Brackets::class, Matrix::class, '-')
+
 		val minusOne = SetNumber(-1)
-
-		if (other is Matrix) throw IllegalOperationException(Brackets::class, Matrix::class, '+')
-
 		if (isEmpty) return other * minusOne
 
 		return when(other) {
-			is Matrix -> throw IllegalOperationException(Brackets::class, Matrix::class, '-')
 			is Brackets -> addElements(other.listOfOperands.map { it * minusOne })
 			else -> if (other.isEmpty())
 				this
@@ -52,13 +51,11 @@ class Brackets(override val listOfOperands: List<DataSet> = listOf()): Wrapping(
 	}
 
 	override fun times(other: DataSet): DataSet {
-		if (other is Matrix) throw IllegalOperationException(Brackets::class, Matrix::class, '+')
+		if (other is Matrix) throw IllegalOperationException(Brackets::class, Matrix::class, '*')
 
-		if (isEmpty) return SetNumber()
+		if (isEmpty || other.isEmpty()) return SetNumber()
 
 		return when (other) {
-			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '*')
-
 			is Brackets -> {
 				if (other.isEmpty) return this
 
@@ -67,29 +64,22 @@ class Brackets(override val listOfOperands: List<DataSet> = listOf()): Wrapping(
 					newFunctionList.add(applyOnEachElement(DataSet::times, it))
 				}
 
-				Brackets(newFunctionList.flatMap { it.getBracketList() }
-					.simplifyPolynomials()).reduceList()
+				Brackets(newFunctionList.flatMap { it.getBracketList() }.simplifyPolynomials()).reduceList()
 			}
 
-			else -> when {
-				other.isEmpty() -> SetNumber()
-				other is SetNumber && other.compareTo(1.0) == 0 -> this
-				else -> applyOnEachElement(DataSet::times, other)
-			}
+			else -> applyOnEachElement(DataSet::times, other)
 		}
 	}
 
 	override fun div(other: DataSet): DataSet {
-		if (other is Matrix) throw IllegalOperationException(Brackets::class, Matrix::class, '+')
+		if (other is Matrix) throw IllegalOperationException(Brackets::class, Matrix::class, '/')
 
 		if (other.isEmpty()) throw DivideByZeroException()
 
 		if (isEmpty) return SetNumber()
 
 		return when (other) {
-			is Matrix -> throw IllegalOperationException(this::class, other::class, '/')
-
-			is Brackets, is Function -> Fraction(this, other)
+			is Wrapping, is Function -> Fraction(this, other)
 
 			is PolynomialTerm -> {
 				if (listOfOperands.all { it is PolynomialTerm || it is Numeric }) {
@@ -99,17 +89,14 @@ class Brackets(override val listOfOperands: List<DataSet> = listOf()): Wrapping(
 				}
 			}
 
-			else -> when {
-				other is SetNumber && other.compareTo(1.0) == 0 -> this
-				else -> applyOnEachElement(DataSet::div, other)
-			}
+			else -> applyOnEachElement(DataSet::div, other)
 		}
 	}
 
 	override fun rem(other: DataSet): DataSet = throw IllegalOperationException(this::class, other::class, '%')
 
 	override fun pow(other: DataSet): DataSet {
-		if (other !is SetNumber || other.number !is Int || other < 0)
+		if (other !is SetNumber || other.number !is Int)
 			throw IllegalOperationException(this::class, other::class, '^')
 
 		if (isEmpty) return SetNumber()
@@ -122,13 +109,13 @@ class Brackets(override val listOfOperands: List<DataSet> = listOf()): Wrapping(
 			0 -> SetNumber(1)
 			1 -> this
 			else -> {
-				var newBrackets = this
-				repeat(number - 1) { newBrackets = (newBrackets * newBrackets) as Brackets }
+				var newBrackets = this as DataSet
+				repeat(number - 1) { newBrackets *= newBrackets }
 
 				return if (belowZero)
-					Fraction(SetNumber(1), newBrackets.reduceList())
+					Fraction(SetNumber(1), newBrackets.apply { if (this is Brackets) this.reduceList() })
 				else
-					newBrackets.reduceList()
+					newBrackets.apply { if (this is Brackets) this.reduceList() }
 			}
 		}
 	}
@@ -173,9 +160,8 @@ class Brackets(override val listOfOperands: List<DataSet> = listOf()): Wrapping(
 		val newElementsList = mutableListOf<PolynomialTerm>().apply {
 			listOfOperands.forEach {
 				when (val newElement = function(it, element)) {
-					is Brackets -> this.addAll(newElement.listOfOperands.mapToPolynomialList())
-					is PolynomialTerm -> this.add(newElement)
-					else -> this.add(PolynomialTerm(newElement))
+					is Brackets -> addAll(newElement.listOfOperands.mapToPolynomialList())
+					else -> add(newElement.toPolynomial())
 				}
 			}
 		}.simplifyPolynomials()
@@ -191,7 +177,6 @@ class Brackets(override val listOfOperands: List<DataSet> = listOf()): Wrapping(
 		}
 
 		val filtered = this
-			.mapToPolynomialList()
 			.filter { it.number is Numeric }
 			.also { if (it.isEmpty()) return this.getDataList() }
 			.simplify()

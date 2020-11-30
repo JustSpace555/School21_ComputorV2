@@ -11,7 +11,8 @@ fun main() {
 	val scanner = Scanner(System.`in`)
 	var input: String
 
-	while (scanner.hasNext()) {
+	scanner.hasNext()
+	while(scanner.hasNext()) {
 		input = scanner.nextLine()
 
 		var isPlot = false

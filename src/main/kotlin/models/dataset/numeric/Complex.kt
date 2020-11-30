@@ -2,9 +2,12 @@ package models.dataset.numeric
 
 import computorv1.models.PolynomialTerm
 import models.dataset.DataSet
+import models.dataset.Function
 import models.dataset.Matrix
 import models.dataset.wrapping.Brackets
 import models.dataset.wrapping.Fraction
+import models.dataset.wrapping.FunctionStack
+import models.dataset.wrapping.Wrapping
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
 
 data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber): Numeric {
@@ -20,7 +23,9 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 				imaginary = imaginary + other.imaginary
 			).tryCastToSetNumber()
 
-			is Brackets -> other + this
+			is Wrapping -> other + this
+
+			is Function -> Brackets(other, this)
 
 			else -> copy(real = real + other as SetNumber)
 		}
@@ -34,9 +39,9 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 				imaginary = imaginary - other.imaginary
 			).tryCastToSetNumber()
 
-			is Brackets -> {
-				other * PolynomialTerm(-1) + this
-			}
+			is Wrapping -> other * PolynomialTerm(-1) + this
+
+			is Function -> Brackets(this, other * SetNumber(-1))
 
 			else -> copy(real = real - other as SetNumber)
 		}
@@ -49,6 +54,10 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 				real = real * other.real - imaginary * other.imaginary,
 				imaginary = real * other.imaginary + other.real * imaginary
 			).tryCastToSetNumber()
+
+			is Wrapping -> other * this
+
+			is Function -> FunctionStack(other, this)
 
 			else -> {
 				other as SetNumber
@@ -68,7 +77,9 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 				).tryCastToSetNumber()
 			}
 
-			is Brackets -> other / this
+			is Wrapping -> other / this
+
+			is Function -> Fraction(this, other)
 
 			else -> {
 				other as SetNumber
@@ -95,6 +106,15 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 	}
 
 	override fun toString(): String {
+
+		val toAllString: SetNumber.() -> String = {
+			when(number) {
+				1, 1.0 -> ""
+				-1, -1.0 -> "-"
+				else -> this.toString()
+			}
+		}
+
 		if (real.isZero())
 			return "${imaginary.toAllString()}i"
 
@@ -111,12 +131,5 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 		return "$real$signString${tempIm.toAllString()}i"
 	}
 
-	private fun SetNumber.toAllString() =
-		when(number) {
-			1, 1.0 -> ""
-			-1, -1.0 -> "-"
-			else -> this
-		}
-
-	fun tryCastToSetNumber(): Numeric = if (imaginary.isZero()) real else this
+	private fun tryCastToSetNumber(): Numeric = if (imaginary.isZero()) real else this
 }

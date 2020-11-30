@@ -4,7 +4,6 @@ import models.exceptions.computorv2.calcexception.DivideByZeroException
 import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.math.pow
-import kotlin.math.tan
 
 private fun Number.castToBigDecimal() = toDouble().toBigDecimal()
 
@@ -37,5 +36,3 @@ fun Number.isZero() = compareTo(0.0) == 0
 fun Number.tryCastToInt(): Number =
 		if (this.toDouble() - this.toInt() == 0.0) toInt()
 		else toDouble()
-
-fun cot(input: Double): Double = 1 / tan(input)

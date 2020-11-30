@@ -1,7 +1,10 @@
 package models.dataset.wrapping
 
 import computorv1.models.PolynomialTerm
+import computorv1.simplify
 import globalextensions.isEmpty
+import globalextensions.mapToDataSetList
+import globalextensions.mapToPolynomialList
 import models.dataset.DataSet
 import models.dataset.Function
 import models.dataset.Matrix
@@ -36,9 +39,8 @@ class FunctionStack(override val listOfOperands: List<DataSet> = listOf()) : Wra
 		when {
 			other is Matrix -> throw IllegalOperationException(FunctionStack::class, Matrix::class, '*')
 
-			isEmpty -> SetNumber()
+			isEmpty || other.isEmpty() -> SetNumber()
 
-			other.isEmpty() -> SetNumber()
 			other is SetNumber && other.compareTo(1.0) == 0 -> this
 
 			(other is Numeric || other is PolynomialTerm) &&
@@ -48,6 +50,10 @@ class FunctionStack(override val listOfOperands: List<DataSet> = listOf()) : Wra
 
 				FunctionStack(listOf(temp * other) + newList).simplify()
 			}
+
+			other is FunctionStack -> FunctionStack(
+				(listOfOperands + other.listOfOperands).mapToPolynomialList().simplify().mapToDataSetList()
+			).simplify()
 
 			else -> FunctionStack(listOfOperands + other).simplify()
 		}
@@ -85,10 +91,16 @@ class FunctionStack(override val listOfOperands: List<DataSet> = listOf()) : Wra
 		return when (other.number as Int) {
 			0 -> SetNumber(1)
 			1 -> this
-			else -> if (belowZero)
-				Fraction(SetNumber(1), PolynomialTerm(this, number)).simplify()
-			else
-				PolynomialTerm(this, number)
+			else -> {
+				var newFunctionStack = this as DataSet
+				repeat(number - 1) { newFunctionStack *= newFunctionStack }
+				if (belowZero)
+					Fraction(
+						SetNumber(1), newFunctionStack.apply { if (this is FunctionStack) this.simplify() }
+					).simplify()
+				else
+					newFunctionStack.apply { if (this is FunctionStack) this.simplify() }
+			}
 		}
 	}
 
@@ -103,5 +115,21 @@ class FunctionStack(override val listOfOperands: List<DataSet> = listOf()) : Wra
 			else -> this
 		}
 
-	//TODO Изменить на обычный класс и переписать hashCode, equals
+	override fun equals(other: Any?): Boolean =
+		when {
+			other == null -> false
+			other !is FunctionStack -> false
+			this === other -> true
+			listOfOperands.size != other.listOfOperands.size -> false
+			else -> {
+				val pairList = listOfOperands.mapToPolynomialList().zip(other.listOfOperands.mapToPolynomialList())
+				pairList.all { (el1, el2) -> el1 == el2 }
+			}
+		}
+
+	override fun hashCode(): Int {
+		var result = 17
+		result = 31 * result + listOfOperands.hashCode()
+		return result
+	}
 }

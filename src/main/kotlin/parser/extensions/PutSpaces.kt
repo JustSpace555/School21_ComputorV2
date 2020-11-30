@@ -1,6 +1,6 @@
 package parser.extensions
 
-import models.operationsChar
+import models.operationsCharList
 
 fun putSpaces(input: String): String {
 	val output = StringBuilder()
@@ -14,9 +14,9 @@ fun putSpaces(input: String): String {
 		when (c) {
 			' ' -> return@forEachIndexed
 
-			in operationsChar -> {
+			in operationsCharList -> {
 				beforeWhiteSpace = (output.isNotEmpty() && output.last() == ' ').getWhiteSpace()
-				afterWhiteSpace = (c == '-' && (i == 0 || lastToken in operationsChar && lastToken != ')'))
+				afterWhiteSpace = (c == '-' && (i == 0 || lastToken in operationsCharList && lastToken != ')'))
 					.getWhiteSpace()
 			}
 

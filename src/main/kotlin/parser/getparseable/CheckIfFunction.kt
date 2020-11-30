@@ -4,8 +4,8 @@ import models.exceptions.computorv2.parserexception.variable.MultipleArgumentExc
 import models.exceptions.computorv2.parserexception.variable.WrongFunctionBracketsFormatException
 
 private fun List<String>.countInARow(input: String): Pair<Boolean, Int> {
-	val firstIndex = this.indexOf(input)
-	val lastIndex = this.lastIndexOf(input)
+	val firstIndex = indexOf(input)
+	val lastIndex = lastIndexOf(input)
 
 	for (i in firstIndex..lastIndex) {
 		if (this[i] != input)
@@ -30,10 +30,10 @@ fun checkIfFunction(beforeEqual: List<String>): Boolean {
 		throw WrongFunctionBracketsFormatException()
 	}
 
-	val countItARowOpenBracket = beforeEqual.countInARow("(")
+	val countInARowOpenBracket = beforeEqual.countInARow("(")
 	val countInARowCloseBracket = beforeEqual.countInARow(")")
-	if (!(countItARowOpenBracket.first && countInARowCloseBracket.first) ||
-		countItARowOpenBracket.second != countInARowCloseBracket.second) {
+	if (!(countInARowOpenBracket.first && countInARowCloseBracket.first) ||
+		countInARowOpenBracket.second != countInARowCloseBracket.second) {
 		throw WrongFunctionBracketsFormatException()
 	}
 

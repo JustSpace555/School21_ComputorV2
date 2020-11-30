@@ -48,7 +48,7 @@ data class SetNumber(var number: Number = 0) : Numeric, Comparable<SetNumber> {
 					} else {
 						Fraction(this, other.number)
 					},
-					degree = -1 * other.degree
+					degree = other.degree * -1
 				)
 			}
 

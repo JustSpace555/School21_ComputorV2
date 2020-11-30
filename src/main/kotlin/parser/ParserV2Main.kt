@@ -12,6 +12,7 @@ import models.exceptions.computorv1.parserexception.EqualSignAmountException
 import models.exceptions.computorv1.parserexception.EqualSignPositionException
 import models.exceptions.computorv2.parserexception.sign.QuestionMarkPositionException
 import models.exceptions.computorv2.parserexception.variable.MultipleArgumentException
+import models.operationsStringList
 import models.variables
 import parser.extensions.putSpaces
 import parser.extensions.validateVariable
@@ -39,31 +40,33 @@ internal fun parser(input: String, isPlot: Boolean = false): String {
 		if (indexOfEqual == mod.lastIndex - 1) return beforeEqual.compute().toString()
 
 		val parameter = beforeEqual.find {
-			!variables.containsKey(it) && !it.contains(Regex("[0-9+\\-*/^()%;\\[\\],]"))
+			!(variables.containsKey(it) || it.contains(Regex("[0-9]")) || it in operationsStringList)
 		} ?: ""
 
 		val parameterAfterEquals = afterEqual.dropLast(1).find {
-			!variables.containsKey(it) && !it.contains(Regex("[0-9+\\-*/^()%;\\[\\],]"))
+			!(variables.containsKey(it) || it.contains(Regex("[0-9]")) || it in operationsStringList)
 		} ?: ""
 
 		if (parameter.isNotEmpty() && parameterAfterEquals.isNotEmpty() && parameter != parameterAfterEquals)
 			throw MultipleArgumentException()
 
+		val rightParameter = if (parameter.isNotEmpty()) parameter else parameterAfterEquals
+
 		val computedBeforeEqual = getStringWithFunctions(beforeEqual)
-			.compute(parameter)
+			.compute(rightParameter)
 			.getBracketList()
 			.mapToPolynomialList()
-			.reducedString(parameter)
-			.replace(parameter, "X")
+			.reducedString(rightParameter)
+			.replace(rightParameter, "X")
 
 		val computedAfterEqual = getStringWithFunctions(afterEqual.dropLast(1))
-			.compute(parameter)
+			.compute(rightParameter)
 			.getBracketList()
 			.mapToPolynomialList()
-			.reducedString(parameter)
-			.replace(parameter, "X")
+			.reducedString(rightParameter)
+			.replace(rightParameter, "X")
 
-		return computorV1("$computedBeforeEqual = $computedAfterEqual").replace("X", parameter)
+		return computorV1("$computedBeforeEqual = $computedAfterEqual").replace("X", rightParameter)
 	}
 
 	val parseableKClass = getParseableDataSet(mod)

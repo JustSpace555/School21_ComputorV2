@@ -2,7 +2,6 @@ package parser.variable
 
 import computation.polishnotation.extensions.compute
 import computorv1.models.PolynomialTerm
-import globalextensions.cot
 import globalextensions.toPolynomial
 import globalextensions.toPolynomialList
 import models.dataset.DataSet
@@ -58,7 +57,7 @@ fun parseFunctionFromList(input: List<String>, parameter: String): DataSet {
 			"sin" -> ::sin
 			"cos" -> ::cos
 			"tan" -> ::tan
-			"cot" -> ::cot
+			"cot" -> { { 1 / tan(it) } }
 			"asin" -> ::asin
 			"acos" -> ::acos
 			"atan" -> ::atan
@@ -73,6 +72,7 @@ fun parseFunctionFromList(input: List<String>, parameter: String): DataSet {
 			function == null && operation == null -> throw NoSuchVariableException(input.first())
 
 			operation == null -> function!!(number)
+
 			else -> {
 				if (number is Complex) throw IllegalOperationException(Function::class, Complex::class)
 				number as SetNumber
@@ -81,7 +81,9 @@ fun parseFunctionFromList(input: List<String>, parameter: String): DataSet {
 		}
 	} else {
 		Function(
-			parameter, function?.function?.map { it.copy(name = parameter) } ?: listOf(number.toPolynomial()), input.first()
+			parameter,
+			function?.function?.map { it.copy(name = parameter) } ?: listOf(number.toPolynomial()),
+			input.first()
 		).apply { addPolynomialsBeforeInvoke(number.toPolynomialList()) }
 	}
 }

@@ -60,3 +60,5 @@ fun DataSet.toPolynomialList() =
 		is PolynomialTerm -> listOf(this)
 		else -> listOf(PolynomialTerm(this))
 	}
+
+fun List<PolynomialTerm>.mapToDataSetList(): List<DataSet> = this.map { if (it.degree == 0) it.number else it }

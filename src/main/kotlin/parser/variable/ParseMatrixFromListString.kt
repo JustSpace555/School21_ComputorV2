@@ -1,8 +1,10 @@
 package parser.variable
 
 import computation.polishnotation.extensions.compute
-import models.exceptions.computorv2.parserexception.variable.EmptyMatrixArgumentException
+import models.dataset.Matrix
 import models.dataset.numeric.Numeric
+import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
+import models.exceptions.computorv2.parserexception.variable.EmptyMatrixArgumentException
 import parser.extensions.putSpaces
 import parser.variable.numeric.toNumeric
 
@@ -18,7 +20,11 @@ fun parseMatrixFromListString(input: Array<String>): List<List<Numeric>> {
 			val splittedElement = putSpaces(element).split(' ')
 			newRow.add(
 				if (splittedElement.size == 1) element.toNumeric()
-				else splittedElement.compute() as Numeric
+				else {
+					val computedEl = splittedElement.compute()
+					if (computedEl !is Numeric) throw IllegalOperationException(Matrix::class, computedEl::class)
+					computedEl
+				}
 			)
 		}
 		matrix.add(newRow)
