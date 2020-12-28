@@ -1,22 +1,21 @@
 package computorv1.parser.extensions
 
 import computorv1.models.PolynomialTerm
-import globalextensions.toPolynomial
 import models.dataset.numeric.SetNumber
 
-internal fun List<String>.toPolynomialList(): List<PolynomialTerm> {
+fun toPolynomialList(input: List<String>): List<PolynomialTerm> {
 	val output = mutableListOf<PolynomialTerm>()
 	var isWasEquality = false
 
-	forEach {
-		if (it == "=") {
+	for (element in input) {
+		if (element == "=") {
 			isWasEquality = true
-			return@forEach
+			continue
 		}
 
-		var term = it.toPolynomialTerm()
+		var term = toPolynomialTerm(element)
 		if (isWasEquality)
-			term = (term * SetNumber(-1)).toPolynomial()
+			term = term.copy(number = term.number * SetNumber(-1))
 
 		output.add(term)
 	}

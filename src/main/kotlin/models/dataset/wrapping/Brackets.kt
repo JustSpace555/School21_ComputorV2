@@ -22,7 +22,7 @@ class Brackets(override val listOfOperands: List<DataSet> = listOf()): Wrapping(
 	override val isEmpty: Boolean = listOfOperands.isEmpty()
 
 	override fun plus(other: DataSet): DataSet {
-		if (other is Matrix) throw IllegalOperationException(Brackets::class, Matrix::class, '+')
+		if (other is Matrix) throw IllegalOperationException(Brackets::class, Matrix::class, "+")
 
 		if (isEmpty) return other
 
@@ -36,7 +36,7 @@ class Brackets(override val listOfOperands: List<DataSet> = listOf()): Wrapping(
 	}
 
 	override fun minus(other: DataSet): DataSet {
-		if (other is Matrix) throw IllegalOperationException(Brackets::class, Matrix::class, '-')
+		if (other is Matrix) throw IllegalOperationException(Brackets::class, Matrix::class, "-")
 
 		val minusOne = SetNumber(-1)
 		if (isEmpty) return other * minusOne
@@ -51,7 +51,7 @@ class Brackets(override val listOfOperands: List<DataSet> = listOf()): Wrapping(
 	}
 
 	override fun times(other: DataSet): DataSet {
-		if (other is Matrix) throw IllegalOperationException(Brackets::class, Matrix::class, '*')
+		if (other is Matrix) throw IllegalOperationException(Brackets::class, Matrix::class, "*")
 
 		if (isEmpty || other.isEmpty()) return SetNumber()
 
@@ -72,7 +72,7 @@ class Brackets(override val listOfOperands: List<DataSet> = listOf()): Wrapping(
 	}
 
 	override fun div(other: DataSet): DataSet {
-		if (other is Matrix) throw IllegalOperationException(Brackets::class, Matrix::class, '/')
+		if (other is Matrix) throw IllegalOperationException(Brackets::class, Matrix::class, "/")
 
 		if (other.isEmpty()) throw DivideByZeroException()
 
@@ -93,11 +93,11 @@ class Brackets(override val listOfOperands: List<DataSet> = listOf()): Wrapping(
 		}
 	}
 
-	override fun rem(other: DataSet): DataSet = throw IllegalOperationException(this::class, other::class, '%')
+	override fun rem(other: DataSet): DataSet = throw IllegalOperationException(this::class, other::class, "%")
 
 	override fun pow(other: DataSet): DataSet {
 		if (other !is SetNumber || other.number !is Int)
-			throw IllegalOperationException(this::class, other::class, '^')
+			throw IllegalOperationException(this::class, other::class, "^")
 
 		if (isEmpty) return SetNumber()
 

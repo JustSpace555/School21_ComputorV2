@@ -1,25 +1,25 @@
 package parser
 
 import computation.polishnotation.extensions.compute
-import computorv1.computorV1
+import computorv1.computorv1
 import computorv1.reducedString
 import globalextensions.getBracketList
 import globalextensions.mapToPolynomialList
 import globalextensions.toPolynomialList
 import models.dataset.Function
-import models.dataset.wrapping.Brackets
 import models.dataset.wrapping.Wrapping
-import models.exceptions.computorv1.parserexception.EqualSignAmountException
-import models.exceptions.computorv1.parserexception.EqualSignPositionException
 import models.exceptions.computorv2.parserexception.sign.QuestionMarkPositionException
 import models.exceptions.computorv2.parserexception.variable.MultipleArgumentException
 import models.operationsStringList
 import models.variables
+import computorv1.parser.extensions.putSpacesComputorV1
+import models.exceptions.computorv1.EqualSignAmountException
+import models.exceptions.computorv1.EqualSignPositionException
 import parser.extensions.putSpaces
 import parser.extensions.validateVariable
 import parser.getparseable.getParseableDataSet
 
-internal fun parser(input: String, isPlot: Boolean = false): String {
+fun parser(input: String, isPlot: Boolean = false): String {
 	val mod = putSpaces(input)
 		.split(' ')
 		.filter { it.isNotEmpty() }
@@ -70,7 +70,7 @@ internal fun parser(input: String, isPlot: Boolean = false): String {
 		val computedBeforeEqual = prepareStringForComputorV1(beforeEqual)
 		val computedAfterEqual = prepareStringForComputorV1(afterEqual.dropLast(1))
 
-		return computorV1("$computedBeforeEqual = $computedAfterEqual").replace("X", rightParameter)
+		return computorv1("$computedBeforeEqual = $computedAfterEqual").replace("X", rightParameter)
 	}
 
 	val parseableKClass = getParseableDataSet(mod)
@@ -96,7 +96,7 @@ fun getStringWithFunctions(input: List<String>): List<String> {
 	while (i in input.indices) {
 		if (variables.containsKey(input[i]) && variables[input[i]] is Function) {
 			val function = variables[input[i]] as Function
-			output.addAll(putSpaces(function.function.reducedString(function.parameter)).split(' '))
+			output.addAll(putSpacesComputorV1(function.function.reducedString(function.parameter)).split(' '))
 			i += 4
 			continue
 		}

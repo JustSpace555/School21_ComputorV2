@@ -1,8 +1,8 @@
 package parsertests
 
 import ComputorTest
-import models.exceptions.computorv1.parserexception.EqualSignAmountException
-import models.exceptions.computorv1.parserexception.EqualSignPositionException
+import models.exceptions.computorv1.EqualSignAmountException
+import models.exceptions.computorv1.EqualSignPositionException
 import models.exceptions.computorv2.parserexception.sign.QuestionMarkPositionException
 import models.variables
 import org.junit.Assert.assertEquals

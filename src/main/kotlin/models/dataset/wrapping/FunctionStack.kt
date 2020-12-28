@@ -21,7 +21,7 @@ class FunctionStack(override val listOfOperands: List<DataSet> = listOf()) : Wra
 
 	override fun plus(other: DataSet): DataSet =
 		when {
-			other is Matrix -> throw IllegalOperationException(FunctionStack::class, Matrix::class, '+')
+			other is Matrix -> throw IllegalOperationException(FunctionStack::class, Matrix::class, "+")
 			isEmpty -> other
 			other.isEmpty() -> this
 			else -> Brackets(this, other)
@@ -29,7 +29,7 @@ class FunctionStack(override val listOfOperands: List<DataSet> = listOf()) : Wra
 
 	override fun minus(other: DataSet): DataSet =
 		when {
-			other is Matrix -> throw IllegalOperationException(FunctionStack::class, Matrix::class, '-')
+			other is Matrix -> throw IllegalOperationException(FunctionStack::class, Matrix::class, "-")
 			isEmpty -> other * SetNumber(-1)
 			other.isEmpty() -> this
 			else -> Brackets(this, other * SetNumber(-1))
@@ -37,7 +37,7 @@ class FunctionStack(override val listOfOperands: List<DataSet> = listOf()) : Wra
 
 	override fun times(other: DataSet): DataSet =
 		when {
-			other is Matrix -> throw IllegalOperationException(FunctionStack::class, Matrix::class, '*')
+			other is Matrix -> throw IllegalOperationException(FunctionStack::class, Matrix::class, "*")
 
 			isEmpty || other.isEmpty() -> SetNumber()
 
@@ -60,7 +60,7 @@ class FunctionStack(override val listOfOperands: List<DataSet> = listOf()) : Wra
 
 	override fun div(other: DataSet): DataSet =
 		when {
-			other is Matrix -> throw IllegalOperationException(FunctionStack::class, Matrix::class, '/')
+			other is Matrix -> throw IllegalOperationException(FunctionStack::class, Matrix::class, "/")
 
 			isEmpty -> SetNumber()
 
@@ -78,11 +78,11 @@ class FunctionStack(override val listOfOperands: List<DataSet> = listOf()) : Wra
 			else -> Fraction(this, other).simplify()
 	}
 
-	override fun rem(other: DataSet): DataSet = throw IllegalOperationException(FunctionStack::class, other::class, '%')
+	override fun rem(other: DataSet): DataSet = throw IllegalOperationException(FunctionStack::class, other::class, "%")
 
 	override fun pow(other: DataSet): DataSet {
 		if (other !is SetNumber || other.number is Double)
-			throw IllegalOperationException(FunctionStack::class, other::class, '%')
+			throw IllegalOperationException(FunctionStack::class, other::class, "%")
 
 		var number = other.number as Int
 		val belowZero = number < 0

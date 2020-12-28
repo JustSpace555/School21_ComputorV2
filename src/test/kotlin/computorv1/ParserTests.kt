@@ -1,12 +1,12 @@
 package computorv1
 
-import ComputorTest
-import computorv1.parser.parser
+import computorv1.parser.parserComputorV1
 import models.exceptions.ComputorException
 import org.junit.Test
+import java.lang.Exception
 import java.util.*
 
-class ParserTests : ComputorTest() {
+class ParserTests {
 
 	@Test
 	fun testInvalidEquations() {
@@ -24,6 +24,7 @@ class ParserTests : ComputorTest() {
 		inputs = ArrayList()
 		inputs.add(".2x^1=0")
 		inputs.add("a2x^1=0")
+		inputs.add(".1=0")
 		inputs.add("a1=0")
 		inputs.add("111111111111111111111111111*x=0")
 		testInvalidInputs(inputs)
@@ -60,13 +61,12 @@ class ParserTests : ComputorTest() {
 
 	private fun testInvalidInputs(input: List<String>) {
 		for (element in input) {
-			val parserOutput = try {
-				parser(element)
+			try {
+				parserComputorV1(element)
 			} catch (e: ComputorException) {
 				continue
 			}
-			val message = "Test fail on: $element with and output: $parserOutput"
-			throw Exception(message)
+			throw Exception("Test fail on $element")
 		}
 	}
 }

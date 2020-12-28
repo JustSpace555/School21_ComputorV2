@@ -55,18 +55,18 @@ data class Matrix(val elementsCollection: List<List<Numeric>>) : DataSet {
 
 	override fun div(other: DataSet): Matrix {
 		if (other !is Matrix) return invokeMatrixOperation(other, Numeric::div)
-		throw IllegalOperationException(this::class, other::class, '/')
+		throw IllegalOperationException(this::class, other::class, "/")
 	}
 
-	override fun rem(other: DataSet): DataSet = throw IllegalOperationException(this::class, other::class, '%')
+	override fun rem(other: DataSet): DataSet = throw IllegalOperationException(this::class, other::class, "%")
 
 	override fun pow(other: DataSet): Matrix {
 		if (other !is SetNumber || other.number is Double)
-			throw IllegalOperationException(this::class, other::class, '^')
+			throw IllegalOperationException(this::class, other::class, "^")
 
 		val degree = other.number as Int
 		if (degree == 0) return getIdentityMatrix()
-		else if (degree < 0) throw IllegalOperationException(this::class, SetNumber::class, '^')
+		else if (degree < 0) throw IllegalOperationException(this::class, SetNumber::class, "^")
 
 		var newMatrix = this
 		repeat((other.number - 1) as Int) { newMatrix *= newMatrix }
@@ -111,7 +111,7 @@ data class Matrix(val elementsCollection: List<List<Numeric>>) : DataSet {
 	}
 
 	private fun checkKClassAndRowsWithColumns(input: DataSet, operationChar: Char) {
-		if (input !is Matrix) throw IllegalOperationException(this::class, input::class, operationChar)
+		if (input !is Matrix) throw IllegalOperationException(this::class, input::class, operationChar.toString())
 
 		if (rows != input.rows || columns != input.columns)
 			throw WrongMatrixSizeOperationException(this, input, operationChar)

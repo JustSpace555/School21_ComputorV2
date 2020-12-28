@@ -1,10 +1,9 @@
 package computorv1.models
 
 import models.dataset.DataSet
-import models.dataset.Function
 import models.dataset.Matrix
+import models.dataset.Function
 import models.dataset.numeric.Complex
-import models.dataset.numeric.Numeric
 import models.dataset.numeric.SetNumber
 import models.dataset.wrapping.Brackets
 import models.dataset.wrapping.Fraction
@@ -21,7 +20,7 @@ data class PolynomialTerm(
 
 	override fun plus(other: DataSet): DataSet =
 		when (other) {
-			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '+')
+			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, "+")
 
 			is PolynomialTerm -> {
 				if (other.degree == degree) {
@@ -44,7 +43,7 @@ data class PolynomialTerm(
 
 	override fun minus(other: DataSet): DataSet =
 		when (other) {
-			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '-')
+			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, "-")
 
 			is PolynomialTerm -> {
 				if (other.degree == degree) {
@@ -67,7 +66,7 @@ data class PolynomialTerm(
 
 	override fun times(other: DataSet): DataSet =
 		when (other) {
-			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '*')
+			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, "*")
 
 			is PolynomialTerm -> copy(number = number * other.number, degree = degree + other.degree).tryCastToNumeric()
 
@@ -80,7 +79,7 @@ data class PolynomialTerm(
 
 	override fun div(other: DataSet): DataSet =
 		when (other) {
-			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '/')
+			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, "/")
 
 			is PolynomialTerm -> copy(number = number / other.number, degree = degree - other.degree).tryCastToNumeric()
 
@@ -89,11 +88,11 @@ data class PolynomialTerm(
 			else -> copy(number = number / other).tryCastToNumeric()
 		}
 
-	override fun rem(other: DataSet) = throw IllegalOperationException(this::class, other::class, '%')
+	override fun rem(other: DataSet) = throw IllegalOperationException(this::class, other::class, "%")
 
 	override fun pow(other: DataSet): DataSet {
 		if (other !is SetNumber || other.number is Double)
-			throw IllegalOperationException(this::class, other::class, '^')
+			throw IllegalOperationException(this::class, other::class, "^")
 
 		return copy(degree = other.number as Int * degree).tryCastToNumeric()
 	}
