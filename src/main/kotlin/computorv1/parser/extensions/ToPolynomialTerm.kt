@@ -1,58 +1,62 @@
 package computorv1.parser.extensions
 
-import computorv1.models.PolynomialTerm
+import models.exceptions.computorv1.PolynomialArgumentNameException
+import models.exceptions.computorv1.PolynomialDegreeFormatException
+import models.exceptions.computorv1.PolynomialNumberFormatException
 import globalextensions.times
 import globalextensions.tryCastToInt
-import models.exceptions.computorv1.parserexception.WrongArgumentNameException
-import models.exceptions.computorv1.parserexception.WrongDegreeFormatException
-import models.exceptions.computorv1.parserexception.WrongNumberFormatException
-import models.dataset.numeric.SetNumber
+import computorv1.models.PolynomialTerm
+import java.lang.NumberFormatException
 
-private fun String.containsX() = contains('x') || contains('X')
+fun getConstNumber(input: String): Number {
 
-private fun String.getConstNumber(): Number {
-
-	if (first().isLetter())
-		return 1
+	if (input.first().isLetter()) return 1
 
 	val numberListStr =
-		if (contains('*'))
-			split('*').filter { !it.contains(Regex("[xX^]")) }
+		if (input.contains('*'))
+			input.split('*').filter {
+				!it.contains('^') && !it.contains('x') && !it.contains('X')
+			}
 		else
-			listOf(this)
+			listOf(input)
 
 	var number: Number = 1
 
 	numberListStr.forEach {
-		try {
-			number *= if (it.contains('.')) it.toDouble() else it.toInt()
-		} catch (e: NumberFormatException) {
-			throw WrongNumberFormatException()
+		if (it.contains('.')) {
+			try { number *= it.toDouble() }
+			catch (e: NumberFormatException) { throw PolynomialNumberFormatException(it) }
+		} else {
+			try { number *= it.toInt() }
+			catch (e: NumberFormatException) { throw PolynomialNumberFormatException(it) }
 		}
 	}
 
 	return number.tryCastToInt()
 }
 
-private fun String.getDegree(): Int {
-	if (!contains('^')) {
-		return when{
-			last().isDigit() && containsX() -> throw WrongDegreeFormatException(this)
-			containsX() -> 1
+fun getDegree(input: String): Int {
+	if (!input.contains('^')) {
+		return when {
+			input.last().isDigit() && input.contains(Regex("[xX]")) ->
+				throw PolynomialDegreeFormatException(input)
+			input.contains(Regex("[xX]")) -> 1
 			else -> 0
 		}
 	}
 
-	return try {
-		slice(indexOf('^') + 1 until length).toInt()
+	val degree = try {
+		input.slice(input.indexOf('^') + 1 until input.length).toInt()
 	} catch (e: NumberFormatException) {
-		throw WrongDegreeFormatException(this)
-	}.also { if (it < 0) throw WrongDegreeFormatException(it.toString()) }
+		throw PolynomialDegreeFormatException(input)
+	}
+
+	return degree
 }
 
-internal fun String.toPolynomialTerm() : PolynomialTerm {
-	forEach {
-		if (it.isLetter() && !(it == 'x' || it == 'X')) throw WrongArgumentNameException(this)
+fun toPolynomialTerm(input: String): PolynomialTerm {
+	input.forEach {
+		if (it.isLetter() && !(it == 'x' || it == 'X')) throw PolynomialArgumentNameException(it)
 	}
-	return PolynomialTerm(SetNumber(getConstNumber()), getDegree())
+	return PolynomialTerm(getConstNumber(input), getDegree(input))
 }

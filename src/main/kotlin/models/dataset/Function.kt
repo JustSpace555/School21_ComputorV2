@@ -2,10 +2,8 @@ package models.dataset
 
 import computation.polishnotation.extensions.compute
 import computorv1.models.PolynomialTerm
-import computorv1.reducedString
 import globalextensions.isEmpty
 import globalextensions.toPolynomialList
-import models.dataset.numeric.Complex
 import models.dataset.numeric.Numeric
 import models.dataset.numeric.SetNumber
 import models.dataset.wrapping.Brackets
@@ -13,6 +11,7 @@ import models.dataset.wrapping.Fraction
 import models.dataset.wrapping.FunctionStack
 import models.exceptions.computorv2.calcexception.DivideByZeroException
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
+import computorv1.reducedString
 import parser.extensions.putSpaces
 
 open class Function(
@@ -30,7 +29,7 @@ open class Function(
 
 	override fun plus(other: DataSet): DataSet =
 		when(other) {
-			is Matrix -> throw IllegalOperationException(this::class, other::class, '+')
+			is Matrix -> throw IllegalOperationException(this::class, other::class, "+")
 			is Brackets, is FunctionStack -> other + this
 			is Function -> if (this == other) FunctionStack(SetNumber(2), this) else Brackets(this, other)
 			else -> {
@@ -43,7 +42,7 @@ open class Function(
 
 	override fun minus(other: DataSet): DataSet =
 		when(other) {
-			is Matrix -> throw IllegalOperationException(this::class, other::class, '-')
+			is Matrix -> throw IllegalOperationException(this::class, other::class, "-")
 			is Brackets, is FunctionStack -> other * SetNumber(-1) + this
 			is Function -> if (this == other) SetNumber(0) else Brackets(this, other * SetNumber(-1))
 			else -> {
@@ -59,7 +58,7 @@ open class Function(
 		if (other.isEmpty()) return SetNumber()
 
 		return when (other) {
-			is Matrix -> throw IllegalOperationException(this::class, other::class, '*')
+			is Matrix -> throw IllegalOperationException(this::class, other::class, "*")
 			is FunctionStack, is Brackets -> other * this
 			else -> when {
 				other is SetNumber && other.compareTo(1.0) == 0 -> this
@@ -73,7 +72,7 @@ open class Function(
 		if (other.isEmpty()) throw DivideByZeroException()
 
 		return when (other) {
-			is Matrix -> throw IllegalOperationException(this::class, other::class, '/')
+			is Matrix -> throw IllegalOperationException(this::class, other::class, "/")
 			is Fraction -> Fraction(other.denominator * this, other.numerator)
 			is Brackets -> Fraction(this, other).simplify()
 			else -> when {
@@ -83,11 +82,11 @@ open class Function(
 		}
 	}
 
-	override fun rem(other: DataSet): DataSet = throw IllegalOperationException(this::class, other::class, '%')
+	override fun rem(other: DataSet): DataSet = throw IllegalOperationException(this::class, other::class, "%")
 
 	override fun pow(other: DataSet): DataSet {
 		if (other !is SetNumber || other.number !is Int || other < 0)
-			throw IllegalOperationException(this::class, other::class, '^')
+			throw IllegalOperationException(this::class, other::class, "^")
 
 		val number = other.number as Int
 		if (number == 0) return SetNumber(1)

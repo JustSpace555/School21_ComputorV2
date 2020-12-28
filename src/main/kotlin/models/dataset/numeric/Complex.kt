@@ -16,7 +16,7 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 
 	override fun plus(other: DataSet): DataSet =
 		when (other) {
-			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '+')
+			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, "+")
 
 			is Complex -> copy(
 				real = real + other.real,
@@ -32,7 +32,7 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 
 	override fun minus(other: DataSet): DataSet =
 		when (other) {
-			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '-')
+			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, "-")
 
 			is Complex -> copy(
 				real = real - other.real,
@@ -67,7 +67,7 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 
 	override fun div(other: DataSet): DataSet =
 		when (other) {
-			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, '/')
+			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, "/")
 
 			is Complex -> {
 				val square = other.real * other.real + other.imaginary * other.imaginary
@@ -87,11 +87,11 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 			}
 		}
 
-	override fun rem(other: DataSet) = throw IllegalOperationException(this::class, other::class, '%')
+	override fun rem(other: DataSet) = throw IllegalOperationException(this::class, other::class, "%")
 
 	override fun pow(other: DataSet): DataSet {
 		if (other !is SetNumber || other.number !is Int)
-			throw IllegalOperationException(this::class, other::class, '^')
+			throw IllegalOperationException(this::class, other::class, "^")
 
 		var degree = other.number as Int
 		if (degree == 0) return SetNumber(1)

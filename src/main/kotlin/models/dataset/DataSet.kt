@@ -12,5 +12,7 @@ interface DataSet {
 	fun pow(other: DataSet): DataSet
 	fun pow(other: Number): DataSet = pow(SetNumber(other))
 
+	operator fun unaryMinus(): DataSet = this * SetNumber(-1)
+
 	override fun toString(): String
 }

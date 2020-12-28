@@ -1,6 +1,7 @@
 package globalextensions
 
 import models.exceptions.computorv2.calcexception.DivideByZeroException
+import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
 import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.math.pow
@@ -29,7 +30,10 @@ operator fun Number.rem(input: Number): Number {
 operator fun Number.unaryMinus() = this * -1
 operator fun Number.compareTo(input: Number) = this.castToBigDecimal().compareTo(input.castToBigDecimal())
 
-fun Number.elevate(other: Number): Number = this.toDouble().pow(other.toDouble()).tryCastToInt()
+fun Number.elevate(other: Number): Number {
+	if (other !is Int) throw IllegalOperationException(this::class, other::class, "^")
+	return this.castToBigDecimal().pow(other).tryCastToInt()
+}
 
 fun Number.isZero() = compareTo(0.0) == 0
 

@@ -15,7 +15,7 @@ data class SetNumber(var number: Number = 0) : Numeric, Comparable<SetNumber> {
 	operator fun plus(other: SetNumber) = this + other.number
 	override fun plus(other: DataSet) =
 		when (other) {
-			is Matrix -> throw IllegalOperationException(SetNumber::class, Matrix::class, '+')
+			is Matrix -> throw IllegalOperationException(SetNumber::class, Matrix::class, "+")
 			is SetNumber -> this + other
 			else -> other + this
 		}
@@ -24,7 +24,7 @@ data class SetNumber(var number: Number = 0) : Numeric, Comparable<SetNumber> {
 	operator fun minus(other: SetNumber) = this - other.number
 	override fun minus(other: DataSet) =
 		when (other) {
-			is Matrix -> throw IllegalOperationException(SetNumber::class, Matrix::class, '-')
+			is Matrix -> throw IllegalOperationException(SetNumber::class, Matrix::class, "-")
 			is SetNumber -> this - other
 			else -> other * SetNumber(-1) + this
 		}
@@ -39,7 +39,7 @@ data class SetNumber(var number: Number = 0) : Numeric, Comparable<SetNumber> {
 	operator fun div(other: SetNumber) = this / other.number
 	override fun div(other: DataSet) =
 		when(other) {
-			is Matrix -> throw IllegalOperationException(SetNumber::class, other::class, '/')
+			is Matrix -> throw IllegalOperationException(SetNumber::class, other::class, "/")
 			is SetNumber -> this / other
 			is PolynomialTerm -> {
 				other.copy(number =
@@ -59,15 +59,13 @@ data class SetNumber(var number: Number = 0) : Numeric, Comparable<SetNumber> {
 	operator fun rem(other: SetNumber) = this % other.number
 	override fun rem(other: DataSet) =
 		if (other is SetNumber) this % other
-		else throw IllegalOperationException(SetNumber::class, other::class, '%')
+		else throw IllegalOperationException(SetNumber::class, other::class, "%")
 
 	override fun pow(other: DataSet): SetNumber {
-		if (other !is SetNumber) throw IllegalOperationException(SetNumber::class, other::class, '^')
+		if (other !is SetNumber) throw IllegalOperationException(SetNumber::class, other::class, "^")
 		return SetNumber(number.elevate(other.number))
 	}
 
 	operator fun compareTo(other: Number): Int = number.compareTo(other)
 	override operator fun compareTo(other: SetNumber): Int = compareTo(other.number)
-
-	operator fun unaryMinus() = this * -1
 }

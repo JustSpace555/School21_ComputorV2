@@ -85,11 +85,11 @@ class Fraction(val numerator: DataSet, val denominator: DataSet) : Wrapping() {
 			}
 		}
 
-	override fun rem(other: DataSet): DataSet = throw IllegalOperationException(Fraction::class, other::class, '%')
+	override fun rem(other: DataSet): DataSet = throw IllegalOperationException(Fraction::class, other::class, "%")
 
 	override fun pow(other: DataSet): DataSet {
 		if (other !is SetNumber || other.number !is Int)
-			throw IllegalOperationException(Fraction::class, other::class, '^')
+			throw IllegalOperationException(Fraction::class, other::class, "^")
 
 		var number = other.number as Int
 		val belowZero = number < 0
