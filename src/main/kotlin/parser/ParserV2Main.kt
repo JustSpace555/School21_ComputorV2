@@ -8,6 +8,7 @@ import globalextensions.mapToPolynomialList
 import globalextensions.toPolynomialList
 import models.dataset.Function
 import models.dataset.wrapping.Brackets
+import models.dataset.wrapping.Wrapping
 import models.exceptions.computorv1.parserexception.EqualSignAmountException
 import models.exceptions.computorv1.parserexception.EqualSignPositionException
 import models.exceptions.computorv2.parserexception.sign.QuestionMarkPositionException
@@ -19,9 +20,10 @@ import parser.extensions.validateVariable
 import parser.getparseable.getParseableDataSet
 
 internal fun parser(input: String, isPlot: Boolean = false): String {
-	val mod = putSpaces(input).split(' ').filter { it.isNotEmpty() }.apply {
-		if (isPlot) drop(1)
-	}
+	val mod = putSpaces(input)
+		.split(' ')
+		.filter { it.isNotEmpty() }
+		.apply { if (isPlot) drop(1) }
 
 	val isComputation = mod.contains("?")
 
@@ -39,32 +41,34 @@ internal fun parser(input: String, isPlot: Boolean = false): String {
 		if (mod.last() != "?") throw QuestionMarkPositionException()
 		if (indexOfEqual == mod.lastIndex - 1) return beforeEqual.compute().toString()
 
-		val parameter = beforeEqual.find {
-			!(variables.containsKey(it) || it.contains(Regex("[0-9]")) || it in operationsStringList)
-		} ?: ""
+		val findParameter: List<String>.() -> String = {
+			find {
+				!(variables.containsKey(it) || it.contains(Regex("[0-9]")) || it in operationsStringList)
+			} ?: ""
+		}
 
-		val parameterAfterEquals = afterEqual.dropLast(1).find {
-			!(variables.containsKey(it) || it.contains(Regex("[0-9]")) || it in operationsStringList)
-		} ?: ""
+		val parameterBeforeEqual = beforeEqual.findParameter()
+		val parameterAfterEquals = afterEqual.findParameter()
 
-		if (parameter.isNotEmpty() && parameterAfterEquals.isNotEmpty() && parameter != parameterAfterEquals)
+		if (parameterBeforeEqual.isNotEmpty() && parameterAfterEquals.isNotEmpty() &&
+			parameterBeforeEqual != parameterAfterEquals
+		) {
 			throw MultipleArgumentException()
+		}
 
-		val rightParameter = if (parameter.isNotEmpty()) parameter else parameterAfterEquals
+		val rightParameter = if (parameterBeforeEqual.isNotEmpty()) parameterBeforeEqual else parameterAfterEquals
 
-		val computedBeforeEqual = getStringWithFunctions(beforeEqual)
-			.compute(rightParameter)
-			.getBracketList()
-			.mapToPolynomialList()
-			.reducedString(rightParameter)
-			.replace(rightParameter, "X")
+		val prepareStringForComputorV1: (List<String>) -> String = {
+			getStringWithFunctions(it)
+				.compute(rightParameter)
+				.getBracketList()
+				.mapToPolynomialList()
+				.reducedString(rightParameter)
+				.replace(rightParameter, "X")
+		}
 
-		val computedAfterEqual = getStringWithFunctions(afterEqual.dropLast(1))
-			.compute(rightParameter)
-			.getBracketList()
-			.mapToPolynomialList()
-			.reducedString(rightParameter)
-			.replace(rightParameter, "X")
+		val computedBeforeEqual = prepareStringForComputorV1(beforeEqual)
+		val computedAfterEqual = prepareStringForComputorV1(afterEqual.dropLast(1))
 
 		return computorV1("$computedBeforeEqual = $computedAfterEqual").replace("X", rightParameter)
 	}
@@ -79,7 +83,7 @@ internal fun parser(input: String, isPlot: Boolean = false): String {
 	}
 
 	return when(computed) {
-		is Brackets -> computed.toString().removePrefix("(").removeSuffix(")")
+		is Wrapping -> computed.toString().removePrefix("(").removeSuffix(")")
 		else -> computed.toString()
 	}
 }
