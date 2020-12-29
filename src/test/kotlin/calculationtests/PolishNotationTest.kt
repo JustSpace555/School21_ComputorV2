@@ -56,7 +56,7 @@ class PolishNotationTest : ComputorTest() {
 		variables["matA"] = Matrix(putSpaces("[[1, 2]; [3 + 3i, -5.5]]").split(' ').toTypedArray())
 
 		val result = calc(
-			"((3 + 1) * (-1.5) ^ 2 * (1 + i) / funA(1 + 1i)) * funB(6 - 1) / funC(varA - 1.1) * (matA + [[-1, -2]; [1, 2]])"
+			"((3 + 1) * (-1.5) ^ 2 * (1 + i) / funA(1 + 1i)) * funB(6 - 1) / funC(varA - 1.1) * (matA ++ [[-1, -2]; [1, 2]])"
 		)
 
 		val rightAnswer = Matrix(

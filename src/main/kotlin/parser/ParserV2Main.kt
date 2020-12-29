@@ -15,6 +15,8 @@ import models.variables
 import computorv1.parser.extensions.putSpacesComputorV1
 import models.exceptions.computorv1.EqualSignAmountException
 import models.exceptions.computorv1.EqualSignPositionException
+import parser.extensions.deleteSpacesFromMultipleOperations
+import parser.extensions.getStringWithFunctions
 import parser.extensions.putSpaces
 import parser.extensions.validateVariable
 import parser.getparseable.getParseableDataSet
@@ -22,6 +24,7 @@ import parser.getparseable.getParseableDataSet
 fun parser(input: String, isPlot: Boolean = false): String {
 	val mod = putSpaces(input)
 		.split(' ')
+		.deleteSpacesFromMultipleOperations()
 		.filter { it.isNotEmpty() }
 		.apply { if (isPlot) drop(1) }
 
@@ -86,21 +89,4 @@ fun parser(input: String, isPlot: Boolean = false): String {
 		is Wrapping -> computed.toString().removePrefix("(").removeSuffix(")")
 		else -> computed.toString()
 	}
-}
-
-//TODO Подумать как переписать
-fun getStringWithFunctions(input: List<String>): List<String> {
-	var i = 0
-	val output = mutableListOf<String>()
-
-	while (i in input.indices) {
-		if (variables.containsKey(input[i]) && variables[input[i]] is Function) {
-			val function = variables[input[i]] as Function
-			output.addAll(putSpacesComputorV1(function.function.reducedString(function.parameter)).split(' '))
-			i += 4
-			continue
-		}
-		output.add(input[i++])
-	}
-	return output
 }

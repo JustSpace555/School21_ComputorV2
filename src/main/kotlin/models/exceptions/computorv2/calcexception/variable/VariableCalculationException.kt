@@ -17,6 +17,6 @@ class NoSuchVariableException(invalidVariableName: String = ""): VariableCalcula
 class IllegalOperationException(
 	arg1: KClass<*>, arg2: KClass<*>, `fun`: String? = null
 ) : VariableCalculationException() {
-	override val message: String = "Illegal operation ${`fun`?: " "}" +
-			"between ${arg1.simpleName} and ${arg2.simpleName}"
+	private val funStr = if (`fun` != null) "$`fun` " else ""
+	override val message: String = "Illegal operation ${funStr}between ${arg1.simpleName} and ${arg2.simpleName}"
 }

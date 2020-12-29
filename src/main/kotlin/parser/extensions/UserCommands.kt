@@ -33,7 +33,7 @@ fun getHistory(): String {
 		output.append(
 			"\nCommand #${i + 1} {" +
 			"\n\tInput: ${command.first}" +
-			"\n\tResult: ${command.second.replace("\n", "\n\t")}" +
+			"\n\tResult:\n\t\t${command.second.replace("\n", "\n\t\t")}" +
 			"\n}\n"
 		)
 	}

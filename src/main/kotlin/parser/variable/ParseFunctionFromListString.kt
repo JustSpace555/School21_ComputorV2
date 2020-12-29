@@ -1,5 +1,6 @@
 package parser.variable
 
+import computation.*
 import computation.polishnotation.extensions.compute
 import computorv1.models.PolynomialTerm
 import globalextensions.toPolynomial
@@ -53,20 +54,21 @@ fun parseFunctionFromList(input: List<String>, parameter: String): DataSet {
 
 	return if (number is Numeric) {
 
-		val operation = when(input.first()) {
-			"sin" -> ::sin
-			"cos" -> ::cos
-			"tan" -> ::tan
-			"cot" -> { { 1 / tan(it) } }
-			"asin" -> ::asin
-			"acos" -> ::acos
-			"atan" -> ::atan
-			"acot" -> ::tan
-			"exp" -> ::exp
-			"sqrt" -> ::sqrt
-			"abs" -> ::abs
-			else -> null
-		}
+		val operation: ((Double) -> Double)? =
+			when(input.first()) {
+				"sin" -> ::sampleSin
+				"cos" -> ::sampleCos
+				"tan" -> ::sampleTan
+				"ctg" -> ::sampleCtg
+				"asin" -> ::sampleArcSin
+				"acos" -> ::sampleArcCos
+				"atan" -> ::sampleArcTan
+				"actg" -> ::sampleArcCtg
+				"exp" -> ::sampleExp
+				"sqrt" -> ::sampleSqrt
+				"abs" -> ::sampleAbs
+				else -> null
+			}
 
 		when {
 			function == null && operation == null -> throw NoSuchVariableException(input.first())

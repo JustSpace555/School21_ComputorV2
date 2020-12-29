@@ -3,8 +3,8 @@ package globalextensions
 import models.exceptions.computorv2.calcexception.DivideByZeroException
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
 import java.math.BigDecimal
+import java.math.MathContext
 import java.math.RoundingMode
-import kotlin.math.pow
 
 private fun Number.castToBigDecimal() = toDouble().toBigDecimal()
 
@@ -32,7 +32,10 @@ operator fun Number.compareTo(input: Number) = this.castToBigDecimal().compareTo
 
 fun Number.elevate(other: Number): Number {
 	if (other !is Int) throw IllegalOperationException(this::class, other::class, "^")
-	return this.castToBigDecimal().pow(other).tryCastToInt()
+	return if (other < 0)
+		1.0 / this.castToBigDecimal().pow(other * -1, MathContext(9)).toDouble()
+	else
+		this.castToBigDecimal().pow(other, MathContext(9)).tryCastToInt()
 }
 
 fun Number.isZero() = compareTo(0.0) == 0

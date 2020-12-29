@@ -68,7 +68,7 @@ class SolverTest {
 			),
 			arrayOf(
 				"+2 * X^2 + 7 * X + 4",
-				"Reduced form: 2 * X^2 + 7 * X^1 + 4 * X^0 = 0\nPolynomial degree: 2\nDiscriminant: 17\nThe two solutions are:\n-2.780776406\n-0.719223594\n"
+				"Reduced form: 2 * X^2 + 7 * X^1 + 4 * X^0 = 0\nPolynomial degree: 2\nDiscriminant: 17\nThe two solutions are:\n-2.780776408\n-0.719223593\n"
 			),
 			arrayOf(
 				"5.0 * -2 * -0.5 * X^0 + 3 * X^1 + 3 * X^2 = 1 * X^0 + 0 * X^1",

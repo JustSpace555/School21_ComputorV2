@@ -98,7 +98,7 @@ open class Function(
 	}
 
 	operator fun invoke(operand: Number) = this(SetNumber(operand))
-	open operator fun invoke(operand: DataSet): Numeric {
+	operator fun invoke(operand: DataSet): Numeric {
 		val rightOperand = if (listOfPolynomialsBeforeInvoke.isNotEmpty()) {
 			var newOperand = SetNumber(0) as DataSet
 			listOfPolynomialsBeforeInvoke.forEach { newOperand += it.number.pow(it.degree) }

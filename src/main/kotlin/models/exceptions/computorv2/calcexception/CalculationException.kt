@@ -22,3 +22,4 @@ class BracketsAmountException : CalculationException() {
 class DivideByZeroException : CalculationException() {
 	override val message: String = "Division by zero"
 }
+

@@ -3,7 +3,7 @@ package parser.extensions
 import models.operationsCharList
 
 fun putSpaces(input: String): String {
-	val output = StringBuilder()
+	val output = StringBuffer()
 	val getWhiteSpace: Boolean.() -> String = { if (this) "" else " " }
 
 	var beforeWhiteSpace: String

@@ -18,8 +18,8 @@ import java.util.*
 private fun choosePriority(input: String): Int =
 	when (input) {
 		"^" -> 4
-		"*", "/", "%" -> 3
-		"+", "-" -> 2
+		"*", "/", "%", "**", "//" -> 3
+		"+", "-", "++", "--" -> 2
 		"(" -> 1
 		else -> throw IllegalTokenException(input)
 	}

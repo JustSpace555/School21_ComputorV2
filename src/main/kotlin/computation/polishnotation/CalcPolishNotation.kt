@@ -2,8 +2,11 @@ package computation.polishnotation
 
 import computation.polishnotation.extensions.isOperandOrTempVariable
 import models.dataset.DataSet
+import models.dataset.Matrix
 import models.exceptions.computorv2.calcexception.IllegalTokenException
 import models.exceptions.computorv2.calcexception.TooFewOperatorsException
+import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
+import models.matrixOperationsList
 import models.tempVariables
 import models.variables
 import parser.variable.numeric.toSetNumber
@@ -33,7 +36,17 @@ fun calcPolishNotation(input: List<String>): DataSet {
 			throw IllegalTokenException(element)
 		}
 
-		val newNum = when (element) {
+		val newNum = if (firstElement is Matrix && secondElement is Matrix) {
+			if (element !in matrixOperationsList) throw IllegalOperationException(Matrix::class, Matrix::class, element)
+			when (element) {
+				"++" -> firstElement + secondElement
+				"--" -> firstElement - secondElement
+				"**" -> firstElement * secondElement
+				"//" -> firstElement / secondElement
+				else -> throw IllegalTokenException(element)
+			}
+		} else when (element) {
+			in matrixOperationsList -> throw IllegalOperationException(firstElement::class, secondElement::class, element)
 			"+" -> firstElement + secondElement
 			"-" -> firstElement - secondElement
 			"/" -> firstElement / secondElement

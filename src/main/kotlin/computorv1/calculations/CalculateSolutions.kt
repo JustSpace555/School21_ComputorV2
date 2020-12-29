@@ -9,22 +9,24 @@ import models.dataset.numeric.Complex
 import models.dataset.numeric.SetNumber
 
 private fun calculateComplexArgs(discriminant: Discriminant): Pair<DataSet, DataSet> {
-	val discriminantSqrt = (discriminant.result * SetNumber(-1)).sampleSqrt()
+	val discriminantSqrt = sampleSqrt(
+		((discriminant.result * SetNumber(-1)) as SetNumber).number.toDouble()
+	)
 
-	val first = Complex(-discriminant.argB as SetNumber, discriminantSqrt * -1) /
+	val first = Complex(-discriminant.argB as SetNumber, SetNumber(discriminantSqrt) * -1) /
 			(SetNumber(2) * discriminant.argA)
 
-	val second = Complex(-discriminant.argB as SetNumber, discriminantSqrt) /
+	val second = Complex(-discriminant.argB as SetNumber, SetNumber(discriminantSqrt)) /
 			(SetNumber(2) * discriminant.argA)
 
 	return Pair(first, second)
 }
 
 private fun calculateTwoArg(discriminant: Discriminant): Pair<Any, Any> {
-	val discriminantSqrt = discriminant.result.sampleSqrt()
+	val discriminantSqrt = sampleSqrt((discriminant.result as SetNumber).number.toDouble())
 
-	val firstArg = (-discriminant.argB - discriminantSqrt) / (SetNumber(2) * discriminant.argA)
-	val secondArg = (-discriminant.argB + discriminantSqrt) / (SetNumber(2) * discriminant.argA)
+	val firstArg = (-discriminant.argB - SetNumber(discriminantSqrt)) / (SetNumber(2) * discriminant.argA)
+	val secondArg = (-discriminant.argB + SetNumber(discriminantSqrt)) / (SetNumber(2) * discriminant.argA)
 
 	return Pair(firstArg, secondArg)
 }

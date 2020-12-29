@@ -40,7 +40,7 @@ class ParserMainTest : ComputorTest() {
 		assertEquals("[ 1, 2 ]\n[ 3 + 3i, -5.5 ]\n", parser("matA = [[1, 2]; [3 + 3i, -5.5]]"))
 
 		assertEquals("[ 0, 0 ]\n[ 382.153846176 + 182.769230832i, -290.769230808 + 58.153846128i ]\n", parser(
-			"((3 + 1) * (-1.5) ^ 2 * (1 + i) / funA(1 + 1i)) * funB(6 - 1) / funC(varA - 1.1) * (matA + [[-1, -2]; [1, 2]])"
+			"((3 + 1) * (-1.5) ^ 2 * (1 + i) / funA(1 + 1i)) * funB(6 - 1) / funC(varA - 1.1) * (matA ++ [[-1, -2]; [1, 2]])"
 		))
 		variables.clear()
 	}
