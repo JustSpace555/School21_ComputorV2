@@ -13,6 +13,7 @@ import models.exceptions.computorv2.parserexception.variable.MultipleArgumentExc
 import models.operationsStringList
 import models.variables
 import computorv1.parser.extensions.putSpacesComputorV1
+import graph.Graph
 import models.exceptions.computorv1.EqualSignAmountException
 import models.exceptions.computorv1.EqualSignPositionException
 import parser.extensions.deleteSpacesFromMultipleOperations
@@ -22,15 +23,20 @@ import parser.extensions.validateVariable
 import parser.getparseable.getParseableDataSet
 
 fun parser(input: String, isPlot: Boolean = false): String {
-	val mod = putSpaces(input)
+	var mod = putSpaces(input)
 		.split(' ')
 		.deleteSpacesFromMultipleOperations()
 		.filter { it.isNotEmpty() }
-		.apply { if (isPlot) drop(1) }
+
+	if (isPlot) mod = mod.drop(1)
 
 	val isComputation = mod.contains("?")
 
-	if (!mod.contains("=") && !isComputation) return mod.compute().toString()
+	if (!mod.contains("=") && !isComputation) {
+		val res = mod.compute()
+		Graph().draw(res)
+		return res.toString()
+	}
 
 	if (mod.count { it == "=" } > 1) throw EqualSignAmountException()
 

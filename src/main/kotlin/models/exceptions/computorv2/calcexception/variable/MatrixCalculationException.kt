@@ -17,6 +17,16 @@ class WrongMatrixSizeOperationException(
 }
 
 @ComputorV2Exception
-class NotSquareMatrixException : MatrixCalculationException() {
+class NonSquareMatrixException : MatrixCalculationException() {
 	override val message: String = "Matrix must be square to perform this operation"
+}
+
+@ComputorV2Exception
+class ComplexNumbersInMatrixException : MatrixCalculationException() {
+	override val message: String = "Matrix must not has complex numbers in it to perform this operation"
+}
+
+@ComputorV2Exception
+class DeterminantIsZeroException : MatrixCalculationException() {
+	override val message: String = "Determinant of matrix is zero"
 }

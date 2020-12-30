@@ -50,39 +50,46 @@ fun parseFunctionFromList(input: List<String>, parameter: String): DataSet {
 		numberList.compute(parameter)
 	}
 
-	if (number is Matrix) throw IllegalOperationException(Function::class, Matrix::class)
+	return when (number) {
 
-	return if (number is Numeric) {
-
-		val operation: ((Double) -> Double)? =
-			when(input.first()) {
-				"sin" -> ::sampleSin
-				"cos" -> ::sampleCos
-				"tan" -> ::sampleTan
-				"ctg" -> ::sampleCtg
-				"asin" -> ::sampleArcSin
-				"acos" -> ::sampleArcCos
-				"atan" -> ::sampleArcTan
-				"actg" -> ::sampleArcCtg
-				"exp" -> ::sampleExp
-				"sqrt" -> ::sampleSqrt
-				"abs" -> ::sampleAbs
-				else -> null
-			}
-
-		when {
-			function == null && operation == null -> throw NoSuchVariableException(input.first())
-
-			operation == null -> function!!(number)
-
-			else -> {
-				if (number is Complex) throw IllegalOperationException(Function::class, Complex::class)
-				number as SetNumber
-				SetNumber(operation(number.number.toDouble()))
-			}
+		is Matrix -> when (input.first()) {
+			"T" -> number.transposed()
+			"DET" -> SetNumber(number.det())
+			"REV" -> number.reverse()
+			else -> throw IllegalOperationException(Function::class, Matrix::class)
 		}
-	} else {
-		Function(
+
+		is Numeric -> {
+
+			val operation: ((Double) -> Double)? =
+				when (input.first()) {
+					"sin" -> ::sampleSin
+					"cos" -> ::sampleCos
+					"tan" -> ::sampleTan
+					"ctg" -> ::sampleCtg
+					"asin" -> ::sampleArcSin
+					"acos" -> ::sampleArcCos
+					"atan" -> ::sampleArcTan
+					"actg" -> ::sampleArcCtg
+					"exp" -> ::sampleExp
+					"sqrt" -> ::sampleSqrt
+					"abs" -> ::sampleAbs
+					else -> null
+				}
+
+			when {
+				function == null && operation == null -> throw NoSuchVariableException(input.first())
+
+				operation == null -> function!!(number)
+
+				else -> {
+					if (number is Complex) throw IllegalOperationException(Function::class, Complex::class)
+					number as SetNumber
+					SetNumber(operation(number.number.toDouble()))
+				}
+			}
+
+		} else -> Function(
 			parameter,
 			function?.function?.map { it.copy(name = parameter) } ?: listOf(number.toPolynomial()),
 			input.first()

@@ -1,14 +1,14 @@
 package calculationtests.variable.matrix
 
-import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
 import models.dataset.numeric.Complex
 import models.dataset.numeric.SetNumber
+import models.exceptions.computorv2.calcexception.variable.WrongMatrixSizeOperationException
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class MatrixDivisionExpressionTest : MatrixExpressionsTest() {
 
-	@Test(expected = IllegalOperationException::class)
+	@Test(expected = WrongMatrixSizeOperationException::class)
 	fun `fail division test with matrix`() {
 		"[[1]; [3]]".getMatrix() / "[[1, 2] ; [3, 4]]".getMatrix()
 	}
