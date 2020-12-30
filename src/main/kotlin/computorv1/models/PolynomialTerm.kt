@@ -8,6 +8,7 @@ import models.dataset.numeric.SetNumber
 import models.dataset.wrapping.Brackets
 import models.dataset.wrapping.Fraction
 import models.dataset.wrapping.FunctionStack
+import models.dataset.wrapping.Wrapping
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
 
 data class PolynomialTerm(
@@ -30,7 +31,7 @@ data class PolynomialTerm(
 				}
 			}
 
-			is Brackets -> other + this
+			is Wrapping -> other + this
 
 			else -> {
 				if (degree == 0) {
@@ -53,7 +54,7 @@ data class PolynomialTerm(
 				}
 			}
 
-			is Brackets -> other - this
+			is Wrapping -> other * SetNumber(-1) + this
 
 			else -> {
 				if (degree == 0) {
@@ -70,7 +71,7 @@ data class PolynomialTerm(
 
 			is PolynomialTerm -> copy(number = number * other.number, degree = degree + other.degree).tryCastToNumeric()
 
-			is Brackets -> other * this
+			is Wrapping -> other * this
 
 			is Function -> copy(number = FunctionStack(mutableListOf(number, other))).tryCastToNumeric()
 
@@ -83,7 +84,7 @@ data class PolynomialTerm(
 
 			is PolynomialTerm -> copy(number = number / other.number, degree = degree - other.degree).tryCastToNumeric()
 
-			is Brackets -> copy(number = Fraction(SetNumber(1), other)).tryCastToNumeric()
+			is Wrapping -> other * this
 
 			else -> copy(number = number / other).tryCastToNumeric()
 		}
@@ -91,7 +92,7 @@ data class PolynomialTerm(
 	override fun rem(other: DataSet) = throw IllegalOperationException(this::class, other::class, "%")
 
 	override fun pow(other: DataSet): DataSet {
-		if (other !is SetNumber || other.number is Double)
+		if (other !is SetNumber || other.number !is Int)
 			throw IllegalOperationException(this::class, other::class, "^")
 
 		return copy(degree = other.number as Int * degree).tryCastToNumeric()

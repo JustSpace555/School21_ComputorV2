@@ -23,7 +23,7 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 				imaginary = imaginary + other.imaginary
 			).tryCastToSetNumber()
 
-			is Wrapping -> other + this
+			is Wrapping, is PolynomialTerm -> other + this
 
 			is Function -> Brackets(other, this)
 
@@ -39,7 +39,7 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 				imaginary = imaginary - other.imaginary
 			).tryCastToSetNumber()
 
-			is Wrapping -> other * PolynomialTerm(-1) + this
+			is Wrapping, is PolynomialTerm -> other * SetNumber(-1) + this
 
 			is Function -> Brackets(this, other * SetNumber(-1))
 
@@ -55,7 +55,7 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 				imaginary = real * other.imaginary + other.real * imaginary
 			).tryCastToSetNumber()
 
-			is Wrapping -> other * this
+			is Wrapping, is PolynomialTerm -> other * this
 
 			is Function -> FunctionStack(other, this)
 
@@ -77,9 +77,7 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 				).tryCastToSetNumber()
 			}
 
-			is Wrapping -> other / this
-
-			is Function -> Fraction(this, other)
+			is Wrapping, is PolynomialTerm, is Function -> Fraction(this, other)
 
 			else -> {
 				other as SetNumber
