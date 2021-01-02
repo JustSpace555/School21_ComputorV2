@@ -3,7 +3,6 @@ package models.dataset.wrapping
 import computorv1.models.PolynomialTerm
 import computorv1.simplify
 import globalextensions.isEmpty
-import globalextensions.mapToDataSetList
 import globalextensions.mapToPolynomialList
 import models.dataset.DataSet
 import models.dataset.Function
@@ -52,7 +51,7 @@ class FunctionStack(override val listOfOperands: List<DataSet> = listOf()) : Wra
 			}
 
 			other is FunctionStack -> FunctionStack(
-				(listOfOperands + other.listOfOperands).mapToPolynomialList().simplify().mapToDataSetList()
+				(listOfOperands + other.listOfOperands).simplifyOnlyIterable()
 			).simplify()
 
 			else -> FunctionStack(listOfOperands + other).simplify()
@@ -104,16 +103,27 @@ class FunctionStack(override val listOfOperands: List<DataSet> = listOf()) : Wra
 		}
 	}
 
-	override fun toString(): String = listOfOperands.joinToString(" * ") {
-		if (it is Function) "(${it})" else it.toString()
-	}
-
-	fun simplify() =
+	private fun simplify() =
 		when {
 			isEmpty -> SetNumber()
 			listOfOperands.size == 1 -> listOfOperands.first()
 			else -> this
 		}
+
+	private fun List<DataSet>.simplifyOnlyIterable(): List<DataSet> {
+		val filtered = this.filter { it is PolynomialTerm || it is Numeric }.also { if (it.isEmpty()) return this }
+
+		var outputNumber = SetNumber(1) as DataSet
+		filtered.forEach { outputNumber *= it }
+
+		return listOf(outputNumber) + this@simplifyOnlyIterable.filter { it !is PolynomialTerm && it !is Numeric }
+	}
+
+
+
+	override fun toString(): String = listOfOperands.joinToString(" * ") {
+		if (it is Function) "($it)" else it.toString()
+	}
 
 	override fun equals(other: Any?): Boolean =
 		when {

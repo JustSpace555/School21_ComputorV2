@@ -19,17 +19,17 @@ fun DataSet.toPolynomial(): PolynomialTerm =
 
 		is Matrix -> throw IllegalOperationException(PolynomialTerm::class, Matrix::class)
 
-		is Wrapping -> when {
-			listOfOperands.any { it is PolynomialTerm } -> {
-				val newList = listOfOperands.toMutableList()
-				val maxPol = listOfOperands.filterIsInstance<PolynomialTerm>().maxByOrNull { it.degree }!!
-				newList.remove(maxPol)
-				val newVal = if (this is Brackets) Brackets(newList) else FunctionStack(newList)
-				maxPol.copy(number = newVal * maxPol.number)
-			}
-
-			else -> PolynomialTerm(this)
-		}
+//		is Wrapping -> when {
+//			listOfOperands.any { it is PolynomialTerm } -> {
+//				val newList = listOfOperands.toMutableList()
+//				val maxPol = listOfOperands.filterIsInstance<PolynomialTerm>().maxByOrNull { it.degree }!!
+//				newList.remove(maxPol)
+//				val newVal = if (this is Brackets) Brackets(newList) else FunctionStack(newList)
+//				maxPol.copy(number = newVal * maxPol.number)
+//			}
+//
+//			else -> PolynomialTerm(this)
+//		}
 
 		is PolynomialTerm -> this
 
@@ -60,5 +60,3 @@ fun DataSet.toPolynomialList() =
 		is PolynomialTerm -> listOf(this)
 		else -> listOf(PolynomialTerm(this))
 	}
-
-fun List<PolynomialTerm>.mapToDataSetList(): List<DataSet> = this.map { if (it.degree == 0) it.number else it }

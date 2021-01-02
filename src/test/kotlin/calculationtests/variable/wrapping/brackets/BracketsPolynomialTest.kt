@@ -1,4 +1,4 @@
-package calculationtests.variable
+package calculationtests.variable.wrapping.brackets
 
 import ComputorTest
 import computorv1.models.PolynomialTerm
@@ -9,7 +9,7 @@ import models.dataset.wrapping.Brackets
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class BracketsExpressionTest : ComputorTest() {
+class BracketsPolynomialTest : ComputorTest() {
 
 	@Test
 	fun validPlusTest() {

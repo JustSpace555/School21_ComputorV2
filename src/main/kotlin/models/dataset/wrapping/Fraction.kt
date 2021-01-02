@@ -121,25 +121,9 @@ class Fraction(val numerator: DataSet, val denominator: DataSet) : Wrapping() {
 		when {
 			numerator == denominator -> SetNumber(1)
 
-			denominator !is SetNumber -> this
+			numerator !is SetNumber || denominator !is SetNumber -> this
 
-			else -> when {
-				denominator.compareTo(1.0) == 0 -> numerator
-				denominator.compareTo(-1.0) == 0 -> numerator * SetNumber(-1)
-
-				else -> if (numerator is SetNumber && numerator.number is Int && denominator.number is Int) {
-
-					var f1Number = numerator.number as Int
-					var f2Number = denominator.number as Int
-
-					while (f1Number != f2Number && f1Number > 0 && f2Number > 0) {
-						if (f1Number > f2Number) f1Number -= f2Number else f2Number -= f1Number
-					}
-					SetNumber(f1Number)
-				} else {
-					this
-				}
-			}
+			else -> SetNumber((numerator as Number).toDouble() / (denominator as Number).toDouble())
 		}
 
 

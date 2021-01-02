@@ -12,6 +12,7 @@ import models.dataset.wrapping.FunctionStack
 import models.exceptions.computorv2.calcexception.DivideByZeroException
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
 import computorv1.reducedString
+import models.dataset.wrapping.Wrapping
 import parser.extensions.putSpaces
 
 open class Function(
@@ -30,8 +31,10 @@ open class Function(
 	override fun plus(other: DataSet): DataSet =
 		when(other) {
 			is Matrix -> throw IllegalOperationException(this::class, other::class, "+")
-			is Brackets, is FunctionStack -> other + this
-			is Function -> if (this == other) FunctionStack(SetNumber(2), this) else Brackets(this, other)
+			is Wrapping -> other + this
+			is Function -> {
+				if (this == other) FunctionStack(SetNumber(2), this) else Brackets(this, other)
+			}
 			else -> {
 				if (other.isEmpty())
 					this
@@ -43,8 +46,10 @@ open class Function(
 	override fun minus(other: DataSet): DataSet =
 		when(other) {
 			is Matrix -> throw IllegalOperationException(this::class, other::class, "-")
-			is Brackets, is FunctionStack -> other * SetNumber(-1) + this
-			is Function -> if (this == other) SetNumber(0) else Brackets(this, other * SetNumber(-1))
+			is Wrapping -> other * SetNumber(-1) + this
+			is Function -> {
+				if (this == other) SetNumber(0) else Brackets(this, other * SetNumber(-1))
+			}
 			else -> {
 				if (other.isEmpty())
 					this
@@ -53,48 +58,43 @@ open class Function(
 			}
 		}
 
-	override fun times(other: DataSet): DataSet {
-
-		if (other.isEmpty()) return SetNumber()
-
-		return when (other) {
-			is Matrix -> throw IllegalOperationException(this::class, other::class, "*")
-			is FunctionStack, is Brackets -> other * this
-			else -> when {
-				other is SetNumber && other.compareTo(1.0) == 0 -> this
-				else -> FunctionStack(this, other)
-			}
+	override fun times(other: DataSet): DataSet =
+		when {
+			other.isEmpty() -> SetNumber()
+			other is Matrix -> throw IllegalOperationException(this::class, other::class, "*")
+			other is Wrapping -> other * this
+			other is SetNumber && other.compareTo(1.0) == 0 -> this
+			else -> FunctionStack(this, other)
 		}
-	}
 
-	override fun div(other: DataSet): DataSet {
+	override fun div(other: DataSet): DataSet =
+		when {
+			other.isEmpty() -> throw DivideByZeroException()
 
-		if (other.isEmpty()) throw DivideByZeroException()
-
-		return when (other) {
-			is Matrix -> throw IllegalOperationException(this::class, other::class, "/")
-			is Fraction -> Fraction(other.denominator * this, other.numerator)
-			is Brackets -> Fraction(this, other).simplify()
-			else -> when {
-				other is SetNumber && other.compareTo(1.0) == 0 -> this
-				else -> Fraction(this, other).simplify()
-			}
+			other is Matrix -> throw IllegalOperationException(this::class, other::class, "/")
+			other is Fraction -> Fraction(other.denominator * this, other.numerator).simplify()
+			other is SetNumber && other.compareTo(1.0) == 0 -> this
+			else -> Fraction(this, other).simplify()
 		}
-	}
 
 	override fun rem(other: DataSet): DataSet = throw IllegalOperationException(this::class, other::class, "%")
 
-	override fun pow(other: DataSet): DataSet {
-		if (other !is SetNumber || other.number !is Int || other < 0)
-			throw IllegalOperationException(this::class, other::class, "^")
+	override fun pow(other: DataSet): DataSet =
+		when {
+			other !is SetNumber || other.number !is Int -> {
+				throw IllegalOperationException(this::class, other::class, "^")
+			}
+			other.number == 0 -> SetNumber(1)
+			other.number == 1 -> this
+			else -> {
+				var number = other.number as Int
+				val belowZero = number < 0
+				if (belowZero) number *= -1
 
-		val number = other.number as Int
-		if (number == 0) return SetNumber(1)
-		else if (number == 1) return this
-
-		var newStack = FunctionStack(this)
-		repeat(number - 1) { newStack = (newStack * newStack) as FunctionStack }
-		return if (number < 0) Fraction(SetNumber(1), newStack) else newStack
+				var newStack = FunctionStack(this) as DataSet
+				repeat(number - 1) { newStack *= newStack }
+				if (belowZero) Fraction(SetNumber(1), newStack) else newStack
+			}
 	}
 
 	operator fun invoke(operand: Number) = this(SetNumber(operand))
@@ -112,7 +112,8 @@ open class Function(
 		)
 			.split(' ')
 			.compute()
-			.also { clearPolynomialsBeforeInvoke() } as Numeric
+			.also { clearPolynomialsBeforeInvoke() }
+			as Numeric
 	}
 
 	override fun toString(): String = if (listOfPolynomialsBeforeInvoke.isEmpty()) {

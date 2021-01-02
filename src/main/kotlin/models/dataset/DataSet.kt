@@ -15,4 +15,5 @@ interface DataSet {
 	operator fun unaryMinus(): DataSet = this * SetNumber(-1)
 
 	override fun toString(): String
+	override fun equals(other: Any?): Boolean
 }

@@ -51,7 +51,7 @@ class ParserMainTest : ComputorTest() {
 		assertEquals("x^2 + x + 1", parser("funA(x)=(x^(2))+(x+1 + 1 -1)"))
 		assertEquals("y + (funA(y))", parser("funB(y) = y + funA(y)"))
 		assertEquals(
-			"(funB((funA(z + 2)) + (funB(z + 2)))) * (funA(z)) * -z^2 + 0.5 * z - 3",
+			"0.5 * z - 3 - z^2 * (funB((funA(z + 2)) + (funB(z + 2)))) * (funA(z))",
 			parser("funC(z) = z * 0.5 - funA((1) + (1) - (1)) - funB ( funA(z + varA - 0.1) + funB(z + varA - 0.1) )*z^2*funA(z)")
 		)
 		assertEquals("-2702.5", parser("funC(1) = ?"))

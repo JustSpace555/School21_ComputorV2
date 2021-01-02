@@ -19,6 +19,10 @@ data class PolynomialTerm(
 
 	constructor(number: Number, degree: Int = 0, name: String = "X") : this(SetNumber(number), degree, name)
 
+	init {
+		if (number is PolynomialTerm) throw IllegalOperationException(PolynomialTerm::class, PolynomialTerm::class)
+	}
+
 	override fun plus(other: DataSet): DataSet =
 		when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, "+")

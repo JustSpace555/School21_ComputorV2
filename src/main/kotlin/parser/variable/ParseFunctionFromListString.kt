@@ -17,7 +17,6 @@ import models.exceptions.computorv2.calcexception.variable.NoSuchVariableExcepti
 import models.tempVariables
 import models.variables
 import parser.variable.numeric.toNumeric
-import kotlin.math.*
 
 private fun Map<String, DataSet>.checkIsElementNumeric(name: String) {
 	val element = this.getOrElse(name) { return }
@@ -32,7 +31,7 @@ fun parseFunctionFromList(input: List<String>, parameter: String): DataSet {
 	if (indexOfOpenBracket == -1 || indexOfCloseBracket == -1) throw BracketsAmountException()
 
 	val numberList = input.subList(indexOfOpenBracket + 1, indexOfCloseBracket)
-	val number = if (numberList.size == 1) {
+	val result = if (numberList.size == 1) {
 		val varName = numberList.first()
 		when {
 			variables.containsKey(varName) -> {
@@ -50,13 +49,13 @@ fun parseFunctionFromList(input: List<String>, parameter: String): DataSet {
 		numberList.compute(parameter)
 	}
 
-	return when (number) {
+	return when (result) {
 
 		is Matrix -> when (input.first()) {
-			"T" -> number.transposed()
-			"DET" -> SetNumber(number.det())
-			"REV" -> number.reverse()
-			else -> throw IllegalOperationException(Function::class, Matrix::class)
+			"T" -> result.transposed()
+			"DET" -> SetNumber(result.det())
+			"REV" -> result.reverse()
+			else -> throw IllegalOperationException(Function::class, Matrix::class, input.first())
 		}
 
 		is Numeric -> {
@@ -80,19 +79,19 @@ fun parseFunctionFromList(input: List<String>, parameter: String): DataSet {
 			when {
 				function == null && operation == null -> throw NoSuchVariableException(input.first())
 
-				operation == null -> function!!(number)
+				operation == null -> function!!(result)
 
 				else -> {
-					if (number is Complex) throw IllegalOperationException(Function::class, Complex::class)
-					number as SetNumber
-					SetNumber(operation(number.number.toDouble()))
+					if (result is Complex) throw IllegalOperationException(Function::class, Complex::class)
+					result as SetNumber
+					SetNumber(operation(result.number.toDouble()))
 				}
 			}
 
 		} else -> Function(
 			parameter,
-			function?.function?.map { it.copy(name = parameter) } ?: listOf(number.toPolynomial()),
+			function?.function?.map { it.copy(name = parameter) } ?: listOf(result.toPolynomial()),
 			input.first()
-		).apply { addPolynomialsBeforeInvoke(number.toPolynomialList()) }
+		).apply { addPolynomialsBeforeInvoke(result.toPolynomialList()) }
 	}
 }

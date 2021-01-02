@@ -39,7 +39,7 @@ data class SetNumber(var number: Number = 0) : Numeric, Comparable<SetNumber> {
 	operator fun div(other: SetNumber) = this / other.number
 	override fun div(other: DataSet) =
 		when(other) {
-			is Matrix -> throw IllegalOperationException(SetNumber::class, other::class, "/")
+			is Matrix -> throw IllegalOperationException(SetNumber::class, Matrix::class, "/")
 			is SetNumber -> this / other
 			is PolynomialTerm -> {
 				other.copy(number =
