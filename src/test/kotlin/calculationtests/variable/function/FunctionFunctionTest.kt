@@ -15,13 +15,13 @@ class FunctionFunctionTest : FunctionExpressionTest("z", "z^2 + z + 1") {
     @Test
     fun validPlusFunctionTest() {
         assertEquals("2 * ($functionStr)", (function + function).toString())
-        assertEquals("($functionStr) + ($secondFunctionStr)", (function + secondFunction).toString())
+        assertEquals("(($functionStr) + ($secondFunctionStr))", (function + secondFunction).toString())
     }
 
     @Test
     fun validMinusFunctionTest() {
         assertEquals("0", (function - function).toString())
-        assertEquals("($functionStr) - ($secondFunctionStr)", (function - secondFunction).toString())
+        assertEquals("(($functionStr) + ($secondFunctionStr) * -1)", (function - secondFunction).toString())
     }
 
     @Test
@@ -32,7 +32,7 @@ class FunctionFunctionTest : FunctionExpressionTest("z", "z^2 + z + 1") {
 
     @Test
     fun validDivFunctionTest() {
-        assertEquals("(($functionStr) / $($functionStr))", (function / function).toString())
+        assertEquals("1", (function / function).toString())
         assertEquals("($functionStr) / ($secondFunctionStr)", (function / secondFunction).toString())
     }
 

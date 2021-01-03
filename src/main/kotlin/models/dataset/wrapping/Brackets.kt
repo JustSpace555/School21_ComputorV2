@@ -21,16 +21,14 @@ class Brackets(override val listOfOperands: List<DataSet> = listOf()): Wrapping(
 
 	override val isEmpty: Boolean = listOfOperands.isEmpty()
 
-	override fun plus(other: DataSet): DataSet {
-		if (other is Matrix) throw IllegalOperationException(Brackets::class, Matrix::class, "+")
-
-		if (isEmpty) return other
-
-		return when (other) {
-			is Brackets -> addElements(other.listOfOperands)
-			else -> if (other.isEmpty()) this else addElements(other)
+	override fun plus(other: DataSet): DataSet =
+		when {
+			other is Matrix -> throw IllegalOperationException(Brackets::class, Matrix::class, "+")
+			isEmpty && other.isEmpty() -> SetNumber()
+			isEmpty || other.isEmpty() -> if (isEmpty) other else this
+			other is Brackets -> addElements(other.listOfOperands)
+			else -> addElements(other)
 		}
-	}
 
 	override fun minus(other: DataSet): DataSet {
 		if (other is Matrix) throw IllegalOperationException(Brackets::class, Matrix::class, "-")
@@ -190,6 +188,53 @@ class Brackets(override val listOfOperands: List<DataSet> = listOf()): Wrapping(
 	}
 
 	private fun List<DataSet>.simplifyPolynomials(): List<DataSet> = mapToPolynomialList().simplifyOnlyIterable()
+
+	private fun List<DataSet>.simplifyDataSet(): List<DataSet> {
+		val newList = mutableListOf<DataSet>()
+		val mapOfFunctions = mutableMapOf<Function, DataSet>()
+
+		forEach {
+			when (it) {
+				is Function -> {
+					if (mapOfFunctions.containsKey(it)) mapOfFunctions[it] = mapOfFunctions[it]!! + SetNumber(1)
+					else mapOfFunctions[it] = SetNumber(1)
+				}
+				is FunctionStack -> {
+					val foundFunction = it.listOfOperands.find { ffs -> ffs is Function } as Function?
+					if (it.listOfOperands.size == 2 && it == foundFunction) {
+						if (mapOfFunctions.containsKey(foundFunction)) {
+							mapOfFunctions[foundFunction] = mapOfFunctions[foundFunction]!! + SetNumber(1)
+						} else {
+							mapOfFunctions[foundFunction] = it.listOfOperands.first { ffs -> ffs !is Function }
+						}
+					} else newList.add(it)
+				}
+				else -> newList.add(it)
+			}
+		}
+
+		mapOfFunctions.forEach { (function, number) -> newList.add(FunctionStack(number, function)) }
+
+		val getDataList: List<PolynomialTerm>.() -> List<DataSet> = {
+			this.flatMap {
+				if (it.degree == 0) it.number.getBracketList() else listOf(it)
+			}
+		}
+
+		val filtered = newList
+			.filterIsInstance<Numeric>()
+			.also { if (it.isEmpty()) return newList }
+			.mapToPolynomialList()
+			.simplify()
+
+		return mutableListOf<PolynomialTerm>().apply {
+			filtered.forEach {
+				this.addAll(if (it.number is Brackets) it.number.listOfOperands.mapToPolynomialList() else listOf(it))
+			}
+			addAll(newList.filter { it !is Numeric }.mapToPolynomialList())
+			sortByDescending { it.degree }
+		}.getDataList()
+	}
 
 	fun reduceList() =
 		when {

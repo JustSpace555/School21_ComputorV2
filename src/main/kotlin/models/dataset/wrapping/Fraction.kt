@@ -3,7 +3,9 @@ package models.dataset.wrapping
 import computorv1.models.PolynomialTerm
 import globalextensions.isEmpty
 import models.dataset.DataSet
+import models.dataset.Function
 import models.dataset.Matrix
+import models.dataset.numeric.Complex
 import models.dataset.numeric.SetNumber
 import models.exceptions.computorv2.calcexception.DivideByZeroException
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
@@ -115,7 +117,31 @@ class Fraction(val numerator: DataSet, val denominator: DataSet) : Wrapping() {
 		}
 	}
 
-	override fun toString(): String = "(($numerator) / ($denominator))"
+	override fun toString(): String {
+		val numeratorStr = when(numerator) {
+			is Complex -> {
+				if (numerator.real.isNotZero() && numerator.imaginary.isNotZero())
+					"($numerator)"
+				else
+					"$numerator"
+			}
+			is Function -> "($numerator)"
+			else -> numerator.toString()
+		}
+
+		val denominatorStr = when(denominator) {
+			is Complex -> {
+				if (denominator.real.isNotZero() && denominator.imaginary.isNotZero())
+					"($denominator)"
+				else
+					"$denominator"
+			}
+			is Function -> "($denominator)"
+			else -> denominator.toString()
+		}
+
+		return "$numeratorStr / $denominatorStr"
+	}
 
 	fun simplify(): DataSet =
 		when {

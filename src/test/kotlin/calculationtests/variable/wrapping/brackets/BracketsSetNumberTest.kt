@@ -10,16 +10,16 @@ class BracketsSetNumberTest : BracketsExpressionTest() {
 
     @Test
     fun validPlusSetNumberTest() {
-//        assertEquals(generalStr, (fullBrackets + SetNumber()).toString())
+        assertEquals(generalStr, (fullBrackets + SetNumber()).toString())
 
 
         assertEquals(
-            "((x^2)^3 + 1 + (2.2 + 3.3i) + (x^2) + 0.1 * (x^2) + (x^2) / (2.2 + 3.3i))",
+            "((x^2) * y^3 + (3.2 + 3.3i) + (x^2) + 0.1 * (x^2) + (x^2) / (2.2 + 3.3i))",
             (fullBrackets + SetNumber(0.9)).toString()
         )
 
         assertEquals(
-            "((x^2)^3 + (2.2 + 3.3i) + (x^2) + 0.1 * (x^2) + (x^2) / (2.2 + 3.3i)) + 10",
+            "((x^2) * y^3 + (12.2 + 3.3i) + (x^2) + 0.1 * (x^2) + (x^2) / (2.2 + 3.3i))",
             (fullBrackets + SetNumber(-0.1) + SetNumber(10)).toString()
         )
     }
@@ -96,9 +96,9 @@ class BracketsSetNumberTest : BracketsExpressionTest() {
 
     @Test
     fun validPowSetNumberTest() {
-//        assertEquals("1", fullBrackets.pow(0).toString())
-//        assertEquals(generalStr, fullBrackets.pow(1).toString())
-//        assertEquals("1 / $generalStr", fullBrackets.pow(-1).toString())
+        assertEquals("1", fullBrackets.pow(0).toString())
+        assertEquals(generalStr, fullBrackets.pow(1).toString())
+        assertEquals("1 / $generalStr", fullBrackets.pow(-1).toString())
 
         assertEquals(
             "(x^2)^6 + 2 * (x^2)^4 + 0.2 * (x^2)^3 + (x^2)^2 + 0.2 * (x^2) + 0.01",

@@ -38,9 +38,9 @@ class FunctionSetNumberTest : FunctionExpressionTest("z", "z^2 + z + 1") {
 
 	@Test
 	fun validDivSetNumberTest() {
-		assertEquals("$functionStr", (function / SetNumber(1)).toString())
-		assertEquals("(($functionStr) / (2))", (function / SetNumber(2)).toString())
-		assertEquals("(($functionStr) / (-2.2))", (function / SetNumber(-2.2)).toString())
+		assertEquals(functionStr, (function / SetNumber(1)).toString())
+		assertEquals("($functionStr) / 2", (function / SetNumber(2)).toString())
+		assertEquals("($functionStr) / -2.2", (function / SetNumber(-2.2)).toString())
 	}
 
 	@Test(expected = IllegalOperationException::class)

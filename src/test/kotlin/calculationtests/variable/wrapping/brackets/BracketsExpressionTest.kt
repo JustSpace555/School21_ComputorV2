@@ -22,9 +22,9 @@ abstract class BracketsExpressionTest : ComputorTest() {
 
     val emptyBrackets = Brackets()
 
-    val middleBrackets = Brackets(number, pt, function)
+    val middleBrackets = number + pt + function
     val middleStr = "(0.1 + (x^2) * y^3 + (x^2))"
 
-    val fullBrackets = Brackets(number, complex, function, middleBrackets, functionStack, fraction, pt)
+    val fullBrackets = number + complex + function + middleBrackets + functionStack + fraction + pt
     val generalStr = "(0.1 + (2.2 + 3.3i) + (x^2) + $middleStr + (x^2) * 0.1 + (x^2) / (2.2 + 3.3i) + (x^2) * y^3)"
 }
