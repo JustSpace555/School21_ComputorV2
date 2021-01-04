@@ -15,7 +15,7 @@ fun toPolynomialList(input: List<String>): List<PolynomialTerm> {
 
 		var term = toPolynomialTerm(element)
 		if (isWasEquality)
-			term = term.copy(number = term.number * SetNumber(-1))
+			term = PolynomialTerm(term.number * SetNumber(-1), term.degree, term.name)
 
 		output.add(term)
 	}

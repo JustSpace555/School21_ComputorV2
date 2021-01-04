@@ -61,7 +61,7 @@ class Fraction(val numerator: DataSet, val denominator: DataSet) : Wrapping() {
 				denominator * other.denominator
 			).simplify()
 
-			is PolynomialTerm -> other.copy(number = this * other.number)
+			is PolynomialTerm -> PolynomialTerm(this * other.number, other.degree, other.name)
 
 			else -> when {
 				other.isEmpty() -> SetNumber(0)
@@ -78,7 +78,7 @@ class Fraction(val numerator: DataSet, val denominator: DataSet) : Wrapping() {
 				denominator * other.numerator
 			).simplify()
 
-			is PolynomialTerm -> other.copy(number = this / other.number)
+			is PolynomialTerm -> PolynomialTerm(this / other.number, other.degree, other.name)
 
 			else -> when {
 				other.isEmpty() -> throw DivideByZeroException()

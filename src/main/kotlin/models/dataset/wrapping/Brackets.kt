@@ -137,7 +137,7 @@ class Brackets(override val listOfOperands: List<DataSet> = listOf()): Wrapping(
 
 	override fun hashCode(): Int {
 		var result = 17
-		result = 31  * result + listOfOperands.hashCode()
+		result = 31 * result + listOfOperands.hashCode()
 		return result
 	}
 

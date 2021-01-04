@@ -11,7 +11,7 @@ import models.dataset.wrapping.FunctionStack
 import models.dataset.wrapping.Wrapping
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
 
-data class PolynomialTerm(
+class PolynomialTerm(
 	val number: DataSet = SetNumber(),
 	var degree: Int = 0,
 	val name: String = "X"
@@ -29,7 +29,7 @@ data class PolynomialTerm(
 
 			is PolynomialTerm -> {
 				if (other.degree == degree) {
-					copy(number = number + other.number).tryCastToNumeric()
+					PolynomialTerm(number = number + other.number, degree, name).tryCastToNumeric()
 				} else {
 					Brackets(this, other)
 				}
@@ -52,9 +52,11 @@ data class PolynomialTerm(
 
 			is PolynomialTerm -> {
 				if (other.degree == degree) {
-					copy(number = number - other.number).tryCastToNumeric()
+					PolynomialTerm(number - other.number, degree, name).tryCastToNumeric()
 				} else {
-					Brackets(this, other.copy(number = other.number * SetNumber(-1)))
+					Brackets(
+							this, PolynomialTerm(other.number * SetNumber(-1), other.degree, other.name)
+					)
 				}
 			}
 
@@ -73,24 +75,26 @@ data class PolynomialTerm(
 		when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, "*")
 
-			is PolynomialTerm -> copy(number = number * other.number, degree = degree + other.degree).tryCastToNumeric()
+			is PolynomialTerm -> PolynomialTerm(number * other.number, degree = degree + other.degree, name)
+					.tryCastToNumeric()
 
 			is Wrapping -> other * this
 
-			is Function -> copy(number = FunctionStack(mutableListOf(number, other))).tryCastToNumeric()
+			is Function -> PolynomialTerm(FunctionStack(mutableListOf(number, other)), degree, name).tryCastToNumeric()
 
-			else -> copy(number = number * other).tryCastToNumeric()
+			else -> PolynomialTerm(number * other, degree, name).tryCastToNumeric()
 		}
 
 	override fun div(other: DataSet): DataSet =
 		when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, "/")
 
-			is PolynomialTerm -> copy(number = number / other.number, degree = degree - other.degree).tryCastToNumeric()
+			is PolynomialTerm -> PolynomialTerm(number / other.number, degree - other.degree, name)
+					.tryCastToNumeric()
 
-			is Wrapping -> other * this
+			is Wrapping -> PolynomialTerm(Fraction(this, other), degree, name)
 
-			else -> copy(number = number / other).tryCastToNumeric()
+			else -> PolynomialTerm(number / other, degree, name).tryCastToNumeric()
 		}
 
 	override fun rem(other: DataSet) = throw IllegalOperationException(this::class, other::class, "%")
@@ -99,7 +103,7 @@ data class PolynomialTerm(
 		if (other !is SetNumber || other.number !is Int)
 			throw IllegalOperationException(this::class, other::class, "^")
 
-		return copy(degree = other.number as Int * degree).tryCastToNumeric()
+		return PolynomialTerm(number, other.number as Int * degree, name).tryCastToNumeric()
 	}
 
 	override fun toString(): String {
@@ -113,4 +117,20 @@ data class PolynomialTerm(
 	}
 
 	private fun tryCastToNumeric(): DataSet = if (degree == 0) number else this
+
+	override fun equals(other: Any?): Boolean =
+		when (other) {
+			null -> false
+			!is PolynomialTerm -> false
+			this === other -> true
+			else -> number == other.number && degree == other.degree && name == other.name
+		}
+
+	override fun hashCode(): Int {
+		var result = 17
+		result = 31 * result + number.hashCode()
+		result = 31 * result + degree.hashCode()
+		result = 31 * result + name.hashCode()
+		return result
+	}
 }

@@ -90,7 +90,9 @@ fun parseFunctionFromList(input: List<String>, parameter: String): DataSet {
 
 		} else -> Function(
 			parameter,
-			function?.function?.map { it.copy(name = parameter) } ?: listOf(result.toPolynomial()),
+			function?.function?.map {
+				PolynomialTerm(it.number, it.degree, parameter)
+			} ?: listOf(result.toPolynomial()),
 			input.first()
 		).apply { addPolynomialsBeforeInvoke(result.toPolynomialList()) }
 	}

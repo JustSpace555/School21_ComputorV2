@@ -10,7 +10,7 @@ import models.dataset.wrapping.FunctionStack
 import models.dataset.wrapping.Wrapping
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
 
-data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber): Numeric {
+class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber): Numeric {
 
 	constructor(real: Number = 0, imaginary: Number) : this(SetNumber(real), SetNumber(imaginary))
 
@@ -18,41 +18,35 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 		when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, "+")
 
-			is Complex -> copy(
-				real = real + other.real,
-				imaginary = imaginary + other.imaginary
-			).tryCastToSetNumber()
+			is Complex -> Complex(real + other.real, imaginary + other.imaginary).tryCastToSetNumber()
 
 			is Wrapping, is PolynomialTerm -> other + this
 
 			is Function -> Brackets(other, this)
 
-			else -> copy(real = real + other as SetNumber)
+			else -> Complex(real + other as SetNumber, imaginary)
 		}
 
 	override fun minus(other: DataSet): DataSet =
 		when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, "-")
 
-			is Complex -> copy(
-				real = real - other.real,
-				imaginary = imaginary - other.imaginary
-			).tryCastToSetNumber()
+			is Complex -> Complex(real - other.real, imaginary - other.imaginary).tryCastToSetNumber()
 
 			is Wrapping, is PolynomialTerm -> other * SetNumber(-1) + this
 
 			is Function -> Brackets(this, other * SetNumber(-1))
 
-			else -> copy(real = real - other as SetNumber)
+			else -> Complex(real - other as SetNumber, imaginary)
 		}
 
 	override fun times(other: DataSet): DataSet =
 		when (other) {
 			is Matrix, is Brackets -> other * this
 
-			is Complex -> copy(
-				real = real * other.real - imaginary * other.imaginary,
-				imaginary = real * other.imaginary + other.real * imaginary
+			is Complex -> Complex(
+					real * other.real - imaginary * other.imaginary,
+				real * other.imaginary + other.real * imaginary
 			).tryCastToSetNumber()
 
 			is Wrapping, is PolynomialTerm -> other * this
@@ -71,9 +65,9 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 
 			is Complex -> {
 				val square = other.real * other.real + other.imaginary * other.imaginary
-				copy(
-					real = (real * other.real + imaginary * other.imaginary) / square,
-					imaginary = (imaginary * other.real - real * other.imaginary) / square
+				Complex(
+					(real * other.real + imaginary * other.imaginary) / square,
+					(imaginary * other.real - real * other.imaginary) / square
 				).tryCastToSetNumber()
 			}
 
@@ -130,4 +124,19 @@ data class Complex(var real: SetNumber = SetNumber(0), var imaginary: SetNumber)
 	}
 
 	private fun tryCastToSetNumber(): Numeric = if (imaginary.isZero()) real else this
+
+	override fun equals(other: Any?): Boolean =
+		when (other) {
+			null -> false
+			!is Complex -> false
+			this === other -> true
+			else -> real == other.real && imaginary == other.imaginary
+		}
+
+	override fun hashCode(): Int {
+		var result = 17
+		result = 31 * result + real.hashCode()
+		result = 31 * result + imaginary.hashCode()
+		return result
+	}
 }

@@ -1,11 +1,8 @@
 package models.dataset.wrapping
 
 import computorv1.models.PolynomialTerm
-import computorv1.simplify
 import globalextensions.isEmpty
 import globalextensions.mapToPolynomialList
-import globalextensions.minus
-import globalextensions.plus
 import models.dataset.DataSet
 import models.dataset.Function
 import models.dataset.Matrix
@@ -14,7 +11,6 @@ import models.dataset.numeric.Numeric
 import models.dataset.numeric.SetNumber
 import models.exceptions.computorv2.calcexception.DivideByZeroException
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
-import javax.xml.crypto.Data
 
 class FunctionStack(override val listOfOperands: List<DataSet> = listOf()) : Wrapping() {
 

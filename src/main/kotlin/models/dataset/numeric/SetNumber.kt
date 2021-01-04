@@ -7,11 +7,24 @@ import models.dataset.Matrix
 import models.dataset.wrapping.Fraction
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
 
-data class SetNumber(var number: Number = 0) : Numeric, Comparable<SetNumber> {
+class SetNumber(var number: Number = 0) : Numeric, Comparable<SetNumber> {
 
 	override fun toString(): String = number.toString()
+	override fun equals(other: Any?): Boolean =
+		when (other) {
+			null -> false
+			!is SetNumber -> false
+			this === other -> true
+			else -> number == other.number
+		}
 
-	operator fun plus(other: Number) = copy(number = number + other)
+	override fun hashCode(): Int {
+		var result = 17
+		result = 31 * result + number.hashCode()
+		return result
+	}
+
+	operator fun plus(other: Number) = SetNumber(number + other)
 	operator fun plus(other: SetNumber) = this + other.number
 	override fun plus(other: DataSet) =
 		when (other) {
@@ -20,7 +33,7 @@ data class SetNumber(var number: Number = 0) : Numeric, Comparable<SetNumber> {
 			else -> other + this
 		}
 
-	operator fun minus(other: Number) = copy(number = number - other)
+	operator fun minus(other: Number) = SetNumber(number = number - other)
 	operator fun minus(other: SetNumber) = this - other.number
 	override fun minus(other: DataSet) =
 		when (other) {
@@ -29,33 +42,32 @@ data class SetNumber(var number: Number = 0) : Numeric, Comparable<SetNumber> {
 			else -> other * SetNumber(-1) + this
 		}
 
-	operator fun times(other: Number) = copy(number = number * other)
+	operator fun times(other: Number) = SetNumber(number = number * other)
 	operator fun times(other: SetNumber) = this * other.number
 	override fun times(other: DataSet) =
 		if (other is SetNumber) this * other
 		else other * this
 
-	operator fun div(other: Number) = copy(number = number / other)
+	operator fun div(other: Number) = SetNumber(number = number / other)
 	operator fun div(other: SetNumber) = this / other.number
 	override fun div(other: DataSet) =
 		when(other) {
 			is Matrix -> throw IllegalOperationException(SetNumber::class, Matrix::class, "/")
 			is SetNumber -> this / other
 			is PolynomialTerm -> {
-				other.copy(number =
+				PolynomialTerm(number =
 					if (other.number is SetNumber) {
 						this / other.number
 					} else {
 						Fraction(this, other.number)
-					},
-					degree = other.degree * -1
+					}, other.degree * -1, other.name
 				)
 			}
 
 			else -> Fraction(this, other)
 		}
 
-	operator fun rem(other: Number) = copy(number = number % other)
+	operator fun rem(other: Number) = SetNumber(number = number % other)
 	operator fun rem(other: SetNumber) = this % other.number
 	override fun rem(other: DataSet) =
 		if (other is SetNumber) this % other

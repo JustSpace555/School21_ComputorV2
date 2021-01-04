@@ -132,10 +132,8 @@ open class Function(
 			other == null -> false
 			other !is Function -> false
 			this === other -> true
-			name != other.name -> false
-			parameter != other.parameter -> false
-			function != other.function -> false
-			else -> true
+			else -> name == other.name && parameter == other.parameter && function.size == other.function.size &&
+					function.zip(other.function).any { (el1, el2) -> el1 == el2 }
 		}
 
 	override fun hashCode(): Int {
