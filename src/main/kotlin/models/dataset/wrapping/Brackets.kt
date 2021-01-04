@@ -57,7 +57,7 @@ class Brackets(override val listOfOperands: List<DataSet> = listOf()): Wrapping(
 						newFunctionList.add(applyOnEachElement(DataSet::times, it))
 					}
 
-					Brackets(newFunctionList.flatMap { it.getBracketList() }.simplifyPolynomials()).reduceList()
+					Brackets(newFunctionList.flatMap { it.getBracketList() }.simplifyDataSet()).reduceList()
 				}
 
 				else -> applyOnEachElement(DataSet::times, other)
@@ -103,7 +103,7 @@ class Brackets(override val listOfOperands: List<DataSet> = listOf()): Wrapping(
 
 		return when(number) {
 			0 -> SetNumber(1)
-			1 -> this
+			1 -> if (belowZero) Fraction(SetNumber(1), this) else this
 			else -> {
 				var newBrackets = this as DataSet
 				repeat(number - 1) { newBrackets *= newBrackets }
@@ -142,10 +142,10 @@ class Brackets(override val listOfOperands: List<DataSet> = listOf()): Wrapping(
 	}
 
 	private fun addElements(elements: List<DataSet>) =
-		Brackets((listOfOperands + elements).simplifyPolynomials()).reduceList()
+		Brackets((listOfOperands + elements).simplifyDataSet()).reduceList()
 
 	private fun addElements(vararg elements: DataSet) =
-		Brackets((listOfOperands + elements.toList()).simplifyPolynomials()).reduceList()
+		Brackets((listOfOperands + elements.toList()).simplifyDataSet()).reduceList()
 
 	private fun applyOnEachElement(
 		function: (DataSet, DataSet) -> DataSet,
@@ -161,11 +161,12 @@ class Brackets(override val listOfOperands: List<DataSet> = listOf()): Wrapping(
 					else -> add(newElement.toPolynomial())
 				}
 			}
-		}.simplifyPolynomials()
+		}.simplifyDataSet()
 
 		return Brackets(newElementsList).reduceList()
 	}
 
+	/*
 	private fun List<PolynomialTerm>.simplifyOnlyIterable(): List<DataSet> {
 		val getDataList: List<PolynomialTerm>.() -> List<DataSet> = {
 			this.flatMap {
@@ -189,6 +190,8 @@ class Brackets(override val listOfOperands: List<DataSet> = listOf()): Wrapping(
 
 	private fun List<DataSet>.simplifyPolynomials(): List<DataSet> = mapToPolynomialList().simplifyOnlyIterable()
 
+	 */
+	
 	private fun List<DataSet>.simplifyDataSet(): List<DataSet> {
 		val newList = mutableListOf<DataSet>()
 		val mapOfFunctions = mutableMapOf<Function, DataSet>()
@@ -215,25 +218,22 @@ class Brackets(override val listOfOperands: List<DataSet> = listOf()): Wrapping(
 
 		mapOfFunctions.forEach { (function, number) -> newList.add(FunctionStack(number, function)) }
 
-		val getDataList: List<PolynomialTerm>.() -> List<DataSet> = {
-			this.flatMap {
-				if (it.degree == 0) it.number.getBracketList() else listOf(it)
-			}
-		}
+		val isIterable: DataSet.() -> Boolean = { this is Numeric || this is PolynomialTerm && this.number is Numeric }
 
 		val filtered = newList
-			.filterIsInstance<Numeric>()
+			.filter { it.isIterable() }
 			.also { if (it.isEmpty()) return newList }
 			.mapToPolynomialList()
 			.simplify()
+			.flatMap { if (it.degree == 0) it.number.getBracketList() else listOf(it) }
 
-		return mutableListOf<PolynomialTerm>().apply {
+		return mutableListOf<DataSet>().apply {
 			filtered.forEach {
-				this.addAll(if (it.number is Brackets) it.number.listOfOperands.mapToPolynomialList() else listOf(it))
+				this.addAll(if (it is Brackets) it.listOfOperands else listOf(it))
 			}
-			addAll(newList.filter { it !is Numeric }.mapToPolynomialList())
-			sortByDescending { it.degree }
-		}.getDataList()
+			addAll(newList.filter { !it.isIterable() })
+			sortByDescending { if (it is PolynomialTerm) it.degree else 0 }
+		}
 	}
 
 	fun reduceList() =
