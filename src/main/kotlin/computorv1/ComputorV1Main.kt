@@ -20,4 +20,5 @@ fun List<PolynomialTerm>.reducedString(parameter: String = "X"): String =
 		.replace("X", parameter)
 		.replace("^1", "")
 		.replace(Regex(" \\* \\D?\\^0"), "")
-		.replace("1 * ", "")
+		.replace(Regex("^1 \\* "), "")
+		.replace(" 1 *", "")

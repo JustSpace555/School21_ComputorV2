@@ -1,11 +1,9 @@
 package calculationtests.variable.function
 
 import models.dataset.Function
-import models.dataset.numeric.SetNumber
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import parser.extensions.putSpaces
 
 class FunctionFunctionTest : FunctionExpressionTest("z", "z^2 + z + 1") {
 
@@ -14,52 +12,52 @@ class FunctionFunctionTest : FunctionExpressionTest("z", "z^2 + z + 1") {
 
     @Test
     fun validPlusFunctionTest() {
-        assertEquals("2 * ($functionStr)", (function + function).toString())
-        assertEquals("(($functionStr) + ($secondFunctionStr))", (function + secondFunction).toString())
+        assertEquals("2 * ($functionStr)", (newFunction + newFunction).toString())
+        assertEquals("(($functionStr) + ($secondFunctionStr))", (newFunction + secondFunction).toString())
     }
 
     @Test
     fun validMinusFunctionTest() {
-        assertEquals("0", (function - function).toString())
-        assertEquals("(($functionStr) + ($secondFunctionStr) * -1)", (function - secondFunction).toString())
+        assertEquals("0", (newFunction - newFunction).toString())
+        assertEquals("(($functionStr) - ($secondFunctionStr))", (newFunction - secondFunction).toString())
     }
 
     @Test
     fun validTimesFunctionTest() {
-        assertEquals("($functionStr) * ($functionStr)", (function * function).toString())
-        assertEquals("($functionStr) * ($secondFunctionStr)", (function * secondFunction).toString())
+        assertEquals("($functionStr) * ($functionStr)", (newFunction * newFunction).toString())
+        assertEquals("($functionStr) * ($secondFunctionStr)", (newFunction * secondFunction).toString())
     }
 
     @Test
     fun validDivFunctionTest() {
-        assertEquals("1", (function / function).toString())
-        assertEquals("($functionStr) / ($secondFunctionStr)", (function / secondFunction).toString())
+        assertEquals("1", (newFunction / newFunction).toString())
+        assertEquals("($functionStr) / ($secondFunctionStr)", (newFunction / secondFunction).toString())
     }
 
     @Test(expected = IllegalOperationException::class)
     fun `fail rem Function test`() {
-        function % function
+        newFunction % newFunction
     }
 
     @Test(expected = IllegalOperationException::class)
     fun `fail rem second Function test`() {
-        function % secondFunction
+        newFunction % secondFunction
     }
 
     @Test(expected = IllegalOperationException::class)
     fun `fail pow Function test`() {
-        function.pow(function)
+        newFunction.pow(newFunction)
     }
 
     @Test(expected = IllegalOperationException::class)
     fun `fail pow second Function test`() {
-        function.pow(secondFunction)
+        newFunction.pow(secondFunction)
     }
 
     /*
     @Test
     fun validInvokeTest() {
-        assertEquals("$functionStr($secondFunctionStr)", function(secondFunction))
+        assertEquals("$functionStr($secondFunctionStr)", newFunction(secondFunction))
     }
      */
 }

@@ -12,69 +12,69 @@ class FunctionSetNumberTest : FunctionExpressionTest("z", "z^2 + z + 1") {
 
 	@Test
 	fun validPlusSetNumberTest() {
-		assertEquals(functionStr, (function + SetNumber()).toString())
-		assertEquals("(($functionStr) + 1)", (function + SetNumber(1)).toString())
-		assertEquals("(($functionStr) - 1)", (function + SetNumber(-1)).toString())
+		assertEquals(functionStr, (newFunction + SetNumber()).toString())
+		assertEquals("(1 + ($functionStr))", (newFunction + SetNumber(1)).toString())
+		assertEquals("(-1 + ($functionStr))", (newFunction + SetNumber(-1)).toString())
 	}
 
 	@Test
 	fun validMinusSetNumberTest() {
-		assertEquals(functionStr, (function - SetNumber()).toString())
-		assertEquals("(($functionStr) - 1)", (function - SetNumber(1)).toString())
-		assertEquals("(($functionStr) + 1)", (function - SetNumber(-1)).toString())
+		assertEquals(functionStr, (newFunction - SetNumber()).toString())
+		assertEquals("(-1 + ($functionStr))", (newFunction - SetNumber(1)).toString())
+		assertEquals("(1 + ($functionStr))", (newFunction - SetNumber(-1)).toString())
 	}
 
 	@Test
 	fun validTimesSetNumberTest() {
-		assertEquals("0", (function * SetNumber()).toString())
-		assertEquals(functionStr, (function * SetNumber(1)).toString())
-		assertEquals("($functionStr) * -1", (function * SetNumber(-1)).toString())
+		assertEquals("0", (newFunction * SetNumber()).toString())
+		assertEquals(functionStr, (newFunction * SetNumber(1)).toString())
+		assertEquals("($functionStr) * -1", (newFunction * SetNumber(-1)).toString())
 	}
 
 	@Test(expected = DivideByZeroException::class)
 	fun `fail div SetNumber zero test`() {
-		function / SetNumber()
+		newFunction / SetNumber()
 	}
 
 	@Test
 	fun validDivSetNumberTest() {
-		assertEquals(functionStr, (function / SetNumber(1)).toString())
-		assertEquals("($functionStr) / 2", (function / SetNumber(2)).toString())
-		assertEquals("($functionStr) / -2.2", (function / SetNumber(-2.2)).toString())
+		assertEquals(functionStr, (newFunction / SetNumber(1)).toString())
+		assertEquals("($functionStr) / 2", (newFunction / SetNumber(2)).toString())
+		assertEquals("($functionStr) / -2.2", (newFunction / SetNumber(-2.2)).toString())
 	}
 
 	@Test(expected = IllegalOperationException::class)
 	fun `fail rem SetNumber test`() {
-		function % SetNumber()
+		newFunction % SetNumber()
 	}
 
 	@Test(expected = IllegalOperationException::class)
 	fun `fail pow SetNumber test 1,0`() {
-		function.pow(SetNumber(1.0))
+		newFunction.pow(SetNumber(1.0))
 	}
 
 	@Test(expected = IllegalOperationException::class)
 	fun `fail pow SetNumber test 2,2`() {
-		function.pow(SetNumber(2.2))
+		newFunction.pow(SetNumber(2.2))
 	}
 
 	@Test
 	fun validPowTest() {
-		assertEquals("1", function.pow(SetNumber()).toString())
-		assertEquals(function, function.pow(SetNumber(1)))
-		assertEquals("($functionStr) * ($functionStr)", function.pow(SetNumber(2)).toString())
+		assertEquals("1", newFunction.pow(SetNumber()).toString())
+		assertEquals(newFunction, newFunction.pow(SetNumber(1)))
+		assertEquals("($functionStr) * ($functionStr)", newFunction.pow(SetNumber(2)).toString())
 	}
 
 	@Test
 	fun validInvokeTest() {
-		assertEquals(SetNumber(3), function(1))
-		assertEquals(SetNumber(3.31), function(1.1))
+		assertEquals(SetNumber(3), newFunction(1))
+		assertEquals(SetNumber(3.31), newFunction(1.1))
 
-		function = Function(
+		newFunction = Function(
 			"abc",
 			putSpaces("0.5 * abc - abc + abc ^ 2 - (abc + abc * 2)").split(' ').toTypedArray()
 		)
-		assertEquals(SetNumber(), function(0))
-		assertEquals(SetNumber(-2.5), function(2.5))
+		assertEquals(SetNumber(), newFunction(0))
+		assertEquals(SetNumber(-2.5), newFunction(2.5))
 	}
 }

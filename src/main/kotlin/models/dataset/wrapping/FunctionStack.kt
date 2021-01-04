@@ -41,6 +41,66 @@ class FunctionStack(override val listOfOperands: List<DataSet> = listOf()) : Wra
 				}
 			}
 
+			other is FunctionStack -> {
+				if (other == this) {
+					if (listOfOperands.filterIsInstance<Numeric>().isNotEmpty()) {
+						val number = listOfOperands.first { it is Numeric }
+						val newList = listOfOperands.toMutableList()
+						newList.remove(number)
+						FunctionStack(listOf(number * SetNumber(2)) + newList)
+					} else {
+						FunctionStack(listOf(SetNumber(2)) + listOfOperands)
+					}
+				} else {
+					val thisNumber = listOfOperands.firstOrNull { it is Numeric }
+					val otherNumber = other.listOfOperands.firstOrNull { it is Numeric }
+					when {
+						thisNumber == null && otherNumber == null -> Brackets(this, other)
+						thisNumber == null -> {
+							val newList = other.listOfOperands.toMutableList()
+							newList.remove(otherNumber)
+							if (
+									listOfOperands.mapToPolynomialList()
+											.zip(newList.mapToPolynomialList())
+											.all { (el1, el2) -> el1 == el2 }
+							) {
+								FunctionStack(listOf(otherNumber!! + SetNumber(1)) + newList)
+							} else {
+								Brackets(this, other)
+							}
+						}
+						otherNumber == null -> {
+							val newList = listOfOperands.toMutableList()
+							newList.remove(thisNumber)
+							if (
+									other.listOfOperands.mapToPolynomialList()
+											.zip(newList.mapToPolynomialList())
+											.all { (el1, el2) -> el1 == el2 }
+							) {
+								FunctionStack(listOf(thisNumber + SetNumber(1)) + newList)
+							} else {
+								Brackets(this, other)
+							}
+						}
+						else -> {
+							val newThisList = listOfOperands.toMutableList()
+							val newOtherList = other.listOfOperands.toMutableList()
+							newThisList.remove(thisNumber)
+							newOtherList.remove(otherNumber)
+							if (
+								newThisList.mapToPolynomialList()
+								.zip(newOtherList.mapToPolynomialList())
+								.all { (el1, el2) -> el1 == el2 }
+							) {
+								FunctionStack(listOf(thisNumber + otherNumber) + newThisList)
+							} else {
+								Brackets(this, other)
+							}
+						}
+					}
+				}
+			}
+
 			else -> Brackets(this, other)
 		}
 
@@ -63,6 +123,59 @@ class FunctionStack(override val listOfOperands: List<DataSet> = listOf()) : Wra
 						FunctionStack(
 							listOf(number - SetNumber(1)) + listOfOperands.filter { it != number }
 						)
+					}
+				}
+			}
+
+			other is FunctionStack -> {
+				if (other == this) {
+					SetNumber()
+				} else {
+					val thisNumber = listOfOperands.firstOrNull { it is Numeric }
+					val otherNumber = other.listOfOperands.firstOrNull { it is Numeric }
+					when {
+						thisNumber == null && otherNumber == null -> Brackets(this, other * SetNumber(-1))
+						thisNumber == null -> {
+							val newList = other.listOfOperands.toMutableList()
+							newList.remove(otherNumber)
+							if (
+									listOfOperands.mapToPolynomialList()
+											.zip(newList.mapToPolynomialList())
+											.all { (el1, el2) -> el1 == el2 }
+							) {
+								FunctionStack(listOf(otherNumber!! * SetNumber(-1) + SetNumber(1)) + newList)
+							} else {
+								Brackets(this, other * SetNumber(-1))
+							}
+						}
+						otherNumber == null -> {
+							val newList = listOfOperands.toMutableList()
+							newList.remove(thisNumber)
+							if (
+									other.listOfOperands.mapToPolynomialList()
+											.zip(newList.mapToPolynomialList())
+											.all { (el1, el2) -> el1 == el2 }
+							) {
+								FunctionStack(listOf(thisNumber - SetNumber(1)) + newList)
+							} else {
+								Brackets(this, other * SetNumber(-1))
+							}
+						}
+						else -> {
+							val newThisList = listOfOperands.toMutableList()
+							val newOtherList = other.listOfOperands.toMutableList()
+							newThisList.remove(thisNumber)
+							newOtherList.remove(otherNumber)
+							if (
+									newThisList.mapToPolynomialList()
+											.zip(newOtherList.mapToPolynomialList())
+											.all { (el1, el2) -> el1 == el2 }
+							) {
+								FunctionStack(listOf(thisNumber - otherNumber) + newThisList)
+							} else {
+								Brackets(this, other * SetNumber(-1))
+							}
+						}
 					}
 				}
 			}
@@ -110,6 +223,8 @@ class FunctionStack(override val listOfOperands: List<DataSet> = listOf()) : Wra
 				FunctionStack(listOf(temp / other) + newList).simplify()
 			}
 
+			other is Fraction -> Fraction(this * other.denominator, other.numerator)
+
 			else -> Fraction(this, other).simplify()
 	}
 
@@ -143,6 +258,11 @@ class FunctionStack(override val listOfOperands: List<DataSet> = listOf()) : Wra
 		when {
 			isEmpty -> SetNumber()
 			listOfOperands.size == 1 -> listOfOperands.first()
+			listOfOperands.size == 2 && listOfOperands.filterIsInstance<Numeric>().isNotEmpty() &&
+					(
+							listOfOperands.first { it is Numeric } == SetNumber(1) ||
+							listOfOperands.first { it is Numeric } == Complex(1, 0)
+					) -> listOfOperands.first { it !is Numeric }
 			else -> this
 		}
 

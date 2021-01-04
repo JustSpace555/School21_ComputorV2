@@ -53,6 +53,13 @@ class SetNumber(var number: Number = 0) : Numeric, Comparable<SetNumber> {
 	override fun div(other: DataSet) =
 		when(other) {
 			is Matrix -> throw IllegalOperationException(SetNumber::class, Matrix::class, "/")
+			is Complex -> {
+				if (other.imaginary.isZero()) {
+					this / other.real
+				} else {
+					throw IllegalOperationException(SetNumber::class, Complex::class, "/")
+				}
+			}
 			is SetNumber -> this / other
 			is PolynomialTerm -> {
 				PolynomialTerm(number =

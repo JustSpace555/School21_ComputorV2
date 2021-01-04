@@ -15,9 +15,9 @@ import computorv1.reducedString
 import models.dataset.wrapping.Wrapping
 import parser.extensions.putSpaces
 
-open class Function(
-	open val parameter: String,
-	open val function: List<PolynomialTerm>,
+class Function(
+	val parameter: String,
+	val function: List<PolynomialTerm>,
 	val name: String = ""
 ) : DataSet {
 

@@ -4,6 +4,8 @@ import computorv1.models.PolynomialTerm
 import globalextensions.isNotEmpty
 
 fun simplifyPolynomial(input: List<PolynomialTerm>): List<PolynomialTerm> {
+	if (input.size <= 1) return input
+
 	val polynomialMap: MutableMap<Int, PolynomialTerm> = mutableMapOf()
 
 	input.forEach {

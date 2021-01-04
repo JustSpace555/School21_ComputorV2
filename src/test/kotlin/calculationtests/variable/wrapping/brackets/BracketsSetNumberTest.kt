@@ -14,32 +14,29 @@ class BracketsSetNumberTest : BracketsExpressionTest() {
 
 
         assertEquals(
-            "((x^2) * y^3 + (3.2 + 3.3i) + (x^2) + 0.1 * (x^2) + (x^2) / (2.2 + 3.3i))",
+            "((x^2) * 2 * y^3 + (3.3 + 3.3i) + (x^2) / (2.2 + 3.3i) + 2.1 * (x^2))",
             (fullBrackets + SetNumber(0.9)).toString()
         )
 
         assertEquals(
-            "((x^2) * y^3 + (12.2 + 3.3i) + (x^2) + 0.1 * (x^2) + (x^2) / (2.2 + 3.3i))",
+            "((x^2) * 2 * y^3 + (12.3 + 3.3i) + (x^2) / (2.2 + 3.3i) + 2.1 * (x^2))",
             (fullBrackets + SetNumber(-0.1) + SetNumber(10)).toString()
         )
     }
 
     @Test
     fun validMinusSetNumberTest() {
-        assertEquals(
-            "((x^2)^3 + 0.1 + (2.2 + 3.3i) + (x^2) + 0.1 * (x^2) + (x^2) / (2.2 + 3.3i))",
-            (fullBrackets - SetNumber()).toString()
-        )
+        assertEquals(generalStr, (fullBrackets - SetNumber()).toString())
 
 
         assertEquals(
-            "((x^2)^3 + (2.2 + 3.3i) + (x^2) + 0.1 * (x^2) + (x^2) / (2.2 + 3.3i))",
-            (fullBrackets - SetNumber(0.1)).toString()
+            "((x^2) * 2 * y^3 + (2.3 + 3.3i) + (x^2) / (2.2 + 3.3i) + 2.1 * (x^2))",
+            (fullBrackets - number).toString()
         )
 
         assertEquals(
-            "((x^2)^3 + (2.2 + 3.3i) + (x^2) + 0.1 * (x^2) + (x^2) / (2.2 + 3.3i)) + 10",
-            (fullBrackets - SetNumber(0.1) - SetNumber(10)).toString()
+            "((x^2) * 2 * y^3 + (-7.7 + 3.3i) + (x^2) / (2.2 + 3.3i) + 2.1 * (x^2))",
+            (fullBrackets - number - SetNumber(10)).toString()
         )
     }
 
@@ -48,19 +45,19 @@ class BracketsSetNumberTest : BracketsExpressionTest() {
         assertEquals("0", (fullBrackets * SetNumber()).toString())
         assertEquals(generalStr, (fullBrackets * SetNumber(1)).toString())
         assertEquals(
-            "(-0.1 - (2.2 + 3.3i) - (x^2) - 0.1 * (x^2) - (x^2) / (2.2 + 3.3i) - (x^2)^3)",
+            "(-2 * (x^2) * y^3 + (-2.4 - 3.3i) + ((x^2) * -1) / (2.2 + 3.3i) - 2.1 * (x^2))",
             (fullBrackets * SetNumber(-1)).toString()
         )
 
 
         assertEquals(
-            "(10 + (22 + 33i) + 10 * (x^2) + (x^2) + (10 * (x^2)) / (2.2 + 3.3i) + 10 * (x^2)^3)",
+            "(20 * (x^2) * y^3 + (24 + 33i) + ((x^2) * 10) / (2.2 + 3.3i) + 21 * (x^2))",
             (fullBrackets * SetNumber(10)).toString()
         )
 
         assertEquals(
-            "(-10 - (22 + 33i) - 10 * (x^2) - (x^2) - (10 * (x^2)) / (2.2 + 3.3i) - 10 * (x^2)^3)",
-            (fullBrackets * SetNumber(10)).toString()
+            "(0.2 * (x^2) * y^3 + (0.24 + 0.33i) + ((x^2) * 0.1) / (2.2 + 3.3i) + 0.21 * (x^2))",
+            (fullBrackets * SetNumber(0.1)).toString()
         )
     }
 
@@ -74,13 +71,13 @@ class BracketsSetNumberTest : BracketsExpressionTest() {
     fun validDivSetNumberTest() {
         assertEquals(generalStr, (fullBrackets / SetNumber(1)).toString())
         assertEquals(
-            "(-0.1 - (2.2 + 3.3i) - (x^2) - 0.1 * (x^2) - (x^2) / (2.2 + 3.3i) - (x^2)^3)",
+            "(-2 * (x^2) * y^3 + (-2.4 - 3.3i) + (x^2) / (-2.2 - 3.3i) - 2.1 * (x^2))",
             (fullBrackets / SetNumber(-1)).toString()
         )
 
         assertEquals(
-            "(1 + (22 + 33i) + (x^2) / 0.1 + (x^2) + (10 * (x^2)) / (2.2 + 3.3i) + ((x^2) / 0.1)^3)",
-            (fullBrackets / SetNumber(0.1)).toString()
+            "(20 * (x^2) * y^3 + (24 + 33i) + (x^2) / (0.22 + 0.33i) + 21 * (x^2))",
+            (fullBrackets / number).toString()
         )
     }
 
@@ -101,8 +98,8 @@ class BracketsSetNumberTest : BracketsExpressionTest() {
         assertEquals("1 / $generalStr", fullBrackets.pow(-1).toString())
 
         assertEquals(
-            "(x^2)^6 + 2 * (x^2)^4 + 0.2 * (x^2)^3 + (x^2)^2 + 0.2 * (x^2) + 0.01",
-            middleBrackets.pow(2)
+            "((x^2) * (x^2) * y^6 + 0.2 * (x^2) * y^3 + 0.01 + (x^2) * 2 * y^3 * (x^2) + 0.2 * (x^2) + (x^2) * (x^2))",
+            middleBrackets.pow(2).toString()
         )
     }
 }

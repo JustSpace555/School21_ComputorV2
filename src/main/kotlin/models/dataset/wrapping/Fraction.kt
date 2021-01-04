@@ -125,7 +125,7 @@ class Fraction(val numerator: DataSet, val denominator: DataSet) : Wrapping() {
 				else
 					"$numerator"
 			}
-			is Function -> "($numerator)"
+			is FunctionStack, is Function -> "($numerator)"
 			else -> numerator.toString()
 		}
 
@@ -136,7 +136,7 @@ class Fraction(val numerator: DataSet, val denominator: DataSet) : Wrapping() {
 				else
 					"$denominator"
 			}
-			is Function -> "($denominator)"
+			is FunctionStack, is Function -> "($denominator)"
 			else -> denominator.toString()
 		}
 
@@ -149,7 +149,7 @@ class Fraction(val numerator: DataSet, val denominator: DataSet) : Wrapping() {
 
 			numerator !is SetNumber || denominator !is SetNumber -> this
 
-			else -> SetNumber((numerator as Number).toDouble() / (denominator as Number).toDouble())
+			else -> numerator / denominator
 		}
 
 

@@ -75,8 +75,11 @@ class PolynomialTerm(
 		when (other) {
 			is Matrix -> throw IllegalOperationException(this::class, Matrix::class, "*")
 
-			is PolynomialTerm -> PolynomialTerm(number * other.number, degree = degree + other.degree, name)
-					.tryCastToNumeric()
+			is PolynomialTerm ->
+				if (name == other.name)
+					PolynomialTerm(number * other.number, degree = degree + other.degree, name).tryCastToNumeric()
+				else
+					FunctionStack(this, other)
 
 			is Wrapping -> other * this
 
