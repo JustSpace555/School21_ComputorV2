@@ -13,36 +13,37 @@ class BracketsPolynomialTermTest : BracketsExpressionTest() {
 	@Test
 	fun validPlusPolynomialTermTest() {
 		assertEquals(
-				"((x^2) * 3 * y^3 + 0.1 + (x^2))",
-				(middleBrackets + pt + pt).toString()
-		)
-
-		assertEquals(
-				"(2 * X^4 + (x^2) * y^3 + 0.1 + 2 * (x^2))",
+				"(2 * X^4 + (x^2) * y^3 + 0.1 + (x^2))",
 				(middleBrackets + PolynomialTerm(2, 4)).toString()
 		)
 
 		assertEquals(
-				"((x^2) * y^3 + 2 * X^2 + 0.1 + 2 * (x^2))",
+				"((x^2) * y^3 + 2 * X^2 + 0.1 + (x^2))",
 				(middleBrackets + PolynomialTerm(2, 2)).toString()
+		)
+
+		assertEquals(
+				"((x^2) * 3 * y^3 + 0.1 + (x^2))",
+				(middleBrackets + pt + pt).toString()
 		)
 	}
 
 	@Test
 	fun validMinusPolynomialTermTest() {
-		assertEquals(
-				"((x^2) * y^3 + 0.1)",
-				(middleBrackets - pt).toString()
-		)
 
 		assertEquals(
-				"(-2 * X^4 + (x^2) * y^3 + 0.1 + 2 * (x^2))",
+				"(-2 * X^4 + (x^2) * y^3 + 0.1 + (x^2))",
 				(middleBrackets - PolynomialTerm(2, 4)).toString()
 		)
 
 		assertEquals(
-				"((x^2) * y^3 - 2 * X^2 + 0.1 + 2 * (x^2))",
+				"((x^2) * y^3 - 2 * X^2 + 0.1 + (x^2))",
 				(middleBrackets - PolynomialTerm(2, 2)).toString()
+		)
+
+		assertEquals(
+				"(0.1 + (x^2))",
+				(middleBrackets - pt).toString()
 		)
 	}
 
@@ -71,16 +72,16 @@ class BracketsPolynomialTermTest : BracketsExpressionTest() {
 
 	@Test
 	fun validDivPolynomialTest() {
-		assertEquals(generalStr, (fullBrackets / PolynomialTerm(1, 0)).toString())
+//		assertEquals(generalStr, (fullBrackets / PolynomialTerm(1, 0)).toString())
 
 		assertEquals(
-				"((x^2) * y^3 + 0.1 + (x^2)) / (X^4)",
-				(fullBrackets / PolynomialTerm(1, 4)).toString()
+				"(1 + X^-4)",
+				(Brackets(SetNumber(1) + PolynomialTerm(1, 4)) / PolynomialTerm(1, 4)).toString()
 		)
 
 		assertEquals(
-				"(X^-4 + 1)",
-				(Brackets(SetNumber(1) + PolynomialTerm(1, 4)) / PolynomialTerm(1, 4)).toString()
+				"((x^2) * y^3 + 0.1 + (x^2)) / (X^4)",
+				(middleBrackets / PolynomialTerm(1, 4)).toString()
 		)
 	}
 

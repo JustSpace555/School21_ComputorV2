@@ -53,7 +53,7 @@ class BracketsFunctionTest : BracketsExpressionTest() {
 	@Test
 	fun validDivFunctionTest() {
 		assertEquals(
-				"(((x^2) * 2) / (x^2) * y^3 + (2.4 + 3.3i) / (x^2) + (x^2) / ((x^2) * (2.2 + 3.3i)) + (2.1 * (x^2)) / (x^2))",
+				"(((x^2) * 2) / (x^2) * y^3 + (2.4 + 3.3i) / (x^2) + 1 / (2.2 + 3.3i) + (2.1 * (x^2)) / (x^2))",
 				(fullBrackets / function).toString()
 		)
 

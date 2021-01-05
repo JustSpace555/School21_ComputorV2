@@ -68,12 +68,13 @@ fun parser(input: String, isPlot: Boolean = false): String {
 		val rightParameter = if (parameterBeforeEqual.isNotEmpty()) parameterBeforeEqual else parameterAfterEquals
 
 		val prepareStringForComputorV1: (List<String>) -> String = {
-			getStringWithFunctions(it)
+			val str = getStringWithFunctions(it)
 				.compute(rightParameter)
 				.getBracketList()
 				.mapToPolynomialList()
 				.reducedString(rightParameter)
-				.replace(rightParameter, "X")
+
+			if (rightParameter.isNotEmpty()) str.replace(rightParameter, "X") else str
 		}
 
 		val computedBeforeEqual = prepareStringForComputorV1(beforeEqual)

@@ -6,6 +6,7 @@ import models.dataset.DataSet
 import models.dataset.Function
 import models.dataset.Matrix
 import models.dataset.numeric.Complex
+import models.dataset.numeric.Numeric
 import models.dataset.numeric.SetNumber
 import models.exceptions.computorv2.calcexception.DivideByZeroException
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
@@ -20,38 +21,36 @@ class Fraction(val numerator: DataSet, val denominator: DataSet) : Wrapping() {
 	}
 
 	override fun plus(other: DataSet): DataSet =
-		when(other) {
-			is Matrix -> throw IllegalOperationException(Fraction::class, Matrix::class)
-			is Fraction -> {
-				Fraction(
-					numerator * other.denominator + other.numerator * denominator,
-					denominator * other.denominator
-				).simplify()
+			when {
+				other is Matrix -> throw IllegalOperationException(Fraction::class, Matrix::class)
+				other.isEmpty() -> this
+				else -> when (other) {
+					is Fraction -> {
+						if (this == other) Fraction(numerator * SetNumber(2), denominator).simplify()
+						else Fraction(
+								numerator * other.denominator + other.numerator * denominator,
+								denominator * other.denominator
+						).simplify()
+					}
+					else -> Fraction(numerator + other * denominator, denominator).simplify()
+				}
 			}
-			else -> {
-				if (other.isEmpty())
-					this
-				else
-					Fraction(numerator + other * denominator, denominator).simplify()
-			}
-		}
 
 	override fun minus(other: DataSet): DataSet =
-		when(other) {
-			is Matrix -> throw IllegalOperationException(Fraction::class, Matrix::class)
-			is Fraction -> {
-				Fraction(
-					numerator * other.denominator - other.numerator * denominator,
-					denominator * other.denominator
-				).simplify()
+			when {
+				other is Matrix -> throw IllegalOperationException(Fraction::class, Matrix::class)
+				other.isEmpty() -> this
+				else -> when (other) {
+					is Fraction -> {
+						if (this == other) SetNumber(0)
+						else Fraction(
+								numerator * other.denominator - other.numerator * denominator,
+								denominator * other.denominator
+						).simplify()
+					}
+					else -> Fraction(numerator - other * denominator, denominator).simplify()
+				}
 			}
-			else -> {
-				if (other.isEmpty())
-					this
-				else
-					Fraction(numerator - other * denominator, denominator).simplify()
-			}
-	}
 
 	override fun times(other: DataSet): DataSet =
 		when(other) {
@@ -66,24 +65,31 @@ class Fraction(val numerator: DataSet, val denominator: DataSet) : Wrapping() {
 			else -> when {
 				other.isEmpty() -> SetNumber(0)
 				other is SetNumber && other.compareTo(1.0) == 0 -> this
-				else -> Fraction(numerator * other, denominator).simplify()
+				else ->
+					if (denominator == other) numerator
+					else Fraction(numerator * other, denominator).simplify()
 			}
 		}
 
 	override fun div(other: DataSet): DataSet =
 		when(other) {
 			is Matrix -> throw IllegalOperationException(Fraction::class, Matrix::class)
-			is Fraction -> Fraction(
-				numerator * other.denominator,
-				denominator * other.numerator
-			).simplify()
+			is Fraction -> {
+				if (numerator == other.denominator && denominator == other.numerator) SetNumber(1)
+				else Fraction(
+						numerator * other.denominator,
+						denominator * other.numerator
+				).simplify()
+			}
 
 			is PolynomialTerm -> PolynomialTerm(this / other.number, other.degree, other.name)
 
 			else -> when {
 				other.isEmpty() -> throw DivideByZeroException()
 				other is SetNumber && other.compareTo(1.0) == 0 -> this
-				else -> Fraction(numerator, denominator * other).simplify()
+				else ->
+					if (numerator == other) Fraction(SetNumber(1), denominator)
+					else Fraction(numerator, denominator * other).simplify()
 			}
 		}
 
@@ -125,7 +131,7 @@ class Fraction(val numerator: DataSet, val denominator: DataSet) : Wrapping() {
 				else
 					"$numerator"
 			}
-			is FunctionStack, is Function -> "($numerator)"
+			is FunctionStack, is Function, is PolynomialTerm -> "($numerator)"
 			else -> numerator.toString()
 		}
 
@@ -136,7 +142,7 @@ class Fraction(val numerator: DataSet, val denominator: DataSet) : Wrapping() {
 				else
 					"$denominator"
 			}
-			is FunctionStack, is Function -> "($denominator)"
+			is FunctionStack, is Function, is PolynomialTerm -> "($denominator)"
 			else -> denominator.toString()
 		}
 
