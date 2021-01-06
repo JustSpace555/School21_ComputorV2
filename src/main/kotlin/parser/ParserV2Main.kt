@@ -33,10 +33,6 @@ fun parser(input: String, isPlot: Boolean = false): String {
 	val isComputation = mod.contains("?")
 
 	if (!mod.contains("=") && !isComputation) return mod.compute().toString()
-//		val res = mod.compute()
-//		Graph().draw(res)
-//		return res.toString()
-//	}
 
 	if (mod.count { it == "=" } > 1) throw EqualSignAmountException()
 

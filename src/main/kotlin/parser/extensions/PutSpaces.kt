@@ -16,8 +16,10 @@ fun putSpaces(input: String): String {
 
 			in operationsCharList -> {
 				beforeWhiteSpace = (output.isNotEmpty() && output.last() == ' ').getWhiteSpace()
-				afterWhiteSpace = (c == '-' && (i == 0 || lastToken in operationsCharList && lastToken != ')'))
-					.getWhiteSpace()
+				afterWhiteSpace = (
+						c == '-' &&
+						(i == 0 || lastToken in operationsCharList && lastToken != ')' && lastToken != ']')
+					).getWhiteSpace()
 			}
 
 			else -> {

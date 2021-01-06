@@ -3,13 +3,14 @@ package models.dataset
 import computation.sampleAbs
 import computation.sampleMax
 import globalextensions.minus
+import globalextensions.tryCastToInt
 import models.dataset.numeric.Complex
 import models.dataset.numeric.Numeric
 import models.dataset.numeric.SetNumber
 import models.exceptions.computorv2.calcexception.variable.*
 import parser.variable.parseMatrixFromListString
 
-data class Matrix(val elementsCollection: List<List<Numeric>>) : DataSet {
+class Matrix(val elementsCollection: List<List<Numeric>>) : DataSet {
 	val rows = elementsCollection.size
 	val columns = elementsCollection.first().size
 	val isSquare = rows == columns
@@ -71,7 +72,7 @@ data class Matrix(val elementsCollection: List<List<Numeric>>) : DataSet {
 
 	override fun div(other: DataSet): Matrix =
 		if (other !is Matrix) invokeMatrixOperation(other, Numeric::div)
-		else this * other.reverse()
+		else throw IllegalOperationException(Matrix::class, Matrix::class)
 
 	override fun rem(other: DataSet): DataSet = throw IllegalOperationException(this::class, other::class, "%")
 
@@ -88,7 +89,7 @@ data class Matrix(val elementsCollection: List<List<Numeric>>) : DataSet {
 			degree == -1 -> reverse()
 			degree < -1 -> throw IllegalOperationException(this::class, SetNumber::class, "^")
 			else -> {
-				var newMatrix = copy()
+				var newMatrix = Matrix(elementsCollection)
 				repeat((other.number - 1) as Int) { newMatrix *= newMatrix }
 				newMatrix
 			}
@@ -101,6 +102,24 @@ data class Matrix(val elementsCollection: List<List<Numeric>>) : DataSet {
 			builder.append("[ " + it.joinToString(postfix = ", ").removeSuffix(", ") + " ]\n")
 		}
 		return builder.toString()
+	}
+
+	override fun equals(other: Any?): Boolean =
+		when (other) {
+			null -> false
+			!is Matrix -> false
+			this === other -> true
+			elementsCollection.size != other.elementsCollection.size -> false
+			else -> elementsCollection.flatten().zip(other.elementsCollection.flatten()).all { (el1, el2) -> el1 == el2 }
+		}
+
+	override fun hashCode(): Int {
+		var result = 17
+		result = 31 * result + elementsCollection.hashCode()
+		result = 31 * result + rows.hashCode()
+		result = 31 * result + columns.hashCode()
+		result = 31 * result + isSquare.hashCode()
+		return result
 	}
 
 	fun transposed(): Matrix {
@@ -117,14 +136,19 @@ data class Matrix(val elementsCollection: List<List<Numeric>>) : DataSet {
 		return Matrix(newElementsList)
 	}
 
-	fun det(): Double {
+	fun det(): Number {
 		if (!isSquare) throw NonSquareMatrixException()
 
-		val newElements = copy().castElementsToDouble().map { it.toMutableList() }.toMutableList()
+		val newElements = Matrix(elementsCollection).castElementsToDouble().map { it.toMutableList() }.toMutableList()
 
 		for (step in 0 until rows - 1)
 			for (row in step + 1 until rows) {
-				val coefficient = -newElements[row][step] / newElements[step][step]
+				val coefficient = if (newElements[step][step] == 0.0) {
+					0.0
+				} else {
+					-newElements[row][step] / newElements[step][step]
+				}
+
 				for (col in step until rows)
 					newElements[row][col] += newElements[step][col] * coefficient
 			}
@@ -133,7 +157,7 @@ data class Matrix(val elementsCollection: List<List<Numeric>>) : DataSet {
 		for (i in 0 until rows)
 			det *= newElements[i][i]
 
-		return det
+		return det.tryCastToInt()
 	}
 
 	/*
@@ -142,8 +166,7 @@ data class Matrix(val elementsCollection: List<List<Numeric>>) : DataSet {
 	fun reverse(): Matrix {
 		when {
 			!isSquare -> throw NonSquareMatrixException()
-			elementsCollection.flatten().any { it is Complex } -> throw ComplexNumbersInMatrixException()
-			det() == 0.0 -> throw DeterminantIsZeroException()
+			det().toDouble() == 0.0 -> throw DeterminantIsZeroException()
 		}
 
 		val castedElements = castElementsToDouble()
@@ -164,20 +187,27 @@ data class Matrix(val elementsCollection: List<List<Numeric>>) : DataSet {
 		val newTransposedElements = (transposed() * SetNumber(1 / (n1 * nInf)))
 		val doubleIdentityMatrix = getIdentityMatrix(rows) * SetNumber(2)
 
-		var inv = newTransposedElements.copy()
+		var inv = Matrix(newTransposedElements.elementsCollection)
 		val eps = 0.001
 		val mOne = SetNumber(-1)
 
-		while (sampleAbs((this * inv).det() - 1) >= eps)
+		while (sampleAbs((this * inv).det().toDouble() - 1) >= eps)
 			inv *= (this * inv * mOne + doubleIdentityMatrix)
 
-		return inv
+		return Matrix(
+			inv.elementsCollection.flatten().map {
+				SetNumber(String.format("%.4f", (it as SetNumber).number).toDouble().tryCastToInt())
+			}.chunked(rows)
+		)
 	}
 
 	private fun castElementsToDouble() =
 		elementsCollection
 			.flatten()
-			.map { (it as SetNumber).number.toDouble() }
+			.map {
+				if (it is Complex) throw ComplexNumbersInMatrixException()
+				(it as SetNumber).number.toDouble()
+			}
 			.chunked(rows)
 
 	private fun checkKClassAndRowsWithColumns(input: DataSet, operationChar: Char) {
@@ -187,10 +217,16 @@ data class Matrix(val elementsCollection: List<List<Numeric>>) : DataSet {
 			throw WrongMatrixSizeOperationException(this, input, operationChar)
 	}
 
-	private fun invokeMatrixOperation(input: DataSet, operation: (Numeric, DataSet) -> DataSet) =
-		copy(elementsCollection = elementsCollection.mapIndexed { i, numericList ->
+	private fun invokeMatrixOperation(input: DataSet, operation: (Numeric, DataSet) -> DataSet): Matrix {
+		if (input !is Numeric && input !is Matrix)
+			throw IllegalOperationException(
+					Matrix::class, input::class, operation.toString().split(' ')[1]
+			)
+
+		return Matrix(elementsCollection = elementsCollection.mapIndexed { i, numericList ->
 			numericList.mapIndexed { j, element ->
 				operation(element, if (input is Matrix) input[i][j] else input) as Numeric
 			}
 		})
+	}
 }

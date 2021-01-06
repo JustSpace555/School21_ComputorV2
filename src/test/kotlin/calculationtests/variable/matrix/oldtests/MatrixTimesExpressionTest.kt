@@ -1,12 +1,13 @@
-package calculationtests.variable.matrix
+package calculationtests.variable.matrix.oldtests
 
+import calculationtests.variable.matrix.MatrixExpressionTest
 import models.exceptions.computorv2.calcexception.variable.WrongMatrixSizeOperationException
 import models.dataset.numeric.Complex
 import models.dataset.numeric.SetNumber
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class MatrixTimesExpressionTest : MatrixExpressionsTest() {
+class MatrixTimesExpressionTest : MatrixExpressionTest() {
 
 	@Test(expected = WrongMatrixSizeOperationException::class)
 	fun `fail times test with wrong amount rows and columns`() {
