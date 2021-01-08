@@ -14,8 +14,3 @@ class PolynomialNumberFormatException(value: Any) : NumberException() {
 class PolynomialDegreeFormatException(value: Any) : NumberException() {
 	override val message: String = "Wrong degree format. Can't parse $value to degree (int)"
 }
-
-@ComputorV1Exception
-class PolynomialNumberDivideByZeroException : NumberException() {
-	override val message: String = "It's impossible to divide number by zero"
-}

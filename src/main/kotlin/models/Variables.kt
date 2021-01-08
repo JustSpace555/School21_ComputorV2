@@ -13,7 +13,7 @@ val tempVariables = mutableMapOf<String, DataSet>()
 val history = mutableListOf<Pair<String, String>>()
 
 val reservedFunctionNames = listOf(
-	"sin", "cos", "tan", "ctg", "asin", "actg", "atan", "acot", "exp", "sqrt", "abs", "T", "REV", "DET"
+	"sin", "cos", "tan", "ctg", "asin", "actg", "atan", "acot", "exp", "sqrt", "abs", "fac", "T", "REV", "DET"
 )
 val reservedConstNames = listOf("PI", "E")
 

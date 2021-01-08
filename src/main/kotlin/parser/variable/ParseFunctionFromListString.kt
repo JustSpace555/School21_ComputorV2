@@ -74,6 +74,7 @@ fun parseFunctionFromList(input: List<String>, parameter: String): DataSet {
 					"exp" -> ::sampleExp
 					"sqrt" -> ::sampleSqrt
 					"abs" -> ::sampleAbs
+					"fac" -> ::sampleFactorial
 					else -> null
 				}
 
