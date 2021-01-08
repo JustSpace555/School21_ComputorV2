@@ -1,8 +1,8 @@
 package calculationtests.variable.function
 
+import assertEquals
 import models.dataset.Function
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
-import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class FunctionFunctionTest : FunctionExpressionTest("z", "z^2 + z + 1") {

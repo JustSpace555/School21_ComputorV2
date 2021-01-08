@@ -3,7 +3,7 @@ package computorv1
 import models.exceptions.computorv1.EveryNumberIsSolutionException
 import models.exceptions.computorv1.NoSolutionException
 import models.exceptions.computorv1.PolynomialMaxDegreeException
-import org.junit.Assert.assertEquals
+import assertEquals
 import org.junit.Test
 import parser.parser
 import kotlin.reflect.KClass

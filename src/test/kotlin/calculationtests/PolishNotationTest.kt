@@ -12,7 +12,7 @@ import models.exceptions.computorv2.calcexception.TooFewOperatorsException
 import models.tempVariables
 import models.variables
 import org.junit.After
-import org.junit.Assert.assertEquals
+import assertEquals
 import org.junit.Test
 import parser.extensions.putSpaces
 

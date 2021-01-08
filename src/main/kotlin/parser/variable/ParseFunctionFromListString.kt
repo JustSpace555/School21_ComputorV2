@@ -5,6 +5,7 @@ import computation.polishnotation.extensions.compute
 import computorv1.models.PolynomialTerm
 import globalextensions.toPolynomial
 import globalextensions.toPolynomialList
+import globalextensions.tryCastToInt
 import models.dataset.DataSet
 import models.dataset.Function
 import models.dataset.Matrix
@@ -84,7 +85,7 @@ fun parseFunctionFromList(input: List<String>, parameter: String): DataSet {
 				else -> {
 					if (result is Complex) throw IllegalOperationException(Function::class, Complex::class)
 					result as SetNumber
-					SetNumber(operation(result.number.toDouble()))
+					SetNumber(operation(result.number.toDouble()).tryCastToInt())
 				}
 			}
 

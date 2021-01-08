@@ -1,7 +1,7 @@
 package calculationtests.variable.wrapping.brackets
 
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
-import org.junit.Assert.assertEquals
+import assertEquals
 import org.junit.Test
 
 class BracketsFractionTest : BracketsExpressionTest() {

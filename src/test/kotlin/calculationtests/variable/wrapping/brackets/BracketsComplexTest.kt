@@ -4,7 +4,7 @@ import models.dataset.numeric.Complex
 import models.dataset.numeric.SetNumber
 import models.exceptions.computorv2.calcexception.DivideByZeroException
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
-import org.junit.Assert.assertEquals
+import assertEquals
 import org.junit.Test
 
 class BracketsComplexTest : BracketsExpressionTest() {

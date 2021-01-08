@@ -6,7 +6,7 @@ import models.dataset.DataSet
 import models.dataset.numeric.Complex
 import models.dataset.numeric.SetNumber
 import models.dataset.wrapping.Brackets
-import org.junit.Assert.assertEquals
+import assertEquals
 import org.junit.Test
 
 class BracketsPolynomialTest : ComputorTest() {

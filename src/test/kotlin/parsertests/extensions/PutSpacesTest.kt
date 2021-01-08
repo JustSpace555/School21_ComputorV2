@@ -1,7 +1,7 @@
 package parsertests.extensions
 
 import ComputorTest
-import org.junit.Assert.assertEquals
+import assertEquals
 import org.junit.Test
 import parser.extensions.putSpaces
 

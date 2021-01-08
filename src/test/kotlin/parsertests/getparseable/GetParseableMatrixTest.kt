@@ -4,7 +4,7 @@ import ComputorTest
 import models.dataset.Matrix
 import models.exceptions.computorv2.parserexception.variable.EmptyMatrixArgumentException
 import models.exceptions.computorv2.parserexception.variable.WrongMatrixBracketsFormatException
-import org.junit.Assert.assertEquals
+import assertEquals
 import org.junit.Test
 import parser.getparseable.getParseableDataSet
 

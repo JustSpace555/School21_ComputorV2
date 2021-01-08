@@ -2,7 +2,7 @@ package calculationtests.variable.wrapping.functionstack
 
 import computorv1.models.PolynomialTerm
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
-import org.junit.Assert.assertEquals
+import assertEquals
 import org.junit.Test
 
 class FunctionStackPolynomialTermTest : FunctionStackExpressionTest() {

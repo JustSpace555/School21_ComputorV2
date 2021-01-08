@@ -5,7 +5,7 @@ import models.exceptions.computorv2.calcexception.variable.IllegalOperationExcep
 import models.exceptions.computorv2.calcexception.variable.WrongMatrixSizeOperationException
 import models.dataset.numeric.Complex
 import models.dataset.numeric.SetNumber
-import org.junit.Assert.assertEquals
+import assertEquals
 import org.junit.Test
 
 class MatrixPlusExpressionTest : MatrixExpressionTest() {

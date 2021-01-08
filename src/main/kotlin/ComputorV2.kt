@@ -32,7 +32,8 @@ fun main() {
 			println(e.message + "\n")
 		} catch (e: Exception) {
 			addToHistory(input, e.message ?: "Exception")
-			println("Something went wrong :(\n${e.message}\n${e.stackTrace}\n")
+			println("Something went wrong :(\n${e.message}\n")
+			e.printStackTrace()
 		} finally {
 			tempVariables.clear()
 		}

@@ -3,7 +3,7 @@ package calculationtests.variable.matrix
 import models.dataset.numeric.Complex
 import models.exceptions.computorv2.calcexception.variable.DeterminantIsZeroException
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
-import org.junit.Assert.assertEquals
+import assertEquals
 import org.junit.Test
 import parser.parser
 

@@ -1,5 +1,6 @@
 package models.dataset
 
+import computation.SAMPLE_PRECISION
 import computation.sampleAbs
 import computation.sampleMax
 import globalextensions.minus
@@ -67,7 +68,7 @@ class Matrix(val elementsCollection: List<List<Numeric>>) : DataSet {
 			newElementsCollection.add(newElementsRow)
 		}
 
-		return Matrix(newElementsCollection)
+		return Matrix(newElementsCollection.roundElements())
 	}
 
 	override fun div(other: DataSet): Matrix =
@@ -194,12 +195,21 @@ class Matrix(val elementsCollection: List<List<Numeric>>) : DataSet {
 		while (sampleAbs((this * inv).det().toDouble() - 1) >= eps)
 			inv *= (this * inv * mOne + doubleIdentityMatrix)
 
-		return Matrix(
-			inv.elementsCollection.flatten().map {
-				SetNumber(String.format("%.4f", (it as SetNumber).number).toDouble().tryCastToInt())
-			}.chunked(rows)
-		)
+		return Matrix(inv.elementsCollection.roundElements())
 	}
+
+	private fun List<List<Numeric>>.roundElements() =
+		this.flatten().map {
+			if (it is Complex) {
+				it
+			} else {
+				var result = String.format("%.4f", (it as SetNumber).number.toDouble())
+					.replace(",", ".")
+					.toDouble()
+				if (sampleAbs(result) <= 0.0001) result = 0.0
+				SetNumber(result.tryCastToInt())
+			}
+		}.chunked(rows)
 
 	private fun castElementsToDouble() =
 		elementsCollection

@@ -1,5 +1,6 @@
 package models.dataset.numeric
 
+import computation.samplePow
 import computorv1.models.PolynomialTerm
 import globalextensions.*
 import models.dataset.DataSet
@@ -81,8 +82,9 @@ class SetNumber(var number: Number = 0) : Numeric, Comparable<SetNumber> {
 		else throw IllegalOperationException(SetNumber::class, other::class, "%")
 
 	override fun pow(other: DataSet): SetNumber {
-		if (other !is SetNumber) throw IllegalOperationException(SetNumber::class, other::class, "^")
-		return SetNumber(number.elevate(other.number))
+		if (other !is SetNumber || other.number !is Int)
+			throw IllegalOperationException(SetNumber::class, other::class, "^")
+		return SetNumber(number.toDouble().samplePow(other.number as Int).tryCastToInt())
 	}
 
 	operator fun compareTo(other: Number): Int = number.compareTo(other)

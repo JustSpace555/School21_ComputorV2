@@ -1,11 +1,11 @@
 package calculationtests.variable.matrix.oldtests
 
+import assertEquals
 import calculationtests.variable.matrix.MatrixExpressionTest
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
 import models.exceptions.computorv2.calcexception.variable.WrongMatrixSizeOperationException
 import models.dataset.numeric.Complex
 import models.dataset.numeric.SetNumber
-import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class MatrixMinusExpressionTest : MatrixExpressionTest() {

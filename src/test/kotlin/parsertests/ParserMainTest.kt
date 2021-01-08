@@ -5,7 +5,7 @@ import models.exceptions.computorv1.EqualSignAmountException
 import models.exceptions.computorv1.EqualSignPositionException
 import models.exceptions.computorv2.parserexception.sign.QuestionMarkPositionException
 import models.variables
-import org.junit.Assert.assertEquals
+import assertEquals
 import org.junit.Test
 import parser.parser
 

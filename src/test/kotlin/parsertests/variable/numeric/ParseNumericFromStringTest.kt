@@ -4,7 +4,7 @@ import ComputorTest
 import models.dataset.numeric.Complex
 import models.dataset.numeric.SetNumber
 import models.exceptions.computorv2.parserexception.variable.NumericFormatException
-import org.junit.Assert.assertEquals
+import assertEquals
 import org.junit.Test
 import parser.variable.numeric.toNumeric
 
