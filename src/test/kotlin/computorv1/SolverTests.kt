@@ -8,7 +8,7 @@ import org.junit.Test
 import parser.parser
 import kotlin.reflect.KClass
 
-class SolverTest {
+class SolverTests {
 
 	@Test
 	fun testLinearEquationSolver() {

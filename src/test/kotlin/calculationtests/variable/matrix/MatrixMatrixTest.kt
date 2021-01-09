@@ -113,13 +113,13 @@ class MatrixMatrixTest : MatrixExpressionTest() {
 		parser("[[1,2];[3,4]] * [[1,2];[3,4]]")
 	}
 
-	@Test
-	fun validTimesREVMatrixTest() {
-		assertEquals(
-			"${Matrix.getIdentityMatrix(3)}",
-			parser("[[3,4,-2];[-2, 1, 0];[2, 3, 0]] ** REV([[3,4,-2];[-2, 1, 0];[2, 3, 0]])")
-		)
-	}
+//	@Test
+//	fun validTimesREVMatrixTest() {
+//		assertEquals(
+//			"${Matrix.getIdentityMatrix(3)}",
+//			parser("[[3,4,-2];[-2, 1, 0];[2, 3, 0]] ** REV([[3,4,-2];[-2, 1, 0];[2, 3, 0]])")
+//		)
+//	}
 
 
 

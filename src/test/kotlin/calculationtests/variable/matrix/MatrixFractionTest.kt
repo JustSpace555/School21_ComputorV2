@@ -3,7 +3,7 @@ package calculationtests.variable.matrix
 import models.exceptions.computorv2.calcexception.variable.IllegalOperationException
 import org.junit.Test
 
-class MatrixFractionStack : MatrixExpressionTest() {
+class MatrixFractionTest : MatrixExpressionTest() {
 
 	@Test(expected = IllegalOperationException::class)
 	fun `fail plus Fraction test`() {
