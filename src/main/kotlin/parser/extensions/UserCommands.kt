@@ -10,7 +10,7 @@ fun getVariablesList(): String {
 
 	val output = StringBuilder()
 
-	variables.forEach {
+	variables.filter { it.key != "PI" && it.key != "E" }.forEach {
 		when(it.value) {
 			is Function -> {
 				val function = it.value as Function

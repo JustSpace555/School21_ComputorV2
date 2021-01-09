@@ -16,3 +16,9 @@ class WrongDataFormatForGraph(input: DataSet) : GraphException() {
 class ImpossibleToVisualizeData(input: DataSet) : GraphException() {
 	override val message: String = "It is impossible to visualize function output ${input::class.simpleName}:\n$input"
 }
+
+@ComputorV2Exception
+class CanNotParsePlotInputFunction : GraphException() {
+	override val message: String = "Wrong input of plot function. It must be: " +
+			"plot('parameter')['start dot', 'finish dot', shift value'] = ..."
+}

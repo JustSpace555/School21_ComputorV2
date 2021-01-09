@@ -2,6 +2,7 @@ package parser
 
 import computation.polishnotation.extensions.compute
 import computorv1.computorv1
+import computorv1.models.PolynomialTerm
 import computorv1.reducedString
 import globalextensions.getBracketList
 import globalextensions.mapToPolynomialList
@@ -12,8 +13,6 @@ import models.exceptions.computorv2.parserexception.sign.QuestionMarkPositionExc
 import models.exceptions.computorv2.parserexception.variable.MultipleArgumentException
 import models.operationsStringList
 import models.variables
-import computorv1.parser.extensions.putSpacesComputorV1
-import graph.Graph
 import models.exceptions.computorv1.EqualSignAmountException
 import models.exceptions.computorv1.EqualSignPositionException
 import parser.extensions.deleteSpacesFromMultipleOperations
@@ -23,12 +22,10 @@ import parser.extensions.validateVariable
 import parser.getparseable.getParseableDataSet
 
 fun parser(input: String, isPlot: Boolean = false): String {
-	var mod = putSpaces(input)
+	val mod = putSpaces(input)
 		.split(' ')
 		.deleteSpacesFromMultipleOperations()
 		.filter { it.isNotEmpty() }
-
-	if (isPlot) mod = mod.drop(1)
 
 	val isComputation = mod.contains("?")
 
@@ -90,6 +87,7 @@ fun parser(input: String, isPlot: Boolean = false): String {
 
 	return when(computed) {
 		is Wrapping -> computed.toString().removePrefix("(").removeSuffix(")")
+		is PolynomialTerm -> listOf(computed).reducedString(computed.name)
 		else -> computed.toString()
 	}
 }

@@ -20,6 +20,9 @@ fun String.isOperandOrTempVariable(): Boolean = this.isOperand() || tempVariable
 
 fun String.isComplexOrMatrixOrFunctionOrParameter(parameter: String = ""): Pair<Boolean, KClass<*>> =
 	when {
+
+		this == parameter -> Pair(true, PolynomialTerm::class)
+
 		variables.containsKey(this) && variables[this] is Function || this in reservedFunctionNames -> {
 			Pair(true, Function::class)
 		}
@@ -36,8 +39,6 @@ fun String.isComplexOrMatrixOrFunctionOrParameter(parameter: String = ""): Pair<
 		}
 
 		this == "[" -> Pair(true, Matrix::class)
-
-		this == parameter -> Pair(true, PolynomialTerm::class)
 
 		else -> Pair(false, SetNumber::class)
 	}

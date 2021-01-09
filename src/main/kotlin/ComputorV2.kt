@@ -1,5 +1,9 @@
+import computation.SAMPLE_E
+import computation.SAMPLE_PI
+import models.dataset.numeric.SetNumber
 import models.exceptions.ComputorException
 import models.tempVariables
+import models.variables
 import parser.extensions.addToHistory
 import parser.extensions.getHistory
 import parser.extensions.getVariablesList
@@ -14,16 +18,23 @@ fun main() {
 	while(scanner.hasNext()) {
 		input = scanner.nextLine()
 
-		var isPlot = false
+//		var isPlot = false
 		when {
 			input.startsWith("exit") -> return
 			input.startsWith("history") -> { println(getHistory()); continue }
 			input.startsWith("variables") -> { println(getVariablesList()); continue }
-			input.startsWith("plot") -> { isPlot = true }
+			input.startsWith("clear") -> {
+				variables.clear()
+				variables["PI"] = SetNumber(SAMPLE_PI)
+				variables["E"] = SetNumber(SAMPLE_E)
+				println()
+				continue
+			}
+//			input.startsWith("plot") -> { isPlot = true }
 		}
 
 		try {
-			parser(input, isPlot).also {
+			parser(input).also {
 				addToHistory(input, it)
 				println("$it\n")
 			}
@@ -36,6 +47,7 @@ fun main() {
 			e.printStackTrace()
 		} finally {
 			tempVariables.clear()
+//			isPlot = false
 		}
 	}
 }
